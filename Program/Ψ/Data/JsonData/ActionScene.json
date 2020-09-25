@@ -1,0 +1,18 @@
+{
+  "GameObjects": [
+    {
+      "Name": "Map1",
+      "Prefab": "Data/JsonData/MapObject.json"
+    },
+    {
+      "Name": "Box1",
+      "Pos": [4,0.43,1],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "GameObject",
+      "Pos": [-1.47,1.14,1.55],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    }
+  ]
+}
