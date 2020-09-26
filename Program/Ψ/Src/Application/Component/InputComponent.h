@@ -74,3 +74,19 @@ protected:
 	//持ち主
 	GameObject& m_owner;
 };
+
+//===============================================
+//プレイヤー入力用
+//===============================================
+class PlayerInputComponent :public InputComponent
+{
+public:
+	PlayerInputComponent(GameObject& owner) :InputComponent(owner) {}
+
+	virtual void Update()override;
+private:
+	//マウスの前座標
+	POINT m_prevMousePos;
+	//マウス非表示モード
+	bool m_isHideMouse = true;
+};

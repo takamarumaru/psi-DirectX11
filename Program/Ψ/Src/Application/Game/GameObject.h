@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class ModelComponent;
+class InputComponent;
 class CameraComponent;
 
 struct RayInfo;
@@ -69,6 +70,8 @@ protected:
 	//着地しているかどうか
 	bool m_isGround=false;
 
+	//インプットコンポーネント
+	std::shared_ptr<InputComponent> m_spInputComponent = nullptr;
 	//カメラコンポーネント
 	std::shared_ptr<CameraComponent> m_spCameraComponent = nullptr;
 	//モデルコンポーネント

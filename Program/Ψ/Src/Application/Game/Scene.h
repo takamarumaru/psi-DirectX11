@@ -58,7 +58,7 @@ private:
 	//エディターカメラ
 	EditorCamera*	m_pCamera;
 	// EditorCamera管理フラグ
-	bool			m_editorCameraEnabe = true;
+	bool			m_editorCameraEnabe = false;
 	//ターゲットのカメラ
 	std::weak_ptr<CameraComponent>	m_wpTaegetCamera;
 

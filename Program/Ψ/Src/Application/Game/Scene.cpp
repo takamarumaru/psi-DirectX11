@@ -272,8 +272,8 @@ void Scene::ImGuiPrefabFactoryUpdate()
 		//オブジェクト生成
 		if (ImGui::CollapsingHeader("CreateObject", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			static std::string objectPath;
 			//パス入力
+			static std::string objectPath;
 			ImGui::InputText("オブジェクトパス", &objectPath);
 
 			//パス取得ボタン
@@ -284,6 +284,10 @@ void Scene::ImGuiPrefabFactoryUpdate()
 				Window::OpenFileDialog(objectPath, "jsonファイルを開く", "Objectのjsonファイル\0*Object*\0*.json\0\0");
 			}
 
+			//名前入力
+			static std::string objectName;
+			ImGui::InputText("ObjectName", &objectName);
+
 			//生成ボタン
 			if (ImGui::Button("Create"))
 			{
@@ -292,6 +296,7 @@ void Scene::ImGuiPrefabFactoryUpdate()
 				if (json.is_null())
 				{
 					IMGUI_LOG.AddLog(u8"オブジェクト生成に失敗(ファイルのパスが間違っています)");
+					ImGui::End();
 					return;
 				}
 				//生成
@@ -299,9 +304,18 @@ void Scene::ImGuiPrefabFactoryUpdate()
 				if (!newGameObj)
 				{
 					IMGUI_LOG.AddLog(u8"項目\"ClassName\"に異常がある可能性");
+					ImGui::End();
 					return;
 				}
 
+				//名前の変更
+				if (objectName.empty())
+				{
+					IMGUI_LOG.AddLog(u8"オブジェクト名が入力されていません");
+					ImGui::End();
+					return;
+				}
+				json["Name"] = objectName;
 				//オブジェクトのデシリアライズ
 				newGameObj->Deserialize(json);
 

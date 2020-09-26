@@ -185,6 +185,10 @@ public:
 	{
 		*this = DirectX::XMMatrixTranslation(x,y,z);
 	}
+	void CreateTranslation(const Vector3& v)
+	{
+		*this = DirectX::XMMatrixTranslation(v.x, v.y, v.z);
+	}
 
 	//X回転行列作成
 	void CreateRotationX(float angle)

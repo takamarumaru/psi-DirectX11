@@ -6,6 +6,7 @@
 #include "../Component/CameraComponent.h"
 
 #include "ActionScene/Box.h"
+#include "ActionScene/Player.h"
 
 const float GameObject::s_allowToStepHeight = 0.8f;
 const float GameObject::s_landingHeight = 0.1f;
@@ -102,8 +103,8 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	//カメラの初期設定
 	m_spCameraComponent = std::make_shared<CameraComponent>(*this);
-	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 1.5f, -10.0f);
-	m_spCameraComponent->OffsetMatrix().RotateX(25.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -3.0f);
+	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
 
 }
 
@@ -413,6 +414,11 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	if (name == "GameObject")
 	{
 		return std::make_shared<GameObject>();
+	}
+	//プレイヤー
+	if (name == "Player")
+	{
+		return std::make_shared<Player>();
 	}
 	//ボックス
 	if (name == "Box")

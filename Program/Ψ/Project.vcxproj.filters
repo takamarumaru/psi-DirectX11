@@ -183,6 +183,9 @@
     <ClInclude Include="Src\Application\Component\InputComponent.h">
       <Filter>Src\Application\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Player.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -277,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Component\InputComponent.cpp">
       <Filter>Src\Application\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Player.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
