@@ -23,7 +23,7 @@ public:
 	//デストラクタ
 	~GameObject();
 
-/// 基本動作============================
+/// 基本動作===============================================
 
 	//データ読込・初期化
 	virtual void Deserialize(const json11::Json& jsonObj);
@@ -36,7 +36,7 @@ public:
 	//ImGui更新
 	virtual void ImGuiUpdate();
 
-/// アクセサ============================
+/// アクセサ===============================================
 
 	//行列
 	inline const Matrix& GetMatrix()const { return m_mWorld; }
@@ -51,6 +51,10 @@ public:
 	inline const char* GetName() const { return m_name.c_str(); }
 	//モデルコンポーネント
 	std::shared_ptr<ModelComponent>GetModelComponent() { return m_spModelComponent; }
+	//着地しているかどうか
+	bool IsGround() { return m_isGround; }
+
+///	当たり判定=============================================
 
 	//レイによる当たり判定
 	bool HitCheckByRay(const RayInfo& rInfo, RayResult& rResult);
@@ -60,15 +64,7 @@ protected:
 	//解放
 	virtual void Release();
 
-	//地面とのレイ判定
-	bool CheckGround(float& rDstDistance, UINT rTag);
-	//歩いて乗り越えられる段差の高さ
-	static const float s_allowToStepHeight;
-	//地面から足が離れていても着地していると判定する高さ（坂道などを登るときに宙に浮くのを防ぐ）
-	static const float s_landingHeight;
-
-	//着地しているかどうか
-	bool m_isGround=false;
+///	コンポーネント=========================================
 
 	//インプットコンポーネント
 	std::shared_ptr<InputComponent> m_spInputComponent = nullptr;
@@ -76,6 +72,19 @@ protected:
 	std::shared_ptr<CameraComponent> m_spCameraComponent = nullptr;
 	//モデルコンポーネント
 	std::shared_ptr<ModelComponent> m_spModelComponent = std::make_shared<ModelComponent>(*this);
+
+///	当たり判定=============================================
+
+	//地面とのレイ判定
+	bool CheckGround(float& rDstDistance, UINT rTag);
+	//歩いて乗り越えられる段差の高さ
+	static const float s_allowToStepHeight;
+	//地面から足が離れていても着地していると判定する高さ（坂道などを登るときに宙に浮くのを防ぐ）
+	static const float s_landingHeight;
+	//着地しているかどうか
+	bool m_isGround=false;
+
+/// オブジェクトデータ=====================================
 
 	//行列
 	Matrix m_mWorld;
@@ -85,6 +94,8 @@ protected:
 	Vector3 m_pos;
 	//移動量
 	Vector3 m_force;
+	//回転角度
+	Vector3 m_rot;
 
 	//タグ
 	UINT		m_tag = OBJECT_TAG::TAG_None;
@@ -97,10 +108,8 @@ protected:
 	//プレハブjson
 	std::string m_prefab;
 
-
 	//生死フラグ
 	bool		m_alive = true;
-
 
 	//全体の拡縮
 	float		m_allScale = 1.0f;
@@ -111,6 +120,7 @@ protected:
 //クラス名からGameObjectを生成する関数
 std::shared_ptr<GameObject> CreateGameObject(const std::string& name);
 
+//レイの情報
 struct RayInfo
 {
 	Vector3	m_pos;				//レイ（光線）の発射場所

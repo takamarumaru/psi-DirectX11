@@ -190,6 +190,14 @@ public:
 		*this = DirectX::XMMatrixTranslation(v.x, v.y, v.z);
 	}
 
+	//全ての回転行列作成
+	void CreateRotation(const Vector3& v)
+	{
+		*this = DirectX::XMMatrixRotationX(v.x);
+		*this *= DirectX::XMMatrixRotationY(v.y);
+		*this *= DirectX::XMMatrixRotationZ(v.z);
+	}
+
 	//X回転行列作成
 	void CreateRotationX(float angle)
 	{
@@ -233,6 +241,10 @@ public:
 	void Move(const Vector3& v)
 	{
 		*this *= DirectX::XMMatrixTranslation(v.x,v.y,v.z);
+	}
+	void Move(float x, float y, float z)
+	{
+		*this *= DirectX::XMMatrixTranslation(x,y,z);
 	}
 
 	//軸回転

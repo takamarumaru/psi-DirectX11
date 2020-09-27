@@ -49,17 +49,20 @@ void Player::Update()
 	//当たり判定
 	UpdateCollision();
 
+	//行列合成
+	m_mWorld.CreateRotation(m_rot);	//回転
+	m_mWorld.Move(m_pos);			//座標
+
 	//行列をカメラにセット
 	if (m_spCameraComponent)
 	{
-		Matrix cameraCenter=m_mWorld;
-		Vector3 move = {0.0f,1.5f,0.0f};
-		cameraCenter.Move(move);
-		m_spCameraComponent->SetCameraMatrix(cameraCenter);
+		//移動成分だけを抽出し、視点を少し上にあげる
+		Matrix mCamera;
+		mCamera.CreateTranslation(m_mWorld.GetTranslation());
+		mCamera.Move(0.0f,1.5f,0.0f);
+		//カメラにセット
+		m_spCameraComponent->SetCameraMatrix(mCamera);
 	}
-
-	//座標
-	m_mWorld.CreateTranslation(m_pos);
 }
 
 //移動更新
@@ -68,14 +71,58 @@ void Player::UpdateMove()
 	//入力情報の取得
 	const Math::Vector2& inputMove = m_spInputComponent->GetAxis(Input::Axes::L);
 
-	Vector3 moveVec = { inputMove.x ,0.0f,inputMove.y };
+	//カメラの右方向*レバーの左右入力
+	Vector3 moveSide = m_spCameraComponent->OffsetMatrix().GetAxisX() * inputMove.x;
+	//カメラの前方向*レバーの前後入力
+	Vector3 moveForword = m_spCameraComponent->OffsetMatrix().GetAxisZ() * inputMove.y;
+	//上下方向への移動成分はカット
+	moveForword.y = 0.0f;
 
+	//移動ベクトルの算出→正規化
+	Vector3 moveVec = moveSide + moveForword;
 	moveVec.Normalize();
-
+	//回転処理→スピード合成
+	UpdateRotate(moveVec);
 	moveVec *= m_moveSpeed;
 
 	m_force.x = moveVec.x;
 	m_force.z = moveVec.z;
+}
+
+//操作やキャラクターの行動による回転計算
+void Player::UpdateRotate(const Vector3& rMoveDir)
+{
+	//移動していなければ帰る
+	if (rMoveDir.LengthSquared() == 0.0f) { return; }
+
+	//今のキャラクターの方向ベクトル
+	Vector3 nowDir = m_mWorld.GetAxisZ();
+	nowDir.Normalize();
+
+	//キャラクターの今向いている方向の角度を求める（ラジアン角）
+	float nowRadian = atan2(nowDir.x, nowDir.z);
+
+	//移動方向へのベクトルの角度を求める（ラジアン角）
+	float targetRadian = atan2(rMoveDir.x, rMoveDir.z);
+
+	//差分を求める
+	float rotateRadian = targetRadian - nowRadian;
+
+	//差分が-π～πの領域外なら遠回りしないように補正
+	if (rotateRadian > M_PI)
+	{
+		rotateRadian -= 2 * float(M_PI);
+	}
+	else if (rotateRadian < -M_PI)
+	{
+		rotateRadian += 2 * float(M_PI);
+	}
+
+	//どちら側への回転かによって一回分の回転角度を代入
+	rotateRadian = std::clamp(rotateRadian, -m_rotateAngle * ToRadians, m_rotateAngle * ToRadians);
+	
+	m_rot.y += rotateRadian;
+
 }
 
 void Player::UpdateCamera()
@@ -86,7 +133,7 @@ void Player::UpdateCamera()
 	const Math::Vector2& inputRot = m_spInputComponent->GetAxis(Input::Axes::R);
 
 	//カメラY軸回転
-	m_spCameraComponent->OffsetMatrix().RotateY(inputRot.x * 0.2f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().RotateY(inputRot.x * m_cameraRotSpeed * ToRadians);
 
 	//X軸の移動制限
 	float angle = m_spCameraComponent->OffsetMatrix().GetAngles().x * ToDegrees;
@@ -94,16 +141,12 @@ void Player::UpdateCamera()
 	{
 		angle += (angle < 0) ? 180.0f : -180.0f;
 	}
-
-	if (fabs(angle + inputRot.y * 0.2f)> 90)
+	if (fabs(angle + inputRot.y * m_cameraRotSpeed)> 90)
 	{
 		return;
 	}
-
-	IMGUI_LOG.Clear();
-	IMGUI_LOG.AddLog("%f",angle);
 	//カメラX軸回転
-	m_spCameraComponent->OffsetMatrix().RotateAxis(m_spCameraComponent->OffsetMatrix().GetAxisX(),inputRot.y * 0.2f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().RotateAxis(m_spCameraComponent->OffsetMatrix().GetAxisX(),inputRot.y * m_cameraRotSpeed * ToRadians);
 
 }
 
@@ -139,6 +182,23 @@ bool Player::IsShiftWalk()
 	return false;
 }
 
+//ジャンプステートへの移行条件を満たしているか
+bool Player::IsShiftJump()
+{
+	if (!m_spInputComponent) { return false; }
+
+	if (m_isGround)
+	{
+		//ジャンプ(SPACE)
+		if (m_spInputComponent->GetButton(Input::Buttons::A))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 //待機時の更新
 void Player::WaitAction::Update(Player& rOwner)
 {
@@ -146,6 +206,14 @@ void Player::WaitAction::Update(Player& rOwner)
 	if (rOwner.IsShiftWalk())
 	{
 		rOwner.ShiftWalk();
+		return;
+	}
+	//ジャンプ
+	if (rOwner.IsShiftJump())
+	{
+		//ジャンプアクションへ遷移
+		rOwner.ShiftJump();
+		return;
 	}
 }
 
@@ -159,5 +227,26 @@ void Player::WalkAction::Update(Player& rOwner)
 	if (!rOwner.IsShiftWalk())
 	{
 		rOwner.ShiftWait();
+		return;
+	}
+	//ジャンプ
+	if (rOwner.IsShiftJump())
+	{
+		//ジャンプアクションへ遷移
+		rOwner.ShiftJump();
+		return;
+	}
+}
+
+void Player::JumpAction::Update(Player& rOwner)
+{
+	//移動処理
+	rOwner.UpdateMove();
+
+	if (rOwner.IsGround())
+	{
+		//待機アクションへ遷移
+		rOwner.ShiftWait();
+		return;
 	}
 }
