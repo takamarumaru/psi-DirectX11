@@ -39,8 +39,10 @@ void Box::UpdateCollision()
 {
 	float distanceFromGround = FLT_MAX;
 
+	RayResult finalRayResult;
+
 	//下方向への判定を行い、着地した
-	if (CheckGround(distanceFromGround,TAG_StageObject | TAG_Character))
+	if (CheckGround(finalRayResult,distanceFromGround,TAG_StageObject | TAG_Character))
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - distanceFromGround;

@@ -7,6 +7,7 @@ struct RayResult
 	float	m_distance	= FLT_MAX;		//当たったところまでの距離
 	bool	m_hit		= false;		//当たったかどうか
 	Vector3	m_hitPos = {};				//当たった座標
+	Vector3 m_polyDir = {};				//当たったポリゴンの向き
 };
 
 //レイによる当たり判定

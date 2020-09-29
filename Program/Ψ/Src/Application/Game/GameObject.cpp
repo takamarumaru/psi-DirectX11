@@ -105,7 +105,6 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 	m_spCameraComponent = std::make_shared<CameraComponent>(*this);
 	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -3.0f);
 	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
-
 }
 
 //データ保存
@@ -196,6 +195,8 @@ void GameObject::Draw()
 
 	m_spModelComponent->Draw();
 }
+
+void GameObject::DrawEffect(){}
 
 void GameObject::ImGuiUpdate()
 {
@@ -326,7 +327,7 @@ bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
 	return rResult.m_hit;
 }
 
-bool GameObject::CheckGround(float& rDstDistance, UINT rTag)
+bool GameObject::CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT rTag)
 {
 	//レイ判定情報
 	RayInfo rayInfo;
@@ -343,7 +344,6 @@ bool GameObject::CheckGround(float& rDstDistance, UINT rTag)
 
 	//レイの結果格納用
 	rayInfo.mMaxRange = FLT_MAX;
-	RayResult finalRayResult;
 
 	//当たったオブジェクト保管用
 	std::shared_ptr<GameObject> hitObj = nullptr;

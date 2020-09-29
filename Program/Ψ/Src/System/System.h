@@ -31,6 +31,8 @@
 #include "Direct3D/Mesh.h"
 // モデル
 #include "Direct3D/Model.h"
+// 板ポリ
+#include "Direct3D/SquarePolygon.h"
 
 // シェーダ
 #include "Shader/ShaderManager.h"

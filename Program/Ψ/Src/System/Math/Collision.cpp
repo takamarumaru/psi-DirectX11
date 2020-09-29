@@ -86,6 +86,13 @@ bool RayToMesh(const DirectX::XMVECTOR& rRayPos, const DirectX::XMVECTOR& rRayDi
 			if (triDist<closestDist)
 			{
 				closestDist = triDist;	//距離を更新
+
+				//外積計算のためのベクトル算出
+				const Vector3 BtoC = rMesh.GetVertexPositions()[idx[1]] - rMesh.GetVertexPositions()[idx[0]];
+				const Vector3 AtoB = rMesh.GetVertexPositions()[idx[2]] - rMesh.GetVertexPositions()[idx[0]];
+				//ポリゴンの外積を求める
+				rResult.m_polyDir = Vector3::Cross(BtoC,AtoB);
+				rResult.m_polyDir.Normalize();
 			}
 		}
 	}

@@ -23,6 +23,10 @@ public:
 	//解放
 	void Release();
 
+	//デバックライン描画
+	void AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const Math::Color& color = { 1,1,1,1 });
+
+
 /// オブジェクト管理=================================
 	//追加
 	void AddObject(std::shared_ptr <GameObject> spObject);
@@ -61,6 +65,10 @@ private:
 	bool			m_editorCameraEnabe = false;
 	//ターゲットのカメラ
 	std::weak_ptr<CameraComponent>	m_wpTaegetCamera;
+
+
+	//デバックライン描画用の頂点配列
+	std::vector<EffectShader::Vertex> m_debugLines;
 
 
 //===================================================

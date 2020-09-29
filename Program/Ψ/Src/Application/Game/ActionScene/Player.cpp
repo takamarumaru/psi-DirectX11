@@ -5,6 +5,8 @@
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/InputComponent.h"
 
+#include"Application/Game/TextureEffect.h"
+
 //初期化
 void Player::Deserialize(const json11::Json& jsonObj)
 {
@@ -21,6 +23,10 @@ void Player::Deserialize(const json11::Json& jsonObj)
 
 	//入力用コンポーネントセット
 	m_spInputComponent = std::make_shared<PlayerInputComponent>(*this);
+
+	//影の初期化
+	m_shadow = std::make_shared<TextureEffect>();
+	m_shadow->SetEffectInfo(ResFac.GetTexture("Data/Texture/shadow.png"), 2.0f,1,1,0,false,false);
 }
 
 //更新
@@ -63,6 +69,12 @@ void Player::Update()
 		//カメラにセット
 		m_spCameraComponent->SetCameraMatrix(mCamera);
 	}
+}
+
+void Player::DrawEffect()
+{
+	//影の描画
+	m_shadow->DrawEffect();
 }
 
 //移動更新
@@ -155,8 +167,10 @@ void Player::UpdateCollision()
 {
 	float distanceFromGround = FLT_MAX;
 
+	RayResult finalRayResult;
+
 	//下方向への判定を行い、着地した
-	if (CheckGround(distanceFromGround, TAG_StageObject | TAG_Character))
+	if (CheckGround(finalRayResult, distanceFromGround, TAG_StageObject | TAG_Character))
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - distanceFromGround;
@@ -164,6 +178,25 @@ void Player::UpdateCollision()
 		//地面があるので、ｙ方向への移動力は０に
 		m_force.y = 0.0f;
 	}
+
+	//影の更新
+	Matrix mShadow;
+	//ポリゴンの法線ベクトルと上方向のベクトルに垂直なベクトル
+	Vector3 crossDir = Vector3::Cross(finalRayResult.m_polyDir, { 0,1,0 });
+	crossDir.Normalize();
+	//ポリゴンの法線ベクトルから見た上方向のベクトルの角度
+	float dotAngle = acosf(Vector3::Dot(finalRayResult.m_polyDir, { 0,1,0 }));
+
+	//crossDirがZeroベクトルなら回転しない
+	if (!XMVector3Equal(crossDir, {0.0f,0.0f,0.0f}))
+	{
+		//回転処理
+		mShadow.CreateRotationAxis(crossDir, -dotAngle);
+	}
+	//移動処理
+	mShadow.Move(finalRayResult.m_hitPos += {0.0f,0.05f,0.0f});
+	//行列をセット
+	m_shadow->SetMatrix(mShadow);
 }
 
 //移動ステートへの移行条件を満たしているか

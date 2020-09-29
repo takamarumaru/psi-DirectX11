@@ -2,11 +2,14 @@
 
 #include "./Application/Game/GameObject.h"
 
+class TextureEffect;
+
 class Player :public GameObject
 {
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual void Update()override;
+	virtual void DrawEffect()override;
 
 private:
 
@@ -30,6 +33,9 @@ private:
 
 	//回転速度
 	float m_rotateAngle = 10.0f;
+
+	//影
+	std::shared_ptr<TextureEffect> m_shadow;
 
 //============================================
 //ステート関係

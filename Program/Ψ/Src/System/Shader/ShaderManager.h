@@ -81,6 +81,27 @@ public:
 	// ライト定数バッファ
 	KdConstantBuffer<cbLight>		m_cb8_Light;
 
+
+	//==========================
+	//
+	// パイプラインステート
+	//
+	//==========================
+
+	//深度ステンシル
+	ID3D11DepthStencilState* m_ds_ZEnable_ZWhiteEnable = nullptr;
+	ID3D11DepthStencilState* m_ds_ZDisable_ZWhiteDisable = nullptr;
+	ID3D11DepthStencilState* m_ds_ZEnable_ZWriteDisable = nullptr;
+
+	//ラスタライザステート
+	ID3D11RasterizerState* m_rs_CullBack = nullptr;
+	ID3D11RasterizerState* m_rs_CullNone = nullptr;
+
+	//ブレンドステート
+	ID3D11BlendState* m_bs_Alpha = nullptr;
+	ID3D11BlendState* m_bs_Add = nullptr;
+
+
 	//==========================
 	//
 	// その他

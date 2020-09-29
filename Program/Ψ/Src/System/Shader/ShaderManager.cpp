@@ -40,6 +40,22 @@ void ShaderManager::Init()
 	D3D.GetDevContext()->VSSetConstantBuffers( 8,	1, m_cb8_Light.GetAddress());
 	D3D.GetDevContext()->PSSetConstantBuffers( 8,	1, m_cb8_Light.GetAddress());
 
+	//============================================
+	// パイプラインステート関係
+	//============================================
+	//深度ステンシルステート作成
+	m_ds_ZEnable_ZWhiteEnable = D3D.CreateDepthStencilState(true, true);
+	m_ds_ZDisable_ZWhiteDisable = D3D.CreateDepthStencilState(false, false);
+	m_ds_ZEnable_ZWriteDisable = D3D.CreateDepthStencilState(true, false);
+
+	//ラスタライザステート作成
+	m_rs_CullBack = D3D.CreateRasterizerState(D3D11_CULL_BACK, D3D11_FILL_SOLID, true, false);
+	m_rs_CullNone = D3D.CreateRasterizerState(D3D11_CULL_NONE, D3D11_FILL_SOLID, true, false);
+
+	//ブレンドステート作成
+	m_bs_Alpha = D3D.CreateBlendState(KdBlendMode::Alpha);
+	m_bs_Add = D3D.CreateBlendState(KdBlendMode::Add);
+
 }
 
 void ShaderManager::Release()

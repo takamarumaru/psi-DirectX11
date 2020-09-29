@@ -54,7 +54,7 @@ public:
 	//Math::Vector3と互換性を持つための関数
 	operator Math::Vector3& () { return *(Math::Vector3*)this; }
 	
-	//算術演算子　加算(+)
+	//算術演算子　加算(+=)
 	Vector3& operator += (const Vector3& V)
 	{
 		this->x += V.x;
@@ -63,7 +63,7 @@ public:
 		return *this;
 	}
 
-	//算術演算子　減算(-)
+	//算術演算子　減算(-=)
 	Vector3& operator -= (const Vector3& V)
 	{
 		this->x -= V.x;
@@ -72,7 +72,7 @@ public:
 		return *this;
 	}
 
-	//算術演算子　乗算(*)
+	//算術演算子　乗算(*=)
 	Vector3& operator*=(float s)
 	{
 		*this = DirectX::XMVectorScale(*this, s);
@@ -196,6 +196,12 @@ public:
 		*this = DirectX::XMMatrixRotationX(v.x);
 		*this *= DirectX::XMMatrixRotationY(v.y);
 		*this *= DirectX::XMMatrixRotationZ(v.z);
+	}
+	void CreateRotation(float x, float y, float z)
+	{
+		*this = DirectX::XMMatrixRotationX(x);
+		*this *= DirectX::XMMatrixRotationY(y);
+		*this *= DirectX::XMMatrixRotationZ(z);
 	}
 
 	//X回転行列作成

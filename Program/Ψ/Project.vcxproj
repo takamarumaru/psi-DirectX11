@@ -166,12 +166,14 @@
     <ClInclude Include="Src\Application\Game\EditorCamera.h" />
     <ClInclude Include="Src\Application\Game\GameObject.h" />
     <ClInclude Include="Src\Application\Game\Scene.h" />
+    <ClInclude Include="Src\Application\Game\TextureEffect.h" />
     <ClInclude Include="Src\Application\main.h" />
     <ClInclude Include="src\System\Direct3D\Direct3D.h" />
     <ClInclude Include="Src\System\Direct3D\GLTFLoader.h" />
     <ClInclude Include="src\System\Direct3D\Buffer.h" />
     <ClInclude Include="src\System\Direct3D\Mesh.h" />
     <ClInclude Include="Src\System\Direct3D\Model.h" />
+    <ClInclude Include="Src\System\Direct3D\SquarePolygon.h" />
     <ClInclude Include="src\System\Direct3D\Texture.h" />
     <ClInclude Include="src\Pch.h" />
     <ClInclude Include="Src\System\Math\Collision.h" />
@@ -203,12 +205,14 @@
     <ClCompile Include="Src\Application\Game\EditorCamera.cpp" />
     <ClCompile Include="Src\Application\Game\GameObject.cpp" />
     <ClCompile Include="Src\Application\Game\Scene.cpp" />
+    <ClCompile Include="Src\Application\Game\TextureEffect.cpp" />
     <ClCompile Include="Src\Application\main.cpp" />
     <ClCompile Include="src\System\Direct3D\Direct3D.cpp" />
     <ClCompile Include="Src\System\Direct3D\GLTFLoader.cpp" />
     <ClCompile Include="src\System\Direct3D\Buffer.cpp" />
     <ClCompile Include="src\System\Direct3D\Mesh.cpp" />
     <ClCompile Include="Src\System\Direct3D\Model.cpp" />
+    <ClCompile Include="Src\System\Direct3D\SquarePolygon.cpp" />
     <ClCompile Include="src\System\Direct3D\Texture.cpp" />
     <ClCompile Include="src\Pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

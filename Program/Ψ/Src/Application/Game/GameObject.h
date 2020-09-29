@@ -4,6 +4,7 @@ class ModelComponent;
 class InputComponent;
 class CameraComponent;
 
+
 struct RayInfo;
 
 //タグ
@@ -33,6 +34,8 @@ public:
 	virtual void Update();
 	//描画
 	virtual void Draw();
+	//半透明物の描画
+	virtual void DrawEffect();
 	//ImGui更新
 	virtual void ImGuiUpdate();
 
@@ -76,7 +79,7 @@ protected:
 ///	当たり判定=============================================
 
 	//地面とのレイ判定
-	bool CheckGround(float& rDstDistance, UINT rTag);
+	bool CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT rTag);
 	//歩いて乗り越えられる段差の高さ
 	static const float s_allowToStepHeight;
 	//地面から足が離れていても着地していると判定する高さ（坂道などを登るときに宙に浮くのを防ぐ）

@@ -97,15 +97,53 @@ void Scene::Draw()
 	SHADER.m_effectShader.SetToDevice();
 
 	//不透明物描画
-	SHADER.m_standardShader.SetToDevice();
-
-	//オブジェクト描画
-	for (auto pObject : m_spObjects)
 	{
-		pObject->Draw();
+		SHADER.m_standardShader.SetToDevice();
+
+		//オブジェクト描画
+		for (auto pObject : m_spObjects)
+		{
+			pObject->Draw();
+		}
+	}
+
+	//半透明物描画
+	{
+		SHADER.m_effectShader.SetToDevice();
+		SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
+
+		//Z情報は使うが、Z書き込みOFF
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteDisable, 0);
+		//カリングなし
+		D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullNone);
+
+		for (auto spObj : m_spObjects)
+		{
+			spObj->DrawEffect();
+		}
+
+		//もとに戻す
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
+		D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
 	}
 
 
+	//デバックライン描画
+	SHADER.m_effectShader.SetToDevice();
+	SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
+	{
+		//Zバッファ使用OFF・書き込みOFF
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
+		if (m_debugLines.size() >= 1)
+		{
+			SHADER.m_effectShader.SetWorldMatrix(Math::Matrix());
+			SHADER.m_effectShader.DrawVertices(m_debugLines, D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+
+			m_debugLines.clear();
+		}
+		//Zバッファ使用ON・書き込みON
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
+	}
 }
 
 //解放
@@ -113,6 +151,24 @@ void Scene::Release()
 {
 	//配列の入れ物を削除
 	m_spObjects.clear();
+}
+
+
+//デバックライン描画
+void Scene::AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const Math::Color& color)
+{
+
+	//ラインの開始頂点
+	EffectShader::Vertex ver;
+	ver.Color = color;
+	ver.UV = { 0.0f,0.0f };
+	ver.Pos = p1;
+	m_debugLines.push_back(ver);
+
+	//ラインの終端頂点
+	ver.Pos = p2;
+	m_debugLines.push_back(ver);
+
 }
 
 //オブジェクトの追加
