@@ -79,14 +79,16 @@ protected:
 ///	当たり判定=============================================
 
 	//地面とのレイ判定
-	bool CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT rTag);
+	bool CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag);
 	//歩いて乗り越えられる段差の高さ
 	static const float s_allowToStepHeight;
 	//地面から足が離れていても着地していると判定する高さ（坂道などを登るときに宙に浮くのを防ぐ）
 	static const float s_landingHeight;
 	//着地しているかどうか
 	bool m_isGround=false;
-
+	
+	//レイ判定
+	bool CheckXZDir(Vector3 rRayDir,float rCheckDistance,RayResult& frontRayResult, UINT rTag);
 /// オブジェクトデータ=====================================
 
 	//行列

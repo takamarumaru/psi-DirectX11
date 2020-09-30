@@ -6,24 +6,12 @@
     },
     {
       "Name": "Player",
-      "Pos": [-2.2903783321380615,1.7881393432617188e-07,-2.14298415184021],
-      "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-3.6823818683624268,0],
-      "Scale": [0.99793541431427002,1,0.99793541431427002]
+      "Pos": [0,5,0],
+      "Prefab": "Data/JsonData/PlayerObject.json"
     },
     {
       "Name": "Box1",
-      "Pos": [4,0.42653945088386536,1],
-      "Prefab": "Data/JsonData/BoxObject.json"
-    },
-    {
-      "Name": "Box2",
-      "Pos": [10,-8.9406967163085938e-08,1],
-      "Prefab": "Data/JsonData/BoxObject.json"
-    },
-    {
-      "Name": "Box3",
-      "Pos": [10,1.9565463066101074,1],
+      "Pos": [0,5,5],
       "Prefab": "Data/JsonData/BoxObject.json"
     }
   ]

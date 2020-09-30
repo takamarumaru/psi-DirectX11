@@ -230,6 +230,8 @@ void Application::Execute()
 			baseTime = st;
 			count = 0;
 		}
+		IMGUI_LOG.Clear();
+		IMGUI_LOG.AddLog("%d/%d",m_fps, m_maxFps);
 
 	}
 

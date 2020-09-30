@@ -21,6 +21,9 @@ private:
 	//当たり判定更新
 	void UpdateCollision();
 
+	//判定距離
+	float m_radius = 0.5f;
+
 	//重力の強さ
 	float m_gravity = 0.01f;
 

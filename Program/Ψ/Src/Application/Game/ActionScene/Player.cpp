@@ -165,15 +165,15 @@ void Player::UpdateCamera()
 //当たり判定
 void Player::UpdateCollision()
 {
-	float distanceFromGround = FLT_MAX;
+	float rayDistance= FLT_MAX;
 
-	RayResult finalRayResult;
+	RayResult downRayResult;
 
 	//下方向への判定を行い、着地した
-	if (CheckGround(finalRayResult, distanceFromGround, TAG_StageObject | TAG_Character))
+	if (CheckGround(downRayResult, rayDistance, TAG_StageObject | TAG_Character))
 	{
 		//地面の上にｙ座標を移動
-		m_pos.y += GameObject::s_allowToStepHeight - distanceFromGround;
+		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
 
 		//地面があるので、ｙ方向への移動力は０に
 		m_force.y = 0.0f;
@@ -182,10 +182,10 @@ void Player::UpdateCollision()
 	//影の更新
 	Matrix mShadow;
 	//ポリゴンの法線ベクトルと上方向のベクトルに垂直なベクトル
-	Vector3 crossDir = Vector3::Cross(finalRayResult.m_polyDir, { 0,1,0 });
+	Vector3 crossDir = Vector3::Cross(downRayResult.m_polyDir, { 0,1,0 });
 	crossDir.Normalize();
 	//ポリゴンの法線ベクトルから見た上方向のベクトルの角度
-	float dotAngle = acosf(Vector3::Dot(finalRayResult.m_polyDir, { 0,1,0 }));
+	float dotAngle = acosf(Vector3::Dot(downRayResult.m_polyDir, { 0,1,0 }));
 
 	//crossDirがZeroベクトルなら回転しない
 	if (!XMVector3Equal(crossDir, {0.0f,0.0f,0.0f}))
@@ -194,9 +194,39 @@ void Player::UpdateCollision()
 		mShadow.CreateRotationAxis(crossDir, -dotAngle);
 	}
 	//移動処理
-	mShadow.Move(finalRayResult.m_hitPos += {0.0f,0.05f,0.0f});
+	mShadow.Move(downRayResult.m_hitPos += {0.0f,0.05f,0.0f});
 	//行列をセット
 	m_shadow->SetMatrix(mShadow);
+
+
+	//前方向への当たり判定
+	RayResult frontRayResult;
+	//前方向への判定を行い、衝突
+	if (CheckXZDir(m_mWorld.GetAxisZ(),m_radius, frontRayResult, TAG_StageObject | TAG_Character))
+	{
+		Vector3 backAxis = -m_mWorld.GetAxisZ();
+		m_pos.x = frontRayResult.m_hitPos.x + (backAxis.x * m_radius);
+		m_pos.z = frontRayResult.m_hitPos.z + (backAxis.z * m_radius);
+	}
+
+	//右方向への当たり判定
+	RayResult rightRayResult;
+	//右方向への判定を行い、衝突
+	if (CheckXZDir(m_mWorld.GetAxisX(),m_radius, rightRayResult, TAG_StageObject | TAG_Character))
+	{
+		Vector3 leftAxis = -m_mWorld.GetAxisX();
+		m_pos.x = rightRayResult.m_hitPos.x + (leftAxis.x * m_radius);
+		m_pos.z = rightRayResult.m_hitPos.z + (leftAxis.z * m_radius);
+	}
+
+	//左方向への当たり判定
+	RayResult leftRayResult;
+	//右方向への判定を行い、衝突
+	if (CheckXZDir(-m_mWorld.GetAxisX(), m_radius, leftRayResult, TAG_StageObject | TAG_Character))
+	{
+		m_pos.x = leftRayResult.m_hitPos.x + (m_mWorld.GetAxisX().x * m_radius);
+		m_pos.z = leftRayResult.m_hitPos.z + (m_mWorld.GetAxisX().z * m_radius);
+	}
 }
 
 //移動ステートへの移行条件を満たしているか

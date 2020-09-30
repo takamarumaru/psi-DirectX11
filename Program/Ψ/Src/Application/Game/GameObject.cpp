@@ -327,7 +327,7 @@ bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
 	return rResult.m_hit;
 }
 
-bool GameObject::CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT rTag)
+bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag)
 {
 	//レイ判定情報
 	RayInfo rayInfo;
@@ -360,9 +360,9 @@ bool GameObject::CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT
 		if (obj->HitCheckByRay(rayInfo, rayResult))
 		{
 			//最も当たったところまでの距離が短いものを保持する
-			if (rayResult.m_distance < finalRayResult.m_distance)
+			if (rayResult.m_distance < downRayResult.m_distance)
 			{
-				finalRayResult = rayResult;
+				downRayResult = rayResult;
 				hitObj = obj;
 			}
 		}
@@ -372,10 +372,10 @@ bool GameObject::CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT
 	float distanceFromGround = FLT_MAX;
 
 	//足元にステージオブジェクトがあった
-	if (finalRayResult.m_hit)
+	if (downRayResult.m_hit)
 	{
 		//地面との距離を算出
-		distanceFromGround = finalRayResult.m_distance - (m_prevPos.y - m_pos.y);
+		distanceFromGround = downRayResult.m_distance - (m_prevPos.y - m_pos.y);
 	}
 
 	//上方向に力がかかっていた場合
@@ -406,6 +406,71 @@ bool GameObject::CheckGround(RayResult& finalRayResult,float& rDstDistance, UINT
 
 	//着地したかどうかを返す
 	return m_isGround;
+}
+
+bool GameObject::CheckXZDir (Vector3 rRayDir,float rCheckDistance, RayResult& frontRayResult, UINT rTag)
+{
+	//Yは加味しない
+	rRayDir.y = 0.0f;
+	//動いていないなら判定しない
+	if (rRayDir.LengthSquared() == 0.0f) { return false; }
+
+
+	//レイ判定情報
+	RayInfo rayInfo;
+	//キャラクターの位置を発射地点に
+	rayInfo.m_pos = m_pos;
+
+	//キャラクターの足元からレイを発射すると地面と当たらないので少し持ち上げる（乗り越えられる段差の高さ分だけ）
+	rayInfo.m_pos.y += s_allowToStepHeight;
+	//落下中かもしれないので、１フレーム前の座標分も持ち上げる
+	rayInfo.m_pos.y += m_prevPos.y - m_pos.y;
+
+	//地面方向へのレイ
+	rayInfo.m_dir = rRayDir;
+
+	//レイの結果格納用
+	rayInfo.mMaxRange = FLT_MAX;
+
+	//当たったオブジェクト保管用
+	std::shared_ptr<GameObject> hitObj = nullptr;
+
+	//全員とレイ判定
+	for (auto& obj : SCENE.GetObjects())
+	{
+		//自分自身は無理
+		if (obj.get() == this) { continue; }
+		//ステージとの当たり判定（背景オブジェクト以外に乗るときは変更）
+		if (!(obj->GetTag() & (rTag))) { continue; }
+		RayResult rayResult;
+
+		if (obj->HitCheckByRay(rayInfo, rayResult))
+		{
+			//最も当たったところまでの距離が短いものを保持する
+			if (rayResult.m_distance < frontRayResult.m_distance)
+			{
+				frontRayResult = rayResult;
+				hitObj = obj;
+			}
+		}
+	}
+
+	//補正分の長さを結果に反映＆着地判定
+	float hitDistance = FLT_MAX;
+
+	//足元にステージオブジェクトがあった
+	if (frontRayResult.m_hit)
+	{
+		//地面との距離を算出
+		hitDistance = frontRayResult.m_distance - (m_prevPos.y - m_pos.y);
+	}
+
+	//判定距離より短かったら衝突判定に
+	if (hitDistance < rCheckDistance)
+	{
+		return true;
+	}
+	return false;
 }
 
 //クラス名からGameObjectを生成する関数
