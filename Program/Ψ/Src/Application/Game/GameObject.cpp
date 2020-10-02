@@ -426,10 +426,8 @@ bool GameObject::CheckXZDir (Vector3 rRayDir,float rCheckDistance, RayResult& fr
 	//落下中かもしれないので、１フレーム前の座標分も持ち上げる
 	rayInfo.m_pos.y += m_prevPos.y - m_pos.y;
 
-	//地面方向へのレイ
+	//指定された方向へのレイ
 	rayInfo.m_dir = rRayDir;
-
-	SCENE.AddDebugLine(rayInfo.m_pos, rayInfo.m_pos + (rayInfo.m_dir * rCheckDistance));
 
 	//レイの結果格納用
 	rayInfo.mMaxRange = FLT_MAX;
@@ -440,12 +438,11 @@ bool GameObject::CheckXZDir (Vector3 rRayDir,float rCheckDistance, RayResult& fr
 	//全員とレイ判定
 	for (auto& obj : SCENE.GetObjects())
 	{
-		//自分自身は無理
+		//指定されたもの以外は判定しない
 		if (obj.get() == this) { continue; }
-		//ステージとの当たり判定（背景オブジェクト以外に乗るときは変更）
 		if (!(obj->GetTag() & (rTag))) { continue; }
-		RayResult rayResult;
 
+		RayResult rayResult;
 		if (obj->HitCheckByRay(rayInfo, rayResult))
 		{
 			//最も当たったところまでの距離が短いものを保持する
@@ -460,10 +457,10 @@ bool GameObject::CheckXZDir (Vector3 rRayDir,float rCheckDistance, RayResult& fr
 	//補正分の長さを結果に反映＆着地判定
 	float hitDistance = FLT_MAX;
 
-	//足元にステージオブジェクトがあった
+	//発射方向にオブジェクトがあった
 	if (frontRayResult.m_hit)
 	{
-		//地面との距離を算出
+		//オブジェクトとの距離を算出
 		hitDistance = frontRayResult.m_distance - (m_prevPos.y - m_pos.y);
 	}
 

@@ -12,6 +12,9 @@ public:
 	CameraComponent(GameObject& owner);
 	~CameraComponent();
 
+	//更新
+	void Update();
+
 	//オフセット行列取得
 	inline Matrix& OffsetMatrix() { return m_mOffset; }
 
@@ -27,6 +30,10 @@ public:
 	//カメラ情報（ビュー・射影行列など）をシェーダーにセット
 	void SetToShader();
 private:
+
+	//当たり判定更新
+	void UpdateCollision();
+
 
 	//オフセット行列
 	Matrix		m_mOffset;

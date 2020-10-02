@@ -253,6 +253,14 @@ public:
 		*this *= DirectX::XMMatrixTranslation(x,y,z);
 	}
 
+	//回転
+	void Rotate(const Vector3& v)
+	{
+		*this *= DirectX::XMMatrixRotationX(v.x);
+		*this *= DirectX::XMMatrixRotationY(v.y);
+		*this *= DirectX::XMMatrixRotationZ(v.z);
+	}
+
 	//軸回転
 	void RotateAxis(const Vector3& v,float angle)
 	{

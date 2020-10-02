@@ -68,6 +68,8 @@ void Player::Update()
 		mCamera.Move(0.0f,1.5f,0.0f);
 		//カメラにセット
 		m_spCameraComponent->SetCameraMatrix(mCamera);
+
+		m_spCameraComponent->Update();
 	}
 }
 
