@@ -45,12 +45,7 @@
         },
         {
             "mesh" : 0,
-            "name" : "Landscape",
-            "scale" : [
-                20,
-                20,
-                20
-            ]
+            "name" : "Landscape"
         }
     ],
     "meshes" : [
@@ -71,52 +66,52 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 41,
+            "count" : 204,
             "max" : [
-                1,
-                0.07891473174095154,
-                1
+                20,
+                8,
+                20
             ],
             "min" : [
-                -1,
+                -20,
                 0,
-                -1
+                -20
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 41,
+            "count" : 204,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5123,
-            "count" : 96,
+            "count" : 810,
             "type" : "SCALAR"
         }
     ],
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 492,
+            "byteLength" : 2448,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 492,
-            "byteOffset" : 492
+            "byteLength" : 2448,
+            "byteOffset" : 2448
         },
         {
             "buffer" : 0,
-            "byteLength" : 192,
-            "byteOffset" : 984
+            "byteLength" : 1620,
+            "byteOffset" : 4896
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 1176,
+            "byteLength" : 6516,
             "uri" : "Map1.bin"
         }
     ]

@@ -199,33 +199,45 @@ void Player::UpdateCollision()
 	m_shadow->SetMatrix(mShadow);
 
 
-	//前方向への当たり判定
+	//進行方向への当たり判定
+	RayResult axisZRayResult;
+	//進行方向への判定を行い、衝突
+	if (CheckXZDir(m_mWorld.GetAxisZ(), m_radius, axisZRayResult, TAG_StageObject | TAG_Character))
+	{
+		m_pos.x = m_prevPos.x;
+		m_pos.z = m_prevPos.z;
+	}
+
+	//Z方向への当たり判定
 	RayResult frontRayResult;
-	//前方向への判定を行い、衝突
-	if (CheckXZDir(m_mWorld.GetAxisZ(),m_radius, frontRayResult, TAG_StageObject | TAG_Character))
+	//Z方向への判定を行い、衝突
+	if (CheckXZDir({0,0,1}, m_radius, frontRayResult, TAG_StageObject | TAG_Character))
 	{
-		Vector3 backAxis = -m_mWorld.GetAxisZ();
-		m_pos.x = frontRayResult.m_hitPos.x + (backAxis.x * m_radius);
-		m_pos.z = frontRayResult.m_hitPos.z + (backAxis.z * m_radius);
+		m_pos.z = frontRayResult.m_hitPos.z - m_radius;
 	}
 
-	//右方向への当たり判定
+	//-Z方向への当たり判定
+	RayResult backRayResult;
+	//-Z方向への判定を行い、衝突
+	if (CheckXZDir({ 0,0,-1 }, m_radius, backRayResult, TAG_StageObject | TAG_Character))
+	{
+		m_pos.z = backRayResult.m_hitPos.z + m_radius;
+	}
+
+	//X方向への当たり判定
 	RayResult rightRayResult;
-	//右方向への判定を行い、衝突
-	if (CheckXZDir(m_mWorld.GetAxisX(),m_radius, rightRayResult, TAG_StageObject | TAG_Character))
+	//X方向への判定を行い、衝突
+	if (CheckXZDir({1,0,0}, m_radius, rightRayResult, TAG_StageObject | TAG_Character))
 	{
-		Vector3 leftAxis = -m_mWorld.GetAxisX();
-		m_pos.x = rightRayResult.m_hitPos.x + (leftAxis.x * m_radius);
-		m_pos.z = rightRayResult.m_hitPos.z + (leftAxis.z * m_radius);
+		m_pos.x = rightRayResult.m_hitPos.x - m_radius;
 	}
 
-	//左方向への当たり判定
+	//-X方向への当たり判定
 	RayResult leftRayResult;
-	//右方向への判定を行い、衝突
-	if (CheckXZDir(-m_mWorld.GetAxisX(), m_radius, leftRayResult, TAG_StageObject | TAG_Character))
+	//-X方向への判定を行い、衝突
+	if (CheckXZDir({-1,0,0}, m_radius, leftRayResult, TAG_StageObject | TAG_Character))
 	{
-		m_pos.x = leftRayResult.m_hitPos.x + (m_mWorld.GetAxisX().x * m_radius);
-		m_pos.z = leftRayResult.m_hitPos.z + (m_mWorld.GetAxisX().z * m_radius);
+		m_pos.x = leftRayResult.m_hitPos.x + m_radius;
 	}
 }
 

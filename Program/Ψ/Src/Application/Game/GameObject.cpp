@@ -429,6 +429,8 @@ bool GameObject::CheckXZDir (Vector3 rRayDir,float rCheckDistance, RayResult& fr
 	//地面方向へのレイ
 	rayInfo.m_dir = rRayDir;
 
+	SCENE.AddDebugLine(rayInfo.m_pos, rayInfo.m_pos + (rayInfo.m_dir * rCheckDistance));
+
 	//レイの結果格納用
 	rayInfo.mMaxRange = FLT_MAX;
 
