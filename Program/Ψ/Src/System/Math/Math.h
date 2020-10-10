@@ -137,6 +137,40 @@ public:
 	{
 		return DirectX::XMVector3Cross(v1, v2);
 	}
+
+	//Y軸の角度
+	float GetAngleY()
+	{
+		//自分の前方向からy方向を除外したものを作成
+		Vector3 sideVec = *this;
+		sideVec.y = 0.0f;
+		sideVec.Normalize();
+
+		//Z方向との内積 (0～π)
+		float angle = acosf(Vector3::Dot({ 0,0,1 }, sideVec));
+		//Z方向との外積
+		Vector3 cross = Vector3::Cross({ 0,0,1 }, sideVec);
+		//外積のyから方向を求める (1 or -1)
+		float dir = cross.y < 0 ? -1.0f : 1.0f;
+
+		//返ってくる数値(-π～π)
+		return angle * dir;
+	}
+
+	//X軸の角度
+	float GetAngleX()
+	{
+		//Dotに同じ数値を入れるとエラーを吐くので0に近い場合は返る
+		if (fabs(this->y)<=0.01f)return 0;
+
+		//Z方向との内積 (0～π)
+		float angle = acosf(Vector3::Dot({ this->x,0,this->z }, *this));
+		//外積のyから方向を求める (1 or -1)
+		float dir = this->y < 0 ? 1.0f : -1.0f;
+
+		//返ってくる数値(-π～π)
+		return angle * dir;
+	}
 };
 
 //4*4の行列

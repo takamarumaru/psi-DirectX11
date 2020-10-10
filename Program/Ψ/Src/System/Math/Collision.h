@@ -19,3 +19,21 @@ bool RayToMesh(
 	const Matrix& rMatrix,
 	RayResult& rResult
 );
+
+//球とメッシュの当たり判定
+bool SphereToMesh(
+	const Math::Vector3& rSpherePos,	//球の中心座標
+	float radius,						//半径
+	const Mesh& mesh,					//判定するメッシュ情報
+	const DirectX::XMMATRIX& matrix,	//判定する相手の行列
+	Math::Vector3& rPushedPos			//当たってた場合、押し返された球の中心点
+);
+
+//点とメッシュの当たり判定
+void PointToTriangle(
+	const DirectX::XMVECTOR& p,
+	const DirectX::XMVECTOR& a,
+	const DirectX::XMVECTOR& b,
+	const DirectX::XMVECTOR& c,
+	DirectX::XMVECTOR& outPt
+);

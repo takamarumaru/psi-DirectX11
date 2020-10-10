@@ -55,6 +55,9 @@
     <Filter Include="Src\Application\Game\ActionScene">
       <UniqueIdentifier>{fcb2dba3-e081-4680-a1b6-220716544790}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Player">
+      <UniqueIdentifier>{65aa0de3-3382-4952-b39a-98e5d35b47bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -183,14 +186,14 @@
     <ClInclude Include="Src\Application\Component\InputComponent.h">
       <Filter>Src\Application\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\Player.h">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\System\Direct3D\SquarePolygon.h">
       <Filter>Src\System\Direct3D</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Game\TextureEffect.h">
       <Filter>Src\Application\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Player\Player.h">
+      <Filter>Src\Application\Game\ActionScene\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -287,14 +290,20 @@
     <ClCompile Include="Src\Application\Component\InputComponent.cpp">
       <Filter>Src\Application\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\Player.cpp">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\System\Direct3D\SquarePolygon.cpp">
       <Filter>Src\System\Direct3D</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Game\TextureEffect.cpp">
       <Filter>Src\Application\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerAction.cpp">
+      <Filter>Src\Application\Game\ActionScene\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\Player.cpp">
+      <Filter>Src\Application\Game\ActionScene\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerState.cpp">
+      <Filter>Src\Application\Game\ActionScene\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

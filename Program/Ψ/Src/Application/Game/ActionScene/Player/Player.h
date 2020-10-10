@@ -18,6 +18,9 @@ private:
 	void UpdateRotate(const Vector3& rMoveDir);
 	void UpdateCamera();
 
+	//アクション更新
+	void UpdateGrab();
+
 	//当たり判定更新
 	void UpdateCollision();
 
@@ -73,7 +76,12 @@ private:
 	};
 
 	//待機ステートに切り替え
-	void ShiftWait() { m_spActionState = std::make_shared<WaitAction>(); }
+	void ShiftWait() 
+	{
+		m_force.x = 0.0f;
+		m_force.z = 0.0f;
+		m_spActionState = std::make_shared<WaitAction>(); 
+	}
 	//移動ステートに切り替え
 	void ShiftWalk() { m_spActionState = std::make_shared<WalkAction>(); }
 	//移動ステートに切り替え

@@ -92,7 +92,6 @@ void CameraComponent::UpdateCollision()
 			}
 		}
 	}
-	SCENE.AddDebugLine(m_mCam.GetTranslation(), m_mCam.GetTranslation() + (rayDir * rayLength));
 
 	//判定距離より短かったらカメラの位置を移動
 	if (finalRayResult.m_distance < rayLength)

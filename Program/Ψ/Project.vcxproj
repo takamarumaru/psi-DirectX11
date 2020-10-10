@@ -162,7 +162,7 @@
     <ClInclude Include="Src\Application\Component\InputComponent.h" />
     <ClInclude Include="Src\Application\Component\ModelComponent.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Box.h" />
-    <ClInclude Include="Src\Application\Game\ActionScene\Player.h" />
+    <ClInclude Include="Src\Application\Game\ActionScene\Player\Player.h" />
     <ClInclude Include="Src\Application\Game\EditorCamera.h" />
     <ClInclude Include="Src\Application\Game\GameObject.h" />
     <ClInclude Include="Src\Application\Game\Scene.h" />
@@ -201,7 +201,9 @@
     <ClCompile Include="Src\Application\Component\InputComponent.cpp" />
     <ClCompile Include="Src\Application\Component\ModelComponent.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Box.cpp" />
-    <ClCompile Include="Src\Application\Game\ActionScene\Player.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\Player.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerAction.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerState.cpp" />
     <ClCompile Include="Src\Application\Game\EditorCamera.cpp" />
     <ClCompile Include="Src\Application\Game\GameObject.cpp" />
     <ClCompile Include="Src\Application\Game\Scene.cpp" />

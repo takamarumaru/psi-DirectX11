@@ -6,7 +6,7 @@
 #include "../Component/CameraComponent.h"
 
 #include "ActionScene/Box.h"
-#include "ActionScene/Player.h"
+#include "ActionScene/Player/Player.h"
 
 const float GameObject::s_allowToStepHeight = 0.8f;
 const float GameObject::s_landingHeight = 0.1f;
@@ -100,10 +100,16 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	m_mWorld = mScale * mRotate * mTrans;
 
+	//当たり判定半径
+	if (jsonObj["Radius"].is_null() == false)
+	{
+		m_radius = jsonObj["Radius"].number_value();
+	}
+
 
 	//カメラの初期設定
 	m_spCameraComponent = std::make_shared<CameraComponent>(*this);
-	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -3.0f);
+	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -2.0f);
 	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
 }
 
@@ -289,10 +295,8 @@ void GameObject::ImGuiUpdate()
 }
 
 //解放
-void GameObject::Release()
-{
+void GameObject::Release(){}
 
-}
 //レイによる当たり判定
 bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
 {
@@ -322,6 +326,38 @@ bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
 		{
 			rResult = tmpResult;
 		}
+	}
+
+	return rResult.m_hit;
+}
+
+//球による当たり判定（mesh）
+bool GameObject::HitCheckBySphereVsMesh(const SphereInfo& rInfo, SphereResult& rResult)
+{
+	//モデルコンポーネントがない場合
+	if (!m_spModelComponent) { return false; }
+
+	//全てのノードのメッシュから押し返された位置を格納する座標ベクトル
+	Vector3 pushedFromNodesPos = rInfo.m_pos;
+
+	//全ノードと当たり判定
+	for (auto& node : m_spModelComponent->GetNodes())
+	{
+		//ノードがモデルを持っていなかった場合は無視
+		if (!node.m_spMesh) { continue; }
+
+		//点とノードの判定
+		if (SphereToMesh(pushedFromNodesPos, rInfo.m_radius, *node.m_spMesh, node.m_localTransform * m_mWorld, pushedFromNodesPos))
+		{
+			rResult.m_hit = true;
+		}
+	}
+
+	//当たっていたら
+	if (rResult.m_hit)
+	{
+		//押し戻された球の位置と前の位置から、押し戻すベクトルを計算する
+		rResult.m_push = pushedFromNodesPos - rInfo.m_pos;
 	}
 
 	return rResult.m_hit;
@@ -408,69 +444,36 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 	return m_isGround;
 }
 
-bool GameObject::CheckXZDir (Vector3 rRayDir,float rCheckDistance, RayResult& frontRayResult, UINT rTag)
+bool GameObject::CheckBump(Vector3 rCenterOffset)
 {
-	//Yは加味しない
-	rRayDir.y = 0.0f;
-	//動いていないなら判定しない
-	if (rRayDir.LengthSquared() == 0.0f) { return false; }
+	//球情報の作成
+	SphereInfo info;
 
+	info.m_pos = m_pos;
+	info.m_pos += rCenterOffset;
+	info.m_radius = m_radius;
 
-	//レイ判定情報
-	RayInfo rayInfo;
-	//キャラクターの位置を発射地点に
-	rayInfo.m_pos = m_pos;
+	//判定結果格納用
+	bool isHit = false;
 
-	//キャラクターの足元からレイを発射すると地面と当たらないので少し持ち上げる（乗り越えられる段差の高さ分だけ）
-	rayInfo.m_pos.y += s_allowToStepHeight;
-	//落下中かもしれないので、１フレーム前の座標分も持ち上げる
-	rayInfo.m_pos.y += m_prevPos.y - m_pos.y;
-
-	//指定された方向へのレイ
-	rayInfo.m_dir = rRayDir;
-
-	//レイの結果格納用
-	rayInfo.mMaxRange = FLT_MAX;
-
-	//当たったオブジェクト保管用
-	std::shared_ptr<GameObject> hitObj = nullptr;
-
-	//全員とレイ判定
-	for (auto& obj : SCENE.GetObjects())
+	//全員と球面判定
+	for (auto& obj : Scene::GetInstance().GetObjects())
 	{
-		//指定されたもの以外は判定しない
+		//自分自身は無視
 		if (obj.get() == this) { continue; }
-		if (!(obj->GetTag() & (rTag))) { continue; }
 
-		RayResult rayResult;
-		if (obj->HitCheckByRay(rayInfo, rayResult))
+		SphereResult sphereResult;
+		//当たっていたら
+		if (obj->HitCheckBySphereVsMesh(info, sphereResult))
 		{
-			//最も当たったところまでの距離が短いものを保持する
-			if (rayResult.m_distance < frontRayResult.m_distance)
-			{
-				frontRayResult = rayResult;
-				hitObj = obj;
-			}
+			isHit=true;
+			m_pos += sphereResult.m_push;
 		}
 	}
 
-	//補正分の長さを結果に反映＆着地判定
-	float hitDistance = FLT_MAX;
-
-	//発射方向にオブジェクトがあった
-	if (frontRayResult.m_hit)
-	{
-		//オブジェクトとの距離を算出
-		hitDistance = frontRayResult.m_distance - (m_prevPos.y - m_pos.y);
-	}
-
-	//判定距離より短かったら衝突判定に
-	if (hitDistance < rCheckDistance)
-	{
-		return true;
-	}
-	return false;
+	return isHit;
 }
+
 
 //クラス名からGameObjectを生成する関数
 std::shared_ptr<GameObject> CreateGameObject(const std::string& name)

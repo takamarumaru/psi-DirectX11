@@ -16,6 +16,9 @@ Scene::~Scene(){}
 //データ読込・初期化
 void Scene::Deserialize()
 {
+	//マウスは非表示（アクションシーンなので）
+	ShowCursor(false);
+
 	//シーン読み込み
 	LoadScene("Data/JsonData/ActionScene.json");
 

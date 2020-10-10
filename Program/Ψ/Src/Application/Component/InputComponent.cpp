@@ -1,5 +1,7 @@
 ﻿#include "InputComponent.h"
 
+#include"./Application/main.h"
+
 //コンストラクタ：オーナーの設定・ボタンの初期化
 InputComponent::InputComponent(GameObject& owner)
 	:m_owner(owner)
@@ -59,19 +61,27 @@ void PlayerInputComponent::Update()
 		rAxis = { 0.0f,0.0f };
 	}
 
-
 	//[右の軸値]入力処理
 	if (GetAsyncKeyState('W')) { m_axes[Input::Axes::L].y = 1.0f; }
 	if (GetAsyncKeyState('S')) { m_axes[Input::Axes::L].y = -1.0f; }
 	if (GetAsyncKeyState('D')) { m_axes[Input::Axes::L].x = 1.0f; }
 	if (GetAsyncKeyState('A')) { m_axes[Input::Axes::L].x = -1.0f; }
 
-
+	//Aボタン入力処理
 	if (GetAsyncKeyState(VK_SPACE)) { PushButton(Input::Buttons::A); }
 	else { ReleaceButton(Input::Buttons::A); }
-
+	//Bボタン入力処理
 	if (GetAsyncKeyState(VK_RCONTROL)) { PushButton(Input::Buttons::B); }
 	else { ReleaceButton(Input::Buttons::B); }
+	//R1ボタン入力処理
+	if (GetAsyncKeyState(VK_LBUTTON)) { PushButton(Input::Buttons::R1); }
+	else { ReleaceButton(Input::Buttons::R1); }
+	//Xボタン入力処理
+	if (GetAsyncKeyState('X')) { PushButton(Input::Buttons::X); }
+	else { ReleaceButton(Input::Buttons::X); }
+	//Zボタン入力処理
+	if (GetAsyncKeyState('Z')) { PushButton(Input::Buttons::Y); }
+	else { ReleaceButton(Input::Buttons::Y); }
 
 
 	POINT nowMousePos;
@@ -86,11 +96,18 @@ void PlayerInputComponent::Update()
 		m_isHideMouse = !m_isHideMouse;
 		m_isHideMouse ? ShowCursor(false) : ShowCursor(true);
 	}
-	//カーソル固定
+	//カーソルをウィンドウの中心に固定
 	if (m_isHideMouse)
 	{
-		SetCursorPos(100, 100);
-		m_prevMousePos.x = 100;
-		m_prevMousePos.y = 100;
+		//ウィンドウのRECT取得
+		RECT rWindow;
+		GetWindowRect(APP.m_window.GetWndHandle(), &rWindow);
+
+		SetCursorPos(
+			rWindow.left+(rWindow.right- rWindow.left)/2,
+			rWindow.top + (rWindow.bottom - rWindow.top) / 2
+		);
+		m_prevMousePos.x = rWindow.left + (rWindow.right - rWindow.left) / 2;
+		m_prevMousePos.y = rWindow.top + (rWindow.bottom - rWindow.top) / 2;
 	}
 }

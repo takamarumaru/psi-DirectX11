@@ -11,6 +11,8 @@ void Box::Deserialize(const json11::Json& jsonObj)
 	//行列から座標へ代入
 	m_pos = m_mWorld.GetTranslation();
 
+	//半径を設定
+
 }
 
 void Box::Update()
@@ -18,7 +20,10 @@ void Box::Update()
 	GameObject::Update();
 
 	//重力をキャラクターのYの移動力に変える
-	m_force.y -= m_gravity;
+	if (m_isFall)
+	{
+		m_force.y -= m_gravity;
+	}
 
 	//移動力をキャラクターの座標に足しこむ
 	m_pos += m_force;
@@ -37,17 +42,28 @@ void Box::Update()
 
 void Box::UpdateCollision()
 {
-	float distanceFromGround = FLT_MAX;
-
+	//結果格納用
+	float rayDistance = FLT_MAX;
 	RayResult finalRayResult;
 
 	//下方向への判定を行い、着地した
-	if (CheckGround(finalRayResult,distanceFromGround,TAG_StageObject | TAG_Character))
+	if (CheckGround(finalRayResult, rayDistance,TAG_StageObject | TAG_Character))
 	{
 		//地面の上にｙ座標を移動
-		m_pos.y += GameObject::s_allowToStepHeight - distanceFromGround;
+		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
 
 		//地面があるので、ｙ方向への移動力は０に
 		m_force.y = 0.0f;
+
+		//地面の摩擦を加味
+		m_force.x *= 0.8f;
+		m_force.z *= 0.8f;
+	}
+
+	if (CheckBump({ 0,1.0f,0 }))
+	{
+		//摩擦による減速処理
+		m_force.x *= 0.8f;
+		m_force.z *= 0.8f;
 	}
 }
