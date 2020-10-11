@@ -1,0 +1,9 @@
+{
+  "GameObjects": [
+    {
+      "ClassName":"TitleProcess",
+      "Tag": 16,
+      "Name":"TitleProcess"
+    }
+  ]
+}

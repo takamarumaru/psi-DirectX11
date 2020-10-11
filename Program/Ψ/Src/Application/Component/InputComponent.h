@@ -76,6 +76,27 @@ protected:
 };
 
 //===============================================
+//タイトル入力用
+//===============================================
+class TitleProcessInputComponent :public InputComponent
+{
+public:
+	TitleProcessInputComponent(GameObject& owner) :InputComponent(owner) {}
+
+	virtual void Update()override;
+};
+
+//===============================================
+//アクション入力用
+//===============================================
+class ActionProcessInputComponent :public InputComponent
+{
+public:
+	ActionProcessInputComponent(GameObject& owner) :InputComponent(owner) {}
+
+	virtual void Update()override;
+};
+//===============================================
 //プレイヤー入力用
 //===============================================
 class PlayerInputComponent :public InputComponent

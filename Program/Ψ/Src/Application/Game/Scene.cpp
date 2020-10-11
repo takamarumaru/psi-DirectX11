@@ -5,6 +5,7 @@
 
 
 #include"EditorCamera.h"
+#include"../Component/InputComponent.h"
 #include"../Component/CameraComponent.h"
 
 //コンストラクタ
@@ -16,11 +17,8 @@ Scene::~Scene(){}
 //データ読込・初期化
 void Scene::Deserialize()
 {
-	//マウスは非表示（アクションシーンなので）
-	ShowCursor(false);
-
 	//シーン読み込み
-	LoadScene("Data/JsonData/ActionScene.json");
+	LoadScene("Data/JsonData/TitleScene.json");
 
 	//エディターカメラ
 	m_pCamera = new EditorCamera();
@@ -69,6 +67,12 @@ void Scene::Update()
 		{
 			++spObjectItr;
 		}
+	}
+
+
+	if (m_isRequestChangeScene)
+	{
+		ExecChangeScene();
 	}
 }
 
@@ -174,6 +178,13 @@ void Scene::AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const
 
 }
 
+void Scene::RequestChangeScene(const std::string& fileName)
+{
+	m_nextSceneFileName = fileName;
+
+	m_isRequestChangeScene = true;
+}
+
 //オブジェクトの追加
 void Scene::AddObject(std::shared_ptr<GameObject> spObject)
 {
@@ -264,6 +275,14 @@ void Scene::SaveScene(const std::string& sceneFilename)
 
 }
 
+//シーンを実際に変更する
+void Scene::ExecChangeScene()
+{
+	LoadScene(m_nextSceneFileName);
+
+	m_isRequestChangeScene = false;
+}
+
 //シーンをまたぐ際のリセット
 void Scene::Reset()
 {
@@ -275,6 +294,20 @@ void Scene::Reset()
 //ImGui更新
 void Scene::ImGuiUpdate()
 {
+	//ImGui表示切り替え処理
+	static bool isPush = false;
+	if (GetAsyncKeyState(VK_RSHIFT))
+	{
+		if (!isPush)
+		{
+			m_isImGui = !m_isImGui;
+			isPush = true;
+		}
+	}
+	else{isPush = false;}
+	//ImGuiOffの場合返る
+	if (!m_isImGui) { return; }
+
 	auto selectObject = m_wpImGuiSelectObj.lock();
 
 	if (ImGui::Begin("Scene"))

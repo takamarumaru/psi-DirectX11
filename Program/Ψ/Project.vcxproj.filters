@@ -58,6 +58,9 @@
     <Filter Include="Src\Application\Game\ActionScene\Player">
       <UniqueIdentifier>{65aa0de3-3382-4952-b39a-98e5d35b47bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Game\Title">
+      <UniqueIdentifier>{9daea6de-f249-46bf-bca6-846c788fbd84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -195,6 +198,15 @@
     <ClInclude Include="Src\Application\Game\ActionScene\Player\Player.h">
       <Filter>Src\Application\Game\ActionScene\Player</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\ActionProcess.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\GameProcess.h">
+      <Filter>Src\Application\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\TitleScene\TitleProcess.h">
+      <Filter>Src\Application\Game\Title</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -304,6 +316,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerState.cpp">
       <Filter>Src\Application\Game\ActionScene\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\ActionProcess.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\TitleScene\TitleProcess.cpp">
+      <Filter>Src\Application\Game\Title</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

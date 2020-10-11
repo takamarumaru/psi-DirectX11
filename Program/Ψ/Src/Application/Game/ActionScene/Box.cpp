@@ -11,8 +11,6 @@ void Box::Deserialize(const json11::Json& jsonObj)
 	//行列から座標へ代入
 	m_pos = m_mWorld.GetTranslation();
 
-	//半径を設定
-
 }
 
 void Box::Update()

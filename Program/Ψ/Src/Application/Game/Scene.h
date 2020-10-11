@@ -26,6 +26,9 @@ public:
 	//デバックライン描画
 	void AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const Math::Color& color = { 1,1,1,1 });
 
+	//シーン変更のリクエストを受け付け
+	void RequestChangeScene(const std::string& fileName);
+
 
 /// オブジェクト管理=================================
 	//追加
@@ -49,14 +52,26 @@ private:
 	void LoadScene(const std::string& sceneFilename);
 	//書き込み
 	void SaveScene(const std::string& sceneFilename);
+	//シーンを実際に変更する
+	void ExecChangeScene();
 	//リセット
 	void Reset();
+
+	//次のシーンのJSONファイル名
+	std::string m_nextSceneFileName = "";
+	//シーン遷移のリクエストがあったか
+	bool m_isRequestChangeScene = false;
+
 
 /// オブジェクト=====================================
 	//リスト
 	std::list<std::shared_ptr<GameObject>> m_spObjects;
+
+/// ImGui============================================
 	//ImGuiで選択されたオブジェクト
 	std::weak_ptr<GameObject>		m_wpImGuiSelectObj;
+	//ImGuiを表示するか
+	bool m_isImGui = false;
 
 /// カメラ===========================================
 	//エディターカメラ

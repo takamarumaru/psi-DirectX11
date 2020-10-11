@@ -1,5 +1,7 @@
 ﻿#include "Player.h"
 
+#include"./Application/main.h"
+
 #include"./Application/Game/Scene.h"
 
 #include"./Application/Component/CameraComponent.h"
@@ -82,107 +84,110 @@ void Player::UpdateGrab()
 	RayInfo rayInfo;
 	//オブジェクトまでの距離格納用
 	static float operateObjDistance = 0.0f;
-	//距離の調整数値
-	static float offset = 0.0f;
 
-	//R1ボタンを押したとき
-	if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
+	//登録オブジェクトが存在しない間
+	if (!m_isOperate)
 	{
-		//レイ発射座標からカメラの前方向に当たり判定
-
-		//レイ発射座標
-		Vector3 rayPos = m_pos;
-		rayPos.y += 1.0f;
-
-		//レイ判定情報設定
-		rayInfo.m_pos = rayPos;
-		rayInfo.m_dir = m_spCameraComponent->OffsetMatrix().GetAxisZ();
-		rayInfo.mMaxRange = FLT_MAX;
-
-		//最終的な結果格納用
-		RayResult finalRayResult;
-
-		//全員とレイ判定
-		for (auto& obj : SCENE.GetObjects())
+		//R1ボタンを押したとき
+		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
 		{
-			//自分は判定しない
-			if (obj.get() == this) { continue; }
+			//レイ発射座標からカメラの前方向に当たり判定
 
-			RayResult rayResult;
-			if (obj->HitCheckByRay(rayInfo, rayResult))
+			//レイ発射座標
+			Vector3 rayPos = m_pos;
+			rayPos.y += 1.0f;
+
+			//レイ判定情報設定
+			rayInfo.m_pos = rayPos;
+			rayInfo.m_dir = m_spCameraComponent->OffsetMatrix().GetAxisZ();
+			rayInfo.mMaxRange = FLT_MAX;
+
+			//最終的な結果格納用
+			RayResult finalRayResult;
+
+			//全員とレイ判定
+			for (auto& obj : SCENE.GetObjects())
 			{
-				//最も当たったところまでの距離が短いものを保持する
-				if (rayResult.m_distance < finalRayResult.m_distance)
+				//自分は判定しない
+				if (obj.get() == this) { continue; }
+
+				RayResult rayResult;
+				if (obj->HitCheckByRay(rayInfo, rayResult))
 				{
-					finalRayResult = rayResult;
-					operateObj = obj;
+					//最も当たったところまでの距離が短いものを保持する
+					if (rayResult.m_distance < finalRayResult.m_distance)
+					{
+						finalRayResult = rayResult;
+						operateObj = obj;
+					}
 				}
 			}
-		}
 
-		//当たったオブジェクトがあったら
-		if (operateObj)
-		{
-			//操作できるオブジェクト以外なら返る
-			if (!(operateObj->GetTag() & (TAG_CanControlObject)))
+			//当たったオブジェクトがあったら
+			if (operateObj)
 			{
-				operateObj = nullptr;
-				return;
+				//操作できるオブジェクト以外なら返る
+				if (!(operateObj->GetTag() & (TAG_CanControlObject)))
+				{
+					operateObj = nullptr;
+					return;
+				}
+				//操作フラグを立てる
+				m_isOperate = true;
+				//プレイヤーからオブジェクトの距離を算出
+				Vector3 vec = operateObj->GetMatrix().GetTranslation() - rayPos;
+				operateObjDistance = vec.Length();
+				//オブジェクトの重力計算を停止
+				operateObj->OffFall();
 			}
-			//プレイヤーからオブジェクトの距離を算出
-			Vector3 vec = operateObj->GetMatrix().GetTranslation() - rayPos;
-			operateObjDistance = vec.Length();
-			//オブジェクトの重力計算を停止
-			operateObj->OffFall();
-			//調整値の初期化
-			offset = 0.0f;
 		}
-
 	}
-
 	//登録オブジェクトが存在する間
-	if (operateObj)
+	else
 	{
+		//オブジェクトのある方向に回転
 		UpdateRotate(m_spCameraComponent->OffsetMatrix().GetAxisZ());
 
-		//操作しているオブジェクトの行列を作成
-
-		//中心行列を生成
+		///中心行列を生成====================================================================
 		Matrix mCenter;
 		mCenter.Move(m_pos.x, m_pos.y + 1.0f, m_pos.z);
 
+		///回転行列を生成====================================================================
 		//カメラの前方向をクォータニオンに返還
 		DirectX::XMVECTOR qTarget = DirectX::XMQuaternionRotationMatrix(m_spCameraComponent->OffsetMatrix());
 		//最終的な角度を算出し回転行列に変換
 		DirectX::XMVECTOR qFinal = DirectX::XMQuaternionSlerp(DirectX::XMQuaternionIdentity(), qTarget, 1.0f);
 		Matrix mRot = DirectX::XMMatrixRotationQuaternion(qFinal);
 
-		//外側行列を生成
+		///外側行列を生成====================================================================
 		//オブジェクトの位置を調整
-		if (m_spInputComponent->GetButton(Input::Buttons::X)) { operateObjDistance += 0.1f; }
-		if (m_spInputComponent->GetButton(Input::Buttons::Y)) { operateObjDistance -= 0.1f; }
+		if (APP.m_window.GetMouseWheelVal())
+		{
+			operateObjDistance=(float)APP.m_window.GetMouseWheelVal();
+		}
 		//プレイヤーとの距離を制限
 		if (operateObjDistance > 10.0f) { operateObjDistance = 10.0f; }
 		if (operateObjDistance < 3.0f) { operateObjDistance = 3.0f; }
-
+		//移動
 		Matrix mOuter;
 		mOuter.CreateTranslation(0.0f, 0.0f, operateObjDistance);
 
-		//合成
+		///操作オブジェクトの移動量を算出====================================================
+		//行列を合成
 		mOuter *= mRot * mCenter;
-
-		//オブジェクトからの力の向きを算出
+		//オブジェクトから求めた行列までのベクトルを算出
 		Vector3 vForce = mOuter.GetTranslation() - operateObj->GetMatrix().GetTranslation();
-		vForce *= 0.05f;
-
-		//座標情報だけを渡す
+		//スピードを合成
+		vForce *= 0.075f;
+		//移動量を渡す
 		operateObj->SetForce(vForce);
 
-		//R1ボタンを離したときに登録を解除する
-		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::EXIT)
+		///R1ボタンをもう一度押したときに登録を解除する======================================
+		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
 		{
-			operateObj->OnFall();
-			operateObj = nullptr;
+			m_isOperate = false;	//操作フラグを解除
+			operateObj->OnFall();	//重力を反映させる
+			operateObj = nullptr;	//登録を外す
 		}
 	}
 }

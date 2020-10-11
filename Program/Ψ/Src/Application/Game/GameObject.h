@@ -16,6 +16,7 @@ enum OBJECT_TAG
 	TAG_Player			= 0x00000002,	//プレイヤー
 	TAG_StageObject		= 0x00000004,	//ステージ
 	TAG_CanControlObject= 0x00000008,	//操作できるオブジェクト
+	TAG_ProcessObject	= 0x00000010,	//プロセスオブジェクト
 };
 
 class GameObject :public std::enable_shared_from_this<GameObject>

@@ -40,6 +40,9 @@ private:
 	//回転速度
 	float m_rotateAngle = 10.0f;
 
+	//オブジェクトを操作中か
+	bool m_isOperate = false;
+
 	//影
 	std::shared_ptr<TextureEffect> m_shadow;
 

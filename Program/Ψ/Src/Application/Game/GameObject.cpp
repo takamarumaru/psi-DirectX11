@@ -5,6 +5,10 @@
 #include "../Component/ModelComponent.h"
 #include "../Component/CameraComponent.h"
 
+
+#include "TitleScene/TitleProcess.h"
+
+#include "ActionScene/ActionProcess.h"
 #include "ActionScene/Box.h"
 #include "ActionScene/Player/Player.h"
 
@@ -109,7 +113,7 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	//カメラの初期設定
 	m_spCameraComponent = std::make_shared<CameraComponent>(*this);
-	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -2.0f);
+	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -0.01f);
 	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
 }
 
@@ -478,9 +482,16 @@ bool GameObject::CheckBump(Vector3 rCenterOffset)
 //クラス名からGameObjectを生成する関数
 std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 {
+	//ゲームオブジェクト
 	if (name == "GameObject")
 	{
 		return std::make_shared<GameObject>();
+	}
+
+	///アクションプロセス=====================================
+	if (name == "ActionProcess")
+	{
+		return std::make_shared<ActionProcess>();
 	}
 	//プレイヤー
 	if (name == "Player")
@@ -493,6 +504,11 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 		return std::make_shared<Box>();
 	}
 
+	///タイトルプロセス=======================================
+	if (name == "TitleProcess")
+	{
+		return std::make_shared<TitleProcess>();
+	}
 
 	//文字列が既存のクラスに一致しなかった
 	assert(0 && "存在しないObjectクラスです");

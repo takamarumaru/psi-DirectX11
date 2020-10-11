@@ -51,6 +51,22 @@ void InputComponent::ReleaceButton(Input::Buttons no)
 }
 
 //===============================================
+//タイトル入力用
+//===============================================
+void TitleProcessInputComponent::Update()
+{
+	//Aボタン入力処理
+	if (GetAsyncKeyState(VK_RETURN)) { PushButton(Input::Buttons::A); }
+	else { ReleaceButton(Input::Buttons::A); }
+}
+//===============================================
+//アクション入力用
+//===============================================
+void ActionProcessInputComponent::Update()
+{
+}
+
+//===============================================
 //プレイヤー入力用
 //===============================================
 void PlayerInputComponent::Update()
@@ -74,14 +90,8 @@ void PlayerInputComponent::Update()
 	if (GetAsyncKeyState(VK_RCONTROL)) { PushButton(Input::Buttons::B); }
 	else { ReleaceButton(Input::Buttons::B); }
 	//R1ボタン入力処理
-	if (GetAsyncKeyState(VK_LBUTTON)) { PushButton(Input::Buttons::R1); }
+	if (GetAsyncKeyState('E')) { PushButton(Input::Buttons::R1); }
 	else { ReleaceButton(Input::Buttons::R1); }
-	//Xボタン入力処理
-	if (GetAsyncKeyState('X')) { PushButton(Input::Buttons::X); }
-	else { ReleaceButton(Input::Buttons::X); }
-	//Zボタン入力処理
-	if (GetAsyncKeyState('Z')) { PushButton(Input::Buttons::Y); }
-	else { ReleaceButton(Input::Buttons::Y); }
 
 
 	POINT nowMousePos;
