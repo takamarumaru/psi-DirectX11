@@ -597,7 +597,6 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 
 	}
 
-	/*
 	//----------------------------------
 	// アニメーション
 	//----------------------------------
@@ -605,14 +604,16 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 	{
 		const auto& srcAni = model.animations[ani];
 
-		std::shared_ptr<KdAnimationData>	animation = std::make_shared<KdAnimationData>();
+		std::shared_ptr<GLTFAnimationData>	animation = std::make_shared<GLTFAnimationData>();
 		destModel->Animations.push_back(animation);
 
 		// 名前
-		animation->Name = srcAni.name;
+		animation->m_name = srcAni.name;
+
+		//IMGUI_LOG.AddLog(animation->m_name.c_str());
 
 		// 
-		std::vector<std::shared_ptr<KdAnimationData::Node>> tempNodes;
+		std::vector<std::shared_ptr<GLTFAnimationData::Node>> tempNodes;
 		tempNodes.resize(destModel->Nodes.size());
 
 		// 全チャンネル
@@ -626,8 +627,8 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 			// 初回
 			if (destAnimNode == nullptr)
 			{
-				destAnimNode = std::make_shared<KdAnimationData::Node>();
-				destAnimNode->NodeOffset = channel.target_node;
+				destAnimNode = std::make_shared<GLTFAnimationData::Node>();
+				destAnimNode->m_nodeOffset = channel.target_node;
 			}
 
 			// 時間アクセサ
@@ -640,162 +641,125 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 
 				for (UINT ki = 0; ki < timeGetter.GetAccessor()->count; ki++)
 				{
-					KdKeyVector3 v;
+					AnimKeyVector3 v;
 					// 時間
-					v.Time = timeGetter.GetValue_Float(ki) * 60.0f;	// 元が60fpsとして変換
-					if (v.Time > animation->MaxLength)
+					v.m_time = timeGetter.GetValue_Float(ki) * 60.0f;	// 元が60fpsとして変換
+					if (v.m_time > animation->m_maxLength)
 					{
-						animation->MaxLength = v.Time;
+						animation->m_maxLength = v.m_time;
 					}
 
 					// 値
 					if (sampler.interpolation == "STEP")
 					{
-						v.Vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
-						v.Vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
-						v.Vec.z = valueGetter.GetValue_Float(ki * 3 + 2) * -1;
-						destAnimNode->Translations.push_back(v);
+						v.m_vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
+						v.m_vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
+						v.m_vec.z = valueGetter.GetValue_Float(ki * 3 + 2) * -1;
+						destAnimNode->m_translations.push_back(v);
 					}
 					else if (sampler.interpolation == "LINEAR")
 					{
-						v.Vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
-						v.Vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
-						v.Vec.z = valueGetter.GetValue_Float(ki * 3 + 2) * -1;
-						destAnimNode->Translations.push_back(v);
+						v.m_vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
+						v.m_vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
+						v.m_vec.z = valueGetter.GetValue_Float(ki * 3 + 2) * -1;
+						destAnimNode->m_translations.push_back(v);
 					}
 					else if (sampler.interpolation == "CUBICSPLINE")
 					{
-//						v.PrevTangent.x = valueGetter.GetValue_Float(ki * 9 + 0);
-//						v.PrevTangent.y = valueGetter.GetValue_Float(ki * 9 + 1);
-//						v.PrevTangent.z = valueGetter.GetValue_Float(ki * 9 + 2) * -1;
-
-						v.Vec.x = valueGetter.GetValue_Float(ki * 9 + 3);
-						v.Vec.y = valueGetter.GetValue_Float(ki * 9 + 4);
-						v.Vec.z = valueGetter.GetValue_Float(ki * 9 + 5) * -1;
-
-//						v.NextTangent.x = valueGetter.GetValue_Float(ki * 9 + 6);
-//						v.NextTangent.y = valueGetter.GetValue_Float(ki * 9 + 7);
-//						v.NextTangent.z = valueGetter.GetValue_Float(ki * 9 + 8) * -1;
-
-						destAnimNode->Translations.push_back(v);
+						v.m_vec.x = valueGetter.GetValue_Float(ki * 9 + 3);
+						v.m_vec.y = valueGetter.GetValue_Float(ki * 9 + 4);
+						v.m_vec.z = valueGetter.GetValue_Float(ki * 9 + 5) * -1;
+						destAnimNode->m_translations.push_back(v);
 					}
-
 				}
-
 			}
 			else if (channel.target_path == "scale")
 			{
 				for (UINT ki = 0; ki < timeGetter.GetAccessor()->count; ki++)
 				{
-					KdKeyVector3 v;
+					AnimKeyVector3 v;
 					// 時間
-					v.Time = timeGetter.GetValue_Float(ki) * 60.0f;	// 元が60fpsとして変換
-					if (v.Time > animation->MaxLength)
+					v.m_time = timeGetter.GetValue_Float(ki) * 60.0f;	// 元が60fpsとして変換
+					if (v.m_time > animation->m_maxLength)
 					{
-						animation->MaxLength = v.Time;
+						animation->m_maxLength = v.m_time;
 					}
 
 					// 値
 					if (sampler.interpolation == "STEP")
 					{
-						v.Vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
-						v.Vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
-						v.Vec.z = valueGetter.GetValue_Float(ki * 3 + 2);
-						destAnimNode->Scales.push_back(v);
+						v.m_vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
+						v.m_vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
+						v.m_vec.z = valueGetter.GetValue_Float(ki * 3 + 2);
+						destAnimNode->m_scales.push_back(v);
 					}
 					else if (sampler.interpolation == "LINEAR")
 					{
-						v.Vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
-						v.Vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
-						v.Vec.z = valueGetter.GetValue_Float(ki * 3 + 2);
-						destAnimNode->Scales.push_back(v);
+						v.m_vec.x = valueGetter.GetValue_Float(ki * 3 + 0);
+						v.m_vec.y = valueGetter.GetValue_Float(ki * 3 + 1);
+						v.m_vec.z = valueGetter.GetValue_Float(ki * 3 + 2);
+						destAnimNode->m_scales.push_back(v);
 					}
 					else if (sampler.interpolation == "CUBICSPLINE")
 					{
-//						v.PrevTangent.x = valueGetter.GetValue_Float(ki * 9 + 0);
-//						v.PrevTangent.y = valueGetter.GetValue_Float(ki * 9 + 1);
-//						v.PrevTangent.z = valueGetter.GetValue_Float(ki * 9 + 2);
-
-						v.Vec.x = valueGetter.GetValue_Float(ki * 9 + 3);
-						v.Vec.y = valueGetter.GetValue_Float(ki * 9 + 4);
-						v.Vec.z = valueGetter.GetValue_Float(ki * 9 + 5);
-
-//						v.NextTangent.x = valueGetter.GetValue_Float(ki * 9 + 6);
-//						v.NextTangent.y = valueGetter.GetValue_Float(ki * 9 + 7);
-//						v.NextTangent.z = valueGetter.GetValue_Float(ki * 9 + 8);
-
-						destAnimNode->Scales.push_back(v);
+						v.m_vec.x = valueGetter.GetValue_Float(ki * 9 + 3);
+						v.m_vec.y = valueGetter.GetValue_Float(ki * 9 + 4);
+						v.m_vec.z = valueGetter.GetValue_Float(ki * 9 + 5);
+						destAnimNode->m_scales.push_back(v);
 					}
-
 				}
 			}
 			else if (channel.target_path == "rotation")
 			{
-
 				for (UINT ki = 0; ki < timeGetter.GetAccessor()->count; ki++)
 				{
-					KdKeyQuaternion q;
+					AnimKeyQuaternion q;
 					// 時間
-					q.Time = timeGetter.GetValue_Float(ki) * 60.0f;	// 元が60fpsとして変換
-					if (q.Time > animation->MaxLength)
+					q.m_time = timeGetter.GetValue_Float(ki) * 60.0f;	// 元が60fpsとして変換
+					if (q.m_time > animation->m_maxLength)
 					{
-						animation->MaxLength = q.Time;
+						animation->m_maxLength = q.m_time;
 					}
 
 					if (sampler.interpolation == "STEP")
 					{
-						q.Quat.y = valueGetter.GetValue_Float(ki * 4 + 1) * -1;
-						q.Quat.x = valueGetter.GetValue_Float(ki * 4 + 0) * -1;
-						q.Quat.z = valueGetter.GetValue_Float(ki * 4 + 2);
-						q.Quat.w = valueGetter.GetValue_Float(ki * 4 + 3);
-						destAnimNode->Rotations.push_back(q);
+						q.m_quat.y = valueGetter.GetValue_Float(ki * 4 + 1) * -1;
+						q.m_quat.x = valueGetter.GetValue_Float(ki * 4 + 0) * -1;
+						q.m_quat.z = valueGetter.GetValue_Float(ki * 4 + 2);
+						q.m_quat.w = valueGetter.GetValue_Float(ki * 4 + 3);
+						destAnimNode->m_rotations.push_back(q);
 					}
 					else if (sampler.interpolation == "LINEAR")
 					{
-						q.Quat.x = valueGetter.GetValue_Float(ki * 4 + 0) * -1;
-						q.Quat.y = valueGetter.GetValue_Float(ki * 4 + 1) * -1;
-						q.Quat.z = valueGetter.GetValue_Float(ki * 4 + 2);
-						q.Quat.w = valueGetter.GetValue_Float(ki * 4 + 3);
-						destAnimNode->Rotations.push_back(q);
+						q.m_quat.x = valueGetter.GetValue_Float(ki * 4 + 0) * -1;
+						q.m_quat.y = valueGetter.GetValue_Float(ki * 4 + 1) * -1;
+						q.m_quat.z = valueGetter.GetValue_Float(ki * 4 + 2);
+						q.m_quat.w = valueGetter.GetValue_Float(ki * 4 + 3);
+						destAnimNode->m_rotations.push_back(q);
 					}
 					else if (sampler.interpolation == "CUBICSPLINE")
 					{
-//						q.PrevTangent.x = valueGetter.GetValue_Float(ki * 12 + 0) * -1;
-//						q.PrevTangent.y = valueGetter.GetValue_Float(ki * 12 + 1) * -1;
-//						q.PrevTangent.z = valueGetter.GetValue_Float(ki * 12 + 2);
-//						q.PrevTangent.w = valueGetter.GetValue_Float(ki * 12 + 3);
-
-						q.Quat.x = valueGetter.GetValue_Float(ki * 12 + 4) * -1;
-						q.Quat.y = valueGetter.GetValue_Float(ki * 12 + 5) * -1;
-						q.Quat.z = valueGetter.GetValue_Float(ki * 12 + 6);
-						q.Quat.w = valueGetter.GetValue_Float(ki * 12 + 7);
-
-//						q.NextTangent.x = valueGetter.GetValue_Float(ki * 12 + 8) * -1;
-//						q.NextTangent.y = valueGetter.GetValue_Float(ki * 12 + 9) * -1;
-//						q.NextTangent.z = valueGetter.GetValue_Float(ki * 12 + 10);
-//						q.NextTangent.w = valueGetter.GetValue_Float(ki * 12 + 11);
-
-						destAnimNode->Rotations.push_back(q);
+						q.m_quat.x = valueGetter.GetValue_Float(ki * 12 + 4) * -1;
+						q.m_quat.y = valueGetter.GetValue_Float(ki * 12 + 5) * -1;
+						q.m_quat.z = valueGetter.GetValue_Float(ki * 12 + 6);
+						q.m_quat.w = valueGetter.GetValue_Float(ki * 12 + 7);
+						destAnimNode->m_rotations.push_back(q);
 					}
-
 				}
-
 			}
 		}
 
-		// 不必要なノードを除外したリスト作成
+		// アニメーションで使用していない不必要なノードを除外したリスト作成
 		for (auto&& n : tempNodes)
 		{
 			if (n == nullptr)continue;
-			animation->Nodes.push_back(n);
-
+			animation->m_nodes.push_back(n);
 		}
 
 	}
-	*/
+
 
 	return destModel;
-
 }
 
 

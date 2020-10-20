@@ -264,3 +264,21 @@ void PointToTriangle(const XMVECTOR& p, const XMVECTOR& a, const XMVECTOR& b, co
 	float w = vc * denom;
 	outPt = a + ab * v + ac * w; // = u*a + v*b + w*c, u = va*demon = 1.0f - v - w
 }
+
+bool BoxToBox(const Mesh& myMesh, const DirectX::XMMATRIX& myMatrix, const Mesh& mesh, const DirectX::XMMATRIX& matrix)
+{
+	//1つ目のAABBを作成
+	BoundingBox aabb1;
+	myMesh.GetBoundingBox().Transform(aabb1, myMatrix);
+
+	//2つ目のAABBを作成
+	BoundingBox aabb2;
+	mesh.GetBoundingBox().Transform(aabb2, matrix);
+
+	//判定
+	if (aabb1.Intersects(aabb2) == false)
+	{
+		return false;
+	}
+	return true;
+}

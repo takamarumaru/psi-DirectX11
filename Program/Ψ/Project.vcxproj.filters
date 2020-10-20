@@ -207,6 +207,21 @@
     <ClInclude Include="Src\Application\Game\TitleScene\TitleProcess.h">
       <Filter>Src\Application\Game\Title</Filter>
     </ClInclude>
+    <ClInclude Include="Src\System\Direct3D\TrailPolygon.h">
+      <Filter>Src\System\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\ActionUI.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Button.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\System\Math\Animation.h">
+      <Filter>Src\System\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Spring.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -322,6 +337,24 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Game\TitleScene\TitleProcess.cpp">
       <Filter>Src\Application\Game\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\System\Direct3D\TrailPolygon.cpp">
+      <Filter>Src\System\Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerEffect.cpp">
+      <Filter>Src\Application\Game\ActionScene\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\ActionUI.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Button.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\System\Math\Animation.cpp">
+      <Filter>Src\System\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Spring.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

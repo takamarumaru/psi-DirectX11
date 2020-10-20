@@ -10,6 +10,7 @@ public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual void Update()override;
 	virtual void DrawEffect()override;
+	virtual void Draw2D()override;
 
 private:
 
@@ -20,6 +21,7 @@ private:
 
 	//アクション更新
 	void UpdateGrab();
+	void UpdatePowerEffect(const Vector3 rStart, const Vector3 rEnd, const Vector3 rTarget);
 
 	//当たり判定更新
 	void UpdateCollision();
@@ -45,6 +47,11 @@ private:
 
 	//影
 	std::shared_ptr<TextureEffect> m_shadow;
+
+	//念　軌跡
+	TrailPolygon	m_powerEffect;
+	//ポインタ
+	std::shared_ptr<Texture> m_spPointTex;
 
 //============================================
 //ステート関係

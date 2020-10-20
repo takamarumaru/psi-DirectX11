@@ -77,7 +77,6 @@ void Player::UpdateRotate(const Vector3& rMoveDir)
 ///====================================================================
 void Player::UpdateGrab()
 {
-
 	//オブジェクト登録用
 	static std::shared_ptr<GameObject> operateObj = nullptr;
 	//レイ判定情報
@@ -92,15 +91,14 @@ void Player::UpdateGrab()
 		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
 		{
 			//レイ発射座標からカメラの前方向に当たり判定
-
 			//レイ発射座標
-			Vector3 rayPos = m_pos;
-			rayPos.y += 1.0f;
+			Vector3 rayPos = m_spCameraComponent->GetCameraMatrix().GetTranslation();
 
 			//レイ判定情報設定
 			rayInfo.m_pos = rayPos;
 			rayInfo.m_dir = m_spCameraComponent->OffsetMatrix().GetAxisZ();
 			rayInfo.mMaxRange = FLT_MAX;
+
 
 			//最終的な結果格納用
 			RayResult finalRayResult;
@@ -135,7 +133,7 @@ void Player::UpdateGrab()
 				//操作フラグを立てる
 				m_isOperate = true;
 				//プレイヤーからオブジェクトの距離を算出
-				Vector3 vec = operateObj->GetMatrix().GetTranslation() - rayPos;
+				Vector3 vec = operateObj->GetCenterPos() - rayPos;
 				operateObjDistance = vec.Length();
 				//オブジェクトの重力計算を停止
 				operateObj->OffFall();
@@ -150,7 +148,7 @@ void Player::UpdateGrab()
 
 		///中心行列を生成====================================================================
 		Matrix mCenter;
-		mCenter.Move(m_pos.x, m_pos.y + 1.0f, m_pos.z);
+		mCenter.Move(GetCenterPos());
 
 		///回転行列を生成====================================================================
 		//カメラの前方向をクォータニオンに返還
@@ -176,18 +174,27 @@ void Player::UpdateGrab()
 		//行列を合成
 		mOuter *= mRot * mCenter;
 		//オブジェクトから求めた行列までのベクトルを算出
-		Vector3 vForce = mOuter.GetTranslation() - operateObj->GetMatrix().GetTranslation();
+		Vector3 vForce = mOuter.GetTranslation() - operateObj->GetCenterPos();
 		//スピードを合成
-		vForce *= 0.075f;
+		vForce *= 0.095f;
 		//移動量を渡す
 		operateObj->SetForce(vForce);
+
+		//軌跡の座標を追加
+		UpdatePowerEffect
+		(
+			mCenter.GetTranslation(),
+			operateObj->GetCenterPos(),
+			mOuter.GetTranslation()
+		);
 
 		///R1ボタンをもう一度押したときに登録を解除する======================================
 		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
 		{
-			m_isOperate = false;	//操作フラグを解除
-			operateObj->OnFall();	//重力を反映させる
-			operateObj = nullptr;	//登録を外す
+			m_isOperate = false;		//操作フラグを解除
+			m_powerEffect.ClearPoint();	//軌跡を消す
+			operateObj->OnFall();		//重力を反映させる
+			operateObj = nullptr;		//登録を外す
 		}
 	}
 }

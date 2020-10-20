@@ -9,7 +9,10 @@
 #include "TitleScene/TitleProcess.h"
 
 #include "ActionScene/ActionProcess.h"
+#include "ActionScene/ActionUI.h"
 #include "ActionScene/Box.h"
+#include "ActionScene/Button.h"
+#include "ActionScene/Spring.h"
 #include "ActionScene/Player/Player.h"
 
 const float GameObject::s_allowToStepHeight = 0.8f;
@@ -104,6 +107,15 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	m_mWorld = mScale * mRotate * mTrans;
 
+	//中心座標への調整値
+	const std::vector<json11::Json>& rCenterOffset = jsonObj["CenterOffset"].array_items();
+	if (rCenterOffset.size() == 3)
+	{
+		m_centerOffset.x = (float)rCenterOffset[0].number_value();
+		m_centerOffset.y = (float)rCenterOffset[1].number_value();
+		m_centerOffset.z = (float)rCenterOffset[2].number_value();
+	}
+
 	//当たり判定半径
 	if (jsonObj["Radius"].is_null() == false)
 	{
@@ -195,6 +207,7 @@ json11::Json::object GameObject::Serialize()
 //更新
 void GameObject::Update()
 {
+	m_mPrev = m_mWorld;
 	m_prevPos = m_mWorld.GetTranslation();
 }
 
@@ -205,8 +218,6 @@ void GameObject::Draw()
 
 	m_spModelComponent->Draw();
 }
-
-void GameObject::DrawEffect(){}
 
 void GameObject::ImGuiUpdate()
 {
@@ -283,6 +294,7 @@ void GameObject::ImGuiUpdate()
 
 			m_mWorld.SetTranslation(pos);
 			m_pos = pos;
+			m_rot = rot;
 
 		}
 		if (ImGui::Button(u8"JSONテキストにコピー"))
@@ -298,8 +310,14 @@ void GameObject::ImGuiUpdate()
 	}
 }
 
-//解放
-void GameObject::Release(){}
+void GameObject::SetAnimation(const char* pAnimName, bool isLoop)
+{
+	if (m_spModelComponent)
+	{
+		std::shared_ptr<AnimationData>animData = m_spModelComponent->GetAnimation(pAnimName);
+		m_animator.SetAnimation(animData,isLoop);
+	}
+}
 
 //レイによる当たり判定
 bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
@@ -365,6 +383,33 @@ bool GameObject::HitCheckBySphereVsMesh(const SphereInfo& rInfo, SphereResult& r
 	}
 
 	return rResult.m_hit;
+}
+
+bool GameObject::HitCheckByBox(const BoxInfo& rInfo)
+{
+	//モデルコンポーネントがない場合
+	if (!m_spModelComponent) { return false; }
+
+	//全ノードと当たり判定
+	for (auto& node : m_spModelComponent->GetNodes())
+	{
+		//ノードがモデルを持っていなかった場合は無視
+		if (!node.m_spMesh) { continue; }
+
+		if (
+			BoxToBox(
+				*rInfo.m_node.m_spMesh,
+				rInfo.m_node.m_localTransform * rInfo.m_matrix,
+				*node.m_spMesh,
+				node.m_localTransform * m_mWorld
+			)
+		)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag)
@@ -434,15 +479,15 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 	rDstDistance = distanceFromGround;
 
 	//動くものの上に着地したときの判定
-	//if (hitObj && m_isGround)
-	//{
-	//	//相手の一回動いた分を取得
-	//	auto mOneMove = hitObj->GetOneMove();
-	//	auto vOneMove = mOneMove.GetTranslation();
+	if (hitObj && m_isGround)
+	{
+		//相手の一回動いた分を取得
+		auto mOneMove = hitObj->GetOneMove();
+		auto vOneMove = mOneMove.GetTranslation();
 
-	//	//相手の動いた分を自分の移動に含める
-	//	m_pos += vOneMove;
-	//}
+		//相手の動いた分を自分の移動に含める
+		m_pos += vOneMove;
+	}
 
 	//着地したかどうかを返す
 	return m_isGround;
@@ -493,6 +538,10 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	{
 		return std::make_shared<ActionProcess>();
 	}
+	if (name == "ActionUI")
+	{
+		return std::make_shared<ActionUI>();
+	}
 	//プレイヤー
 	if (name == "Player")
 	{
@@ -502,6 +551,16 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	if (name == "Box")
 	{
 		return std::make_shared<Box>();
+	}
+	//バネ
+	if (name == "Spring")
+	{
+		return std::make_shared<Spring>();
+	}
+	//ボックス
+	if (name == "Button")
+	{
+		return std::make_shared<Button>();
 	}
 
 	///タイトルプロセス=======================================

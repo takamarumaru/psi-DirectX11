@@ -6,6 +6,7 @@ class CameraComponent;
 
 struct SphereInfo;
 struct RayInfo;
+struct BoxInfo;
 struct SphereResult;
 
 //タグ
@@ -38,7 +39,9 @@ public:
 	//描画
 	virtual void Draw();
 	//半透明物の描画
-	virtual void DrawEffect();
+	virtual void DrawEffect(){};
+	//2D描画
+	virtual void Draw2D(){};
 	//ImGui更新
 	virtual void ImGuiUpdate();
 
@@ -49,6 +52,8 @@ public:
 	inline void SetMatrix(const Matrix& rMat) {m_mWorld = rMat; }
 	//座標
 	inline void SetPos(const Vector3& rPos) { m_pos = rPos; }
+	//中心座標
+	Vector3 GetCenterPos() { return m_pos + m_centerOffset; }
 	//移動量
 	inline void SetForce(const Vector3& rForce) { m_force = rForce; }
 	//生死
@@ -66,6 +71,16 @@ public:
 	std::shared_ptr<ModelComponent>GetModelComponent() { return m_spModelComponent; }
 	//着地しているかどうか
 	bool IsGround() { return m_isGround; }
+	//アニメーション
+	void SetAnimation(const char* pAnimName,bool isLoop);
+	const Matrix& GetPrevMatrix() { return m_mPrev; }
+	//キャラクターが動いた分の行列を取得
+	Matrix GetOneMove()
+	{
+		Matrix mPI = m_mPrev;
+		mPI.Inverse();			//動く前の逆行列
+		return mPI * m_mWorld;	//動く前の逆行列*今の行列=一回動いた分の行列
+	}
 
 ///	当たり判定=============================================
 
@@ -73,10 +88,12 @@ public:
 	bool HitCheckByRay(const RayInfo& rInfo, RayResult& rResult);
 	//球による当たり判定（mesh）
 	bool HitCheckBySphereVsMesh(const SphereInfo& rInfo, SphereResult& rResult);
+	//四角判定
+	bool HitCheckByBox(const BoxInfo& rInfo);
 
 protected:
 	//解放
-	virtual void Release();
+	virtual void Release() {};
 
 ///	コンポーネント=========================================
 
@@ -86,6 +103,8 @@ protected:
 	std::shared_ptr<CameraComponent> m_spCameraComponent = nullptr;
 	//モデルコンポーネント
 	std::shared_ptr<ModelComponent> m_spModelComponent = std::make_shared<ModelComponent>(*this);
+	//アニメーター
+	Animator m_animator;
 
 ///	当たり判定=============================================
 
@@ -105,10 +124,15 @@ protected:
 
 	//行列
 	Matrix m_mWorld;
-	//ひとつ前の行列
-	Vector3 m_prevPos;
+	//動く前の行列
+	Matrix m_mPrev;
 	//座標
 	Vector3 m_pos;
+	//動く前の座標
+	Vector3 m_prevPos;
+
+	//中心座標へのオフセット
+	Vector3 m_centerOffset;
 	//移動量
 	Vector3 m_force;
 	//回転角度
@@ -155,6 +179,13 @@ struct RayInfo
 	Vector3	m_pos;				//レイ（光線）の発射場所
 	Vector3	m_dir;				//レイの発射方法
 	float	mMaxRange = 0.0f;	//レイが届く最大距離
+};
+
+//四角の情報
+struct BoxInfo
+{
+	Model::Node m_node;
+	Matrix m_matrix;
 };
 
 //球面判定の結果データ

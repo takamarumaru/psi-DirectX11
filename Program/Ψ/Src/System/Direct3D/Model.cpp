@@ -2,10 +2,7 @@
 #include"GLTFLoader.h"
 
 //コンストラクタ
-Model::Model()
-{
-
-}
+Model::Model(){}
 
 //デストラクタ
 Model::~Model()
@@ -87,7 +84,45 @@ bool Model::Load(const std::string& filename)
 		}
 	}
 
+	//アニメーションデータ
+	m_spAnimations.resize(spGltfModel->Animations.size());
+
+	for (UINT i = 0; i < m_spAnimations.size(); ++i)
+	{
+		const GLTFAnimationData& rSrcAnimation = *spGltfModel->Animations[i];
+
+		m_spAnimations[i] = std::make_shared<AnimationData>();
+		AnimationData& rDstAnimation = *(m_spAnimations[i]);
+
+		rDstAnimation.m_name = rSrcAnimation.m_name;
+
+		rDstAnimation.m_maxLength = rSrcAnimation.m_maxLength;
+
+		rDstAnimation.m_nodes.resize(rSrcAnimation.m_nodes.size());
+
+		for (UINT i = 0; i < rDstAnimation.m_nodes.size(); ++i)
+		{
+			rDstAnimation.m_nodes[i].m_nodeOffset = rSrcAnimation.m_nodes[i]->m_nodeOffset;
+			rDstAnimation.m_nodes[i].m_translations = rSrcAnimation.m_nodes[i]->m_translations;
+			rDstAnimation.m_nodes[i].m_rotaions = rSrcAnimation.m_nodes[i]->m_rotations;
+		}
+	}
+
 	return true;
+}
+
+//アニメーションデータ取得
+const std::shared_ptr<AnimationData> Model::GetAnimation(const std::string& animName) const
+{
+	for (auto&& anim : m_spAnimations)
+	{
+		if (anim->m_name == animName)
+		{
+			return anim;
+		}
+	}
+
+	return nullptr;
 }
 
 void Model::Release()

@@ -27,6 +27,12 @@ void Player::Deserialize(const json11::Json& jsonObj)
 	//影を初期化
 	m_shadow = std::make_shared<TextureEffect>();
 	m_shadow->SetEffectInfo(ResFac.GetTexture("Data/Texture/shadow.png"), 2.0f,1,1,0,false,false);
+
+	//念のテクスチャ
+	m_powerEffect.SetTexture(ResFac.GetTexture("Data/Texture/powerEffect.png"));
+
+	//ポイントのテクスチャ
+	m_spPointTex = ResFac.GetTexture("Data/Texture/point.png");
 }
 
 //更新
@@ -45,9 +51,6 @@ void Player::Update()
 
 	//重力をキャラクターのYの移動力に変える
 	m_force.y -= m_gravity;
-
-	//アクション処理
-	UpdateGrab();
 
 	//移動更新
 	m_spActionState->Update(*this);
@@ -74,12 +77,37 @@ void Player::Update()
 
 		m_spCameraComponent->Update();
 	}
+
+	//アクション処理
+	UpdateGrab();
+
+
 }
 
 void Player::DrawEffect()
 {
 	//影の描画
 	m_shadow->DrawEffect();
+
+	//念の描画
+	SHADER.m_effectShader.SetWorldMatrix(Matrix());
+	SHADER.m_effectShader.WriteToCB();
+	m_powerEffect.DrawBillboard(0.3f);
+}
+
+void Player::Draw2D()
+{
+	//ポイントの描画
+	if (m_spPointTex) 
+	{
+		//操作中ではないとき
+		if (!m_isOperate)
+		{
+			//2D描画
+			SHADER.m_spriteShader.SetMatrix(DirectX::XMMatrixIdentity());
+			SHADER.m_spriteShader.DrawTex(m_spPointTex.get(), 0, 0);
+		}
+	}
 }
 
 

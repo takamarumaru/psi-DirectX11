@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+struct AnimationData;
+
 class Model
 {
 public:
@@ -21,8 +23,8 @@ public:
 	struct Node
 	{
 		std::string					m_name;				//ノード名
-		Matrix					m_localTransform;	//変数行列
-		std::shared_ptr <Mesh>	m_spMesh;			//メッシュ情報
+		Matrix						m_localTransform;	//変数行列
+		std::shared_ptr <Mesh>		m_spMesh;			//メッシュ情報
 	};
 
 	//文字列を元にノードの検索
@@ -41,6 +43,9 @@ public:
 	//ノード配列取得
 	const std::vector<Node>& GetOriginalNodes() const { return m_originalNodes; }
 
+	//アニメーションデータ取得
+	const std::shared_ptr<AnimationData>GetAnimation(const std::string& animName)const;
+
 private:
 
 	void Release();							//解放
@@ -48,4 +53,7 @@ private:
 
 	//マテリアル配列
 	std::vector<Material> m_materials;
+
+	//アニメーションデータリスト
+	std::vector<std::shared_ptr<AnimationData>>	m_spAnimations;
 };

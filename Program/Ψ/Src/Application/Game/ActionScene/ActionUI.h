@@ -1,12 +1,12 @@
 ﻿#pragma once
 
-#include"../GameProcess.h"
+#include"../GameObject.h"
 
-class ActionProcess :public GameProcess
+class ActionUI :public GameObject
 {
 public:
-	ActionProcess(){}
-	virtual ~ActionProcess() {}
+	ActionUI() {}
+	virtual ~ActionUI() {}
 
 	//初期化
 	void Deserialize(const json11::Json& jsonObj)override;
@@ -14,4 +14,5 @@ public:
 	void Draw2D()override;
 	//更新
 	void Update()override;
+private:
 };

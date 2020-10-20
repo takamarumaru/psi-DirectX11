@@ -74,12 +74,35 @@ struct GLTFNode
 		// 頂点配列
 		std::vector<MeshVertex>				Vertices;
 		// 面情報配列
-		std::vector<MeshFace>					Faces;
+		std::vector<MeshFace>				Faces;
 		// サブセット情報配列
 		std::vector<MeshSubset>				Subsets;
 	};
 	Mesh									Mesh;
 
+};
+
+//============================
+// アニメーションデータ
+//============================
+struct GLTFAnimationData
+{
+	//アニメーション名
+	std::string				m_name;
+	//アニメの長さ
+	float					m_maxLength = 0;
+	//1ノードのアニメーションデータ
+	struct Node
+	{
+		//対象ノードのOffset
+		int									m_nodeOffset = -1;
+		//各チャンネル
+		std::vector<AnimKeyQuaternion>	m_rotations;	//回転キーリスト
+		std::vector<AnimKeyVector3>		m_scales;		//拡縮キーリスト
+		std::vector<AnimKeyVector3>		m_translations;	//位置キーリスト
+	};
+	//全ノード用アニメーションデータ
+	std::vector<std::shared_ptr<Node>> m_nodes;
 };
 
 //============================
@@ -97,7 +120,7 @@ struct GLTFModel
 	std::vector<GLTFMaterial>					Materials;
 
 	// アニメーションデータリスト
-//	std::vector<std::shared_ptr<KdAnimationData>>		Animations;
+	std::vector<std::shared_ptr<GLTFAnimationData>>		Animations;
 
 };
 

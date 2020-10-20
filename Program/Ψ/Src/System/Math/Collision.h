@@ -37,3 +37,11 @@ void PointToTriangle(
 	const DirectX::XMVECTOR& c,
 	DirectX::XMVECTOR& outPt
 );
+
+//四角と四角の当たり判定
+bool BoxToBox(
+	const Mesh& myMesh,					//自分のメッシュ情報
+	const DirectX::XMMATRIX& myMatrix,	//自分の行列
+	const Mesh& mesh,					//判定する相手のメッシュ情報
+	const DirectX::XMMATRIX& matrix	//判定する相手の行列
+);

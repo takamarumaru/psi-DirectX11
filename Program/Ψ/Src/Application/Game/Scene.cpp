@@ -134,11 +134,22 @@ void Scene::Draw()
 		D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
 	}
 
+	//2D描画用のシェーダー開始
+	{
+		SHADER.m_spriteShader.Begin();
+		//全てのオブジェクトの2D描画を行う
+		for (auto obj : m_spObjects)
+		{
+			obj->Draw2D();
+		}
+		//シェーダー終了
+		SHADER.m_spriteShader.End();
+	}
 
 	//デバックライン描画
-	SHADER.m_effectShader.SetToDevice();
-	SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
 	{
+		SHADER.m_effectShader.SetToDevice();
+		SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
 		//Zバッファ使用OFF・書き込みOFF
 		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
 		if (m_debugLines.size() >= 1)
@@ -191,6 +202,18 @@ void Scene::AddObject(std::shared_ptr<GameObject> spObject)
 	if (spObject == nullptr) { return; }
 
 	m_spObjects.push_back(spObject);
+}
+
+//指定された名前で検索をかけて合致した最初のオブジェクトを返す
+std::shared_ptr<GameObject> Scene::FindObjectWithName(const std::string& name)
+{
+	//文字列比較
+	for (auto&& obj : m_spObjects)
+	{
+		if (obj->GetName() == name) { return obj; }
+	}
+	//見つからなかったらnullを返す
+	return nullptr;
 }
 
 //シーンの読み込み

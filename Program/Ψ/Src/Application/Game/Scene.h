@@ -35,6 +35,8 @@ public:
 	void AddObject(std::shared_ptr <GameObject> spObject);
 	//取得
 	const std::list<std::shared_ptr<GameObject>> GetObjects()const { return m_spObjects; }
+	//指定された名前で検索をかけて合致した最初のオブジェクトを返す
+	std::shared_ptr<GameObject> FindObjectWithName(const std::string& name);
 
 /// ImGui============================================
 	//更新

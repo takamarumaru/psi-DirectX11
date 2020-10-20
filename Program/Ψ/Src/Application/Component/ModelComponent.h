@@ -39,6 +39,15 @@ public:
 		return nullptr;
 	}
 
+	//アニメーションデータ取得
+	const std::shared_ptr<AnimationData>GetAnimation(const std::string& animName)const
+	{
+		if (!m_spModel) { return nullptr; }
+		return m_spModel->GetAnimation(animName);
+	}
+
+	std::vector<Model::Node>& GetChangeableNodes() { return m_coppiedNode; }
+
 	//モデルセット
 	void SetModel(const std::shared_ptr<Model>& model);
 

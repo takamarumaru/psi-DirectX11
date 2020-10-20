@@ -31,8 +31,12 @@
 #include "Direct3D/Mesh.h"
 // モデル
 #include "Direct3D/Model.h"
+//アニメーション
+#include "Math/Animation.h"
 // 板ポリ
 #include "Direct3D/SquarePolygon.h"
+// 軌跡ポリ
+#include "Direct3D/TrailPolygon.h"
 
 // シェーダ
 #include "Shader/ShaderManager.h"

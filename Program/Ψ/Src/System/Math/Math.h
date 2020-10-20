@@ -256,6 +256,12 @@ public:
 		*this = DirectX::XMMatrixRotationZ(angle);
 	}
 
+	//クォータニオンから回転行列作成
+	void CreateFromQuaternion(const Math::Quaternion& quat)
+	{
+		*this = DirectX::XMMatrixRotationQuaternion(quat);
+	}
+
 	//拡縮行列作成
 	void CreateScalling(float x, float y, float z)
 	{
@@ -421,11 +427,17 @@ public:
 	Vector3 GetScale()const { return { _11,_22,_33 }; }
 
 	//拡縮セット
-	Vector3 SetScale(const Vector3& v)
+	void SetScale(const Vector3& v)
 	{
 		_11 = v.x;
 		_22 = v.y;
 		_33 = v.z;
+	}
+	void SetScale(float x, float y, float z)
+	{
+		_11 = x;
+		_22 = y;
+		_33 = z;
 	}
 
 };
@@ -436,3 +448,34 @@ inline Matrix operator* (const Matrix& M1, const Matrix& M2)
 	using namespace DirectX;
 	return XMMatrixMultiply(M1, M2);
 }
+
+
+//============================
+//クォータニオン
+//============================
+
+class Quaternion :public DirectX::XMFLOAT4
+{
+public:
+	//コンストラクタで初期値代入
+	Quaternion()
+	{
+		x = 0.0f;
+		y = 0.0f;
+		z = 0.0f;
+		w = 1.0f;
+	}
+
+	//XMVECTORから代入してきたとき
+	Quaternion(const DirectX::XMVECTOR& V)
+	{
+		//変換して代入
+		DirectX::XMStoreFloat4(this, V);
+	}
+
+	//XMVECTORに変換
+	operator DirectX::XMVECTOR() const { return DirectX::XMLoadFloat4(this); }
+
+
+};
+

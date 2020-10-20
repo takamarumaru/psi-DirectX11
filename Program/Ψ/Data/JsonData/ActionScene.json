@@ -1,9 +1,13 @@
 {
   "GameObjects": [
     {
-      "ClassName":"ActionProcess",
-      "Tag": 16,
-      "Name":"ActionProcess"
+      "ClassName": "ActionProcess",
+      "Name": "ActionProcess"
+    },
+    {
+      "ClassName": "ActionUI",
+      "Name": "ActionUI",
+      "Tag": 16
     },
     {
       "Name": "Map1",
@@ -11,13 +15,30 @@
     },
     {
       "Name": "Player",
-      "Pos": [0,2,0],
+      "Pos": [-7,1,-3],
       "Prefab": "Data/JsonData/PlayerObject.json"
     },
     {
       "Name": "Box1",
-      "Pos": [0,5,5],
+      "Pos": [1,2,0],
       "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Box2",
+      "Pos": [1,5,0],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Button1",
+      "Pos": [3,0,3],
+      "Prefab": "Data/JsonData/ButtonObject.json"
+    },
+    {
+      "Name": "Spring1",
+      "Pos": [3,0,-3],
+      "Prefab": "Data/JsonData/SpringObject.json",
+      "OwnerName":"Button1",
+      "PushPower":0.5
     }
   ]
 }
