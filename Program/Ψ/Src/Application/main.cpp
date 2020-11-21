@@ -41,10 +41,10 @@ bool Application::Init(int w, int h)
 	//===================================================================
 	// フルスクリーン確認
 	//===================================================================
-	bool bFullScreen = false;
-	if (MessageBoxA(m_window.GetWndHandle(), "フルスクリーンにしますか？", "確認", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES) {
-		bFullScreen = true;
-	}
+	//bool bFullScreen = false;
+	//if (MessageBoxA(m_window.GetWndHandle(), "フルスクリーンにしますか？", "確認", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES) {
+	//	bFullScreen = true;
+	//}
 
 
 	//===================================================================
@@ -64,10 +64,10 @@ bool Application::Init(int w, int h)
 		return false;
 	}
 
-	// フルスクリーン設定
-	if (bFullScreen) {
-		D3D.GetSwapChain()->SetFullscreenState(TRUE, 0);
-	}
+	//// フルスクリーン設定
+	//if (bFullScreen) {
+	//	D3D.GetSwapChain()->SetFullscreenState(TRUE, 0);
+	//}
 
 	// シェーダー初期化
 	SHADER.Init();

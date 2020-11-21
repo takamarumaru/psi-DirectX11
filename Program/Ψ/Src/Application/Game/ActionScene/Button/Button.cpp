@@ -11,6 +11,44 @@ void Button::Deserialize(const json11::Json& jsonObj)
 
 	//行列から座標へ代入
 	m_pos = m_mWorld.GetTranslation();
+
+	//レールのテクスチャ
+	m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
+	//レールのポイント
+	auto& rRailsPos = jsonObj["RailsPoint"].array_items();
+	for (auto&& point:rRailsPos)
+	{
+		Matrix mPoint;
+		mPoint.CreateTranslation
+		(
+			(float)point[0].int_value(),
+			(float)point[1].int_value() + 0.01f,
+			(float)point[2].int_value()
+		);
+		m_rail.AddPoint(mPoint);
+	}
+}
+
+json11::Json::object Button::Serialize()
+{
+	json11::Json::object objectData = GameObject::Serialize();
+
+	json11::Json::array points(m_rail.getNumPoints());
+
+	//レールのポイント
+	for (UINT i=0;i< m_rail.getNumPoints();i++)
+	{
+		json11::Json::array point(3);
+		point[0] = (int)m_rail.GetPoints()[i].Translation().x;
+		point[1] = (int)m_rail.GetPoints()[i].Translation().y;
+		point[2] = (int)m_rail.GetPoints()[i].Translation().z;
+
+		points[i] = point;
+	}
+
+	objectData["RailsPoint"] = points;
+
+	return objectData;
 }
 
 void Button::Update()
@@ -33,6 +71,14 @@ void Button::Update()
 
 	//アニメーションの更新
 	m_animator.AdvanceTime(m_spModelComponent->GetChangeableNodes());
+}
+
+void Button::DrawEffect()
+{
+	//レールの描画
+	SHADER.m_effectShader.SetWorldMatrix(Matrix());
+	SHADER.m_effectShader.WriteToCB();
+	m_rail.DrawDetached(0.5f);
 }
 
 void Button::UpdateCollision()
@@ -58,6 +104,7 @@ void Button::UpdateCollision()
 			if (m_isPush == false)
 			{
 				SetAnimation("On", false);
+				m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOn.png"));
 				m_isPush = true;
 			}
 			return;
@@ -66,6 +113,7 @@ void Button::UpdateCollision()
 	if (m_isPush == true)
 	{
 		SetAnimation("Off", false);
+		m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
 		m_isPush = false;
 	}
 }

@@ -2,6 +2,8 @@
 
 #include"./Application/Game/Scene.h"
 
+#include"./Application/Game/ActionScene/OperateObject.h"
+
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/InputComponent.h"
 
@@ -52,11 +54,18 @@ void Player::Update()
 	//重力をキャラクターのYの移動力に変える
 	m_force.y -= m_gravity;
 
+	//シーン変更中は待機
+	if (SCENE.IsChangeScene())
+	{
+		ShiftWait();
+	}
+
 	//移動更新
 	m_spActionState->Update(*this);
 
 	//移動力をキャラクターの座標に足しこむ
 	m_pos += m_force;
+	m_pos += m_moveForce;
 
 	//当たり判定
 	UpdateCollision();
@@ -80,8 +89,6 @@ void Player::Update()
 
 	//アクション処理
 	UpdateGrab();
-
-
 }
 
 void Player::DrawEffect()
@@ -113,7 +120,12 @@ void Player::Draw2D()
 
 void Player::UpdateCamera()
 {
+	//コンポーネントがない場合は返る
 	if (!m_spCameraComponent) { return; }
+	//シーン遷移中なら返る
+	if (SCENE.IsChangeScene()) { return; }
+	//デバック中は返る
+	if (SCENE.IsImGui()) { return; }
 
 	//入力情報の取得
 	const Math::Vector2& inputRot = m_spInputComponent->GetAxis(Input::Axes::R);
@@ -127,7 +139,7 @@ void Player::UpdateCamera()
 	{
 		angle += (angle < 0) ? 180.0f : -180.0f;
 	}
-	if (fabs(angle + inputRot.y * m_cameraRotSpeed)> 60)
+	if (fabs(angle + inputRot.y * m_cameraRotSpeed)> 80)
 	{
 		return;
 	}
@@ -144,14 +156,20 @@ void Player::UpdateCollision()
 
 	RayResult downRayResult;
 
+	std::shared_ptr<GameObject> operateObj = std::dynamic_pointer_cast<GameObject>(m_spOperateObj);
+
 	//下方向への判定を行い、着地した
-	if (CheckGround(downRayResult, rayDistance, TAG_StageObject | TAG_Character))
+	if (CheckGround(downRayResult, rayDistance, TAG_StageObject | TAG_Character, operateObj))
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
 
 		//地面があるので、ｙ方向への移動力は０に
 		m_force.y = 0.0f;
+
+		//摩擦を加味
+		m_force.x *= 0.7f;
+		m_force.z *= 0.7f;
 	}
 
 	//影の更新
@@ -174,6 +192,6 @@ void Player::UpdateCollision()
 	m_shadow->SetMatrix(mShadow);
 
 	//横方向との当たり判定
-	CheckBump({0,0.8f,0});
+	CheckBump(TAG_StageObject | TAG_Character, operateObj);
 	
 }

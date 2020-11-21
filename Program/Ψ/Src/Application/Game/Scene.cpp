@@ -23,6 +23,12 @@ void Scene::Deserialize()
 	//エディターカメラ
 	m_pCamera = new EditorCamera();
 
+	//入力用コンポーネントセット
+	m_spInputComponent = std::make_shared<DebugInputComponent>();
+
+	//フェードテクスチャ
+	m_spFadeTex = ResFac.GetTexture("Data/Texture/fadeTex.png");
+
 }
 
 //データ保存
@@ -44,6 +50,9 @@ void Scene::Update()
 		}
 	}
 
+	//インプットコンポーネント更新
+	m_spInputComponent->Update();
+
 	//選択しているオブジェクトを取得
 	auto selectObject = m_wpImGuiSelectObj.lock();
 
@@ -53,7 +62,10 @@ void Scene::Update()
 		//ImGuiで選択されていたら実行しない
 		if (pObject == selectObject) { continue; }
 
-		pObject->Update();
+		if (pObject)
+		{
+			pObject->Update();
+		}
 	}
 
 	//リストからの除外処理
@@ -91,6 +103,7 @@ void Scene::Draw()
 	else
 	{
 		std::shared_ptr<CameraComponent> spCamera = m_wpTaegetCamera.lock();
+
 		if (spCamera)
 		{
 			spCamera->SetToShader();
@@ -142,11 +155,14 @@ void Scene::Draw()
 		{
 			obj->Draw2D();
 		}
+		//フェード描画
+		FadeDraw();
 		//シェーダー終了
 		SHADER.m_spriteShader.End();
 	}
 
 	//デバックライン描画
+	if(m_isDebugLine)
 	{
 		SHADER.m_effectShader.SetToDevice();
 		SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
@@ -176,7 +192,7 @@ void Scene::Release()
 void Scene::AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const Math::Color& color)
 {
 
-	//ラインの開始頂点
+	//ラインの開始頂点w
 	EffectShader::Vertex ver;
 	ver.Color = color;
 	ver.UV = { 0.0f,0.0f };
@@ -189,10 +205,60 @@ void Scene::AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const
 
 }
 
+
+//デバックスフィア描画
+void Scene::AddDebugSphereLine(const Math::Vector3& pos, float radius, const Math::Color& color)
+{
+	//EffectShader::Vertex ver;
+	//ver.Color = color;
+	//ver.UV = { 0.0f,0.0f };
+
+	//static constexpr int kDetail = 32;
+	//for (UINT i = 0; i < kDetail + 1; ++i)
+	//{
+	//	//XZ平面
+	//	ver.Pos = pos;
+	//	ver.Pos.x += cos((float)i * (360 / kDetail) * ToRadians) * radius;
+	//	ver.Pos.z += sin((float)i * (360 / kDetail) * ToRadians) * radius;
+	//	m_debugLines.push_back(ver);
+
+	//	ver.Pos = pos;
+	//	ver.Pos.x += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+	//	ver.Pos.z += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+	//	m_debugLines.push_back(ver);
+
+	//	//XY平面
+	//	ver.Pos = pos;
+	//	ver.Pos.x += cos((float)i * (360 / kDetail) * ToRadians) * radius;
+	//	ver.Pos.y += sin((float)i * (360 / kDetail) * ToRadians) * radius;
+	//	m_debugLines.push_back(ver);
+
+	//	ver.Pos = pos;
+	//	ver.Pos.x += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+	//	ver.Pos.y += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+	//	m_debugLines.push_back(ver);
+
+	//	//YZ平面
+	//	ver.Pos = pos;
+	//	ver.Pos.y += cos((float)i * (360 / kDetail) * ToRadians) * radius;
+	//	ver.Pos.z += sin((float)i * (360 / kDetail) * ToRadians) * radius;
+	//	m_debugLines.push_back(ver);
+
+	//	ver.Pos = pos;
+	//	ver.Pos.y += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+	//	ver.Pos.z += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+	//	m_debugLines.push_back(ver);
+	//}
+}
+
 void Scene::RequestChangeScene(const std::string& fileName)
 {
+	//すでにシーンリクエストがある場合は返る
+	if (m_isRequestChangeScene) { return; }
+
 	m_nextSceneFileName = fileName;
 
+	m_isFade = true;
 	m_isRequestChangeScene = true;
 }
 
@@ -233,6 +299,9 @@ void Scene::LoadScene(const std::string& sceneFilename)
 		IMGUI_LOG.AddLog(u8"[LoadScene]jsonファイル読み込み失敗");
 		return;
 	}
+
+	//シーン番号取得
+	m_nowSceneNo = json["SceneNo"].number_value();
 
 	//オブジェクトリスト取得
 	auto& objectDataList = json["GameObjects"].array_items();
@@ -301,6 +370,9 @@ void Scene::SaveScene(const std::string& sceneFilename)
 //シーンを実際に変更する
 void Scene::ExecChangeScene()
 {
+	//フェードアウト中なら帰る
+	if (m_isFade) { return; }
+	//シーンを読み込む
 	LoadScene(m_nextSceneFileName);
 
 	m_isRequestChangeScene = false;
@@ -314,28 +386,54 @@ void Scene::Reset()
 }
 
 
+//フェード処理
+void Scene::FadeDraw()
+{
+	//フェード処理
+	static float alpha = 0;
+	if (m_isFade)
+	{
+		alpha+=0.01f;
+		if (alpha >= 1.0f)
+		{
+			m_isFade = false;
+		}
+	}
+	else
+	{
+		alpha -= 0.01f;
+		if (alpha <= 0.0f)
+		{
+			alpha = 0.0f;
+		}
+	}
+	//2D描画
+	SHADER.m_spriteShader.SetMatrix(DirectX::XMMatrixIdentity());
+	SHADER.m_spriteShader.DrawTex(m_spFadeTex.get(), 0, 0,nullptr,&Math::Color(0,0,0, alpha));
+}
+
 //ImGui更新
 void Scene::ImGuiUpdate()
 {
-	//ImGui表示切り替え処理
-	static bool isPush = false;
-	if (GetAsyncKeyState(VK_RSHIFT))
+	//ログウィンドウ更新
+	if (m_spInputComponent->GetButton(Input::Buttons::B) & m_spInputComponent->ENTER) { m_isImGuiLog = !m_isImGuiLog; }
+	if (m_isImGuiLog)
 	{
-		if (!isPush)
-		{
-			m_isImGui = !m_isImGui;
-			isPush = true;
-		}
+		IMGUI_LOG.ImGuiUpdate("Log Window");
 	}
-	else{isPush = false;}
+	
 	//ImGuiOffの場合返る
+	if (m_spInputComponent->GetButton(Input::Buttons::A) & m_spInputComponent->ENTER) { m_isImGui = !m_isImGui; }
 	if (!m_isImGui) { return; }
 
 	auto selectObject = m_wpImGuiSelectObj.lock();
 
 	if (ImGui::Begin("Scene"))
 	{
+		//エディターカメラ機能
 		ImGui::Checkbox("EditorCamera:", &m_editorCameraEnabe);
+		//デバックライン表示
+		ImGui::Checkbox("DebugLine:", &m_isDebugLine);
 
 		//オブジェクトリストの描画
 		if (ImGui::CollapsingHeader("Object List", ImGuiTreeNodeFlags_DefaultOpen))
@@ -371,9 +469,6 @@ void Scene::ImGuiUpdate()
 		}
 	}
 	ImGui::End();
-
-	//ログウィンドウ更新
-	IMGUI_LOG.ImGuiUpdate("Log Window");
 
 	//オブジェクト生成
 	ImGuiPrefabFactoryUpdate();

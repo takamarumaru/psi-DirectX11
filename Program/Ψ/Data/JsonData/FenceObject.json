@@ -1,0 +1,12 @@
+{
+  "ClassName": "GameObject",
+  "ModelFilePath": "Data/Fence/Fence.gltf",
+  "Prefab": "Data/JsonData/FenceObject.json",
+  "Pos": [0,0,0],
+  "Rot": [0,0,0],
+  "Scale": [1,1,1],
+  "CenterOffset": [0,1,0],
+  "Radius":1.0,
+  "Tag": 1
+}
+  

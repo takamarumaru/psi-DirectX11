@@ -56,7 +56,77 @@ void TrailPolygon::Draw(float width)
 	}
 
 	//指定した頂点配列を描画する関数
-	D3D.DrawVertices(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, vertex.size(), &vertex[0], sizeof(Vertex));
+	D3D.DrawVertices(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, vertex.size(), &vertex[0], sizeof(Vertex));
+}
+
+void TrailPolygon::DrawDetached(float width)
+{
+	//ポイントが２追加の場合は描画不可
+	if (m_pointList.size() < 2) { return; }
+
+	//軌跡画像の分割数
+	float sliceCount = (float)(m_pointList.size() - 1);
+
+	//===============================
+	//頂点データ作成
+	//===============================
+	for (UINT i = 0; i < m_pointList.size(); i++)
+	{
+		if (i == 0) { continue; }
+
+		//頂点配列
+		std::vector<Vertex> vertex;
+		//ポイント数分サイズ確保
+		vertex.resize(4);
+
+		//登録行列の参照（ショートカット）
+		Math::Matrix& mat = m_pointList[i];
+		Math::Matrix& prevMat = m_pointList[i-1];
+
+		//ラインの向き
+		Math::Vector3 vDir;
+		vDir = mat.Translation() - prevMat.Translation();
+		SCENE.AddDebugLine(prevMat.Translation(), mat.Translation(), {1,0,0,1});
+
+		Math::Vector3 axisX = DirectX::XMVector3Cross(vDir, mat.Up());
+		axisX.Normalize();
+
+		//座標
+		vertex[0].Pos = mat.Translation() + axisX * width * 0.5f;
+		vertex[1].Pos = mat.Translation() - axisX * width * 0.5f;
+		vertex[2].Pos = prevMat.Translation() + axisX * width * 0.5f;
+		vertex[3].Pos = prevMat.Translation() - axisX * width * 0.5f;
+		SCENE.AddDebugLine(mat.Translation(), vertex[0].Pos, { 1,0,0,1 });
+		SCENE.AddDebugLine(mat.Translation(), vertex[1].Pos, { 1,0,0,1 });
+		SCENE.AddDebugLine(prevMat.Translation(), vertex[2].Pos, { 1,0,0,1 });
+		SCENE.AddDebugLine(prevMat.Translation(), vertex[3].Pos, { 1,0,0,1 });
+
+
+		//UV
+		float uvY = i / sliceCount;
+		float pUvY = i-1 / sliceCount;
+		vertex[0].UV = { 0,0 };
+		vertex[1].UV = { 1,0 };
+		vertex[2].UV = { 0,1 };
+		vertex[3].UV = { 1,1 };
+
+		SHADER.m_effectShader.SetWorldMatrix(Matrix());
+
+		SHADER.m_effectShader.WriteToCB();
+
+		//テクスチャセット
+		if (m_texture)
+		{
+			D3D.GetDevContext()->PSSetShaderResources(0, 1, m_texture->GetSRViewAddress());
+		}
+		else
+		{
+			D3D.GetDevContext()->PSSetShaderResources(0, 1, D3D.GetWhiteTex()->GetSRViewAddress());
+		}
+
+		//指定した頂点配列を描画する関数
+		D3D.DrawVertices(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, 4, &vertex[0], sizeof(Vertex));
+	}
 }
 
 //ビルボード描画

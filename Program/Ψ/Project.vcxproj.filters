@@ -58,8 +58,44 @@
     <Filter Include="Src\Application\Game\ActionScene\Player">
       <UniqueIdentifier>{65aa0de3-3382-4952-b39a-98e5d35b47bb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Game\Title">
+    <Filter Include="Src\Application\Game\ActionScene\Box">
+      <UniqueIdentifier>{7426265f-b5b7-44c7-8a6c-95d63380397d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Button">
+      <UniqueIdentifier>{5b62d8aa-f80b-4097-9349-b647ba18e2d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Spring">
+      <UniqueIdentifier>{03cd58af-0025-4868-99d9-516a319728dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\ActionProcess">
+      <UniqueIdentifier>{3a5acd99-6a6c-48a5-8da4-8a8bef90fa1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\ActionUI">
+      <UniqueIdentifier>{174e6341-6f05-456c-92fd-8b6e40c2b243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\TitleScene">
       <UniqueIdentifier>{9daea6de-f249-46bf-bca6-846c788fbd84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\TitleScene\TitleUI">
+      <UniqueIdentifier>{37a2e6bc-1c58-4ff7-9b1b-e66073a38fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Door">
+      <UniqueIdentifier>{a4a3d569-bfc2-460d-9cff-a9b183e24a7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Door\ManualDoor">
+      <UniqueIdentifier>{94519f00-62a9-422d-9bd8-fbbfe32528f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Door\AutomaticDoor">
+      <UniqueIdentifier>{5ec51fea-c18e-41e1-9893-f60f69a03acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Goal">
+      <UniqueIdentifier>{c5156309-643f-40e9-9f73-bc0da5f085a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Target">
+      <UniqueIdentifier>{10e6d1f7-b996-4293-aa1a-25390a669136}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Ball">
+      <UniqueIdentifier>{20045cb0-af38-49f6-919f-c234f3c85d06}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +213,6 @@
     <ClInclude Include="Src\System\Utility\ImGuiHelper.h">
       <Filter>Src\System\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\Box.h">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\System\Math\Collision.h">
       <Filter>Src\System\Math</Filter>
     </ClInclude>
@@ -198,29 +231,56 @@
     <ClInclude Include="Src\Application\Game\ActionScene\Player\Player.h">
       <Filter>Src\Application\Game\ActionScene\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\ActionProcess.h">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Game\GameProcess.h">
       <Filter>Src\Application\Game</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Game\TitleScene\TitleProcess.h">
-      <Filter>Src\Application\Game\Title</Filter>
+      <Filter>Src\Application\Game\TitleScene</Filter>
     </ClInclude>
     <ClInclude Include="Src\System\Direct3D\TrailPolygon.h">
       <Filter>Src\System\Direct3D</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\ActionUI.h">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\Button.h">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\System\Math\Animation.h">
       <Filter>Src\System\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\Spring.h">
+    <ClInclude Include="Src\Application\Game\ActionScene\OperateObject.h">
       <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\InputObject.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.h">
+      <Filter>Src\Application\Game\ActionScene\ActionProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\ActionUI\ActionUI.h">
+      <Filter>Src\Application\Game\ActionScene\ActionUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Box\Box.h">
+      <Filter>Src\Application\Game\ActionScene\Box</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Button\Button.h">
+      <Filter>Src\Application\Game\ActionScene\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Spring\Spring.h">
+      <Filter>Src\Application\Game\ActionScene\Spring</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.h">
+      <Filter>Src\Application\Game\ActionScene\Door\ManualDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\TitleScene\TitleUI\TitleUI.h">
+      <Filter>Src\Application\Game\TitleScene\TitleUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.h">
+      <Filter>Src\Application\Game\ActionScene\Door\AutomaticDoor</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Goal\Goal.h">
+      <Filter>Src\Application\Game\ActionScene\Goal</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Target\Target.h">
+      <Filter>Src\Application\Game\ActionScene\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Ball\Ball.h">
+      <Filter>Src\Application\Game\ActionScene\Ball</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -305,9 +365,6 @@
     <ClCompile Include="..\Library\imgui\imgui_widgets.cpp">
       <Filter>Library\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\Box.cpp">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\System\Math\Collision.cpp">
       <Filter>Src\System\Math</Filter>
     </ClCompile>
@@ -332,11 +389,8 @@
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerState.cpp">
       <Filter>Src\Application\Game\ActionScene\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\ActionProcess.cpp">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\Game\TitleScene\TitleProcess.cpp">
-      <Filter>Src\Application\Game\Title</Filter>
+      <Filter>Src\Application\Game\TitleScene</Filter>
     </ClCompile>
     <ClCompile Include="Src\System\Direct3D\TrailPolygon.cpp">
       <Filter>Src\System\Direct3D</Filter>
@@ -344,17 +398,41 @@
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerEffect.cpp">
       <Filter>Src\Application\Game\ActionScene\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\ActionUI.cpp">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\Button.cpp">
-      <Filter>Src\Application\Game\ActionScene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\System\Math\Animation.cpp">
       <Filter>Src\System\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\Spring.cpp">
-      <Filter>Src\Application\Game\ActionScene</Filter>
+    <ClCompile Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.cpp">
+      <Filter>Src\Application\Game\ActionScene\ActionProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\ActionUI\ActionUI.cpp">
+      <Filter>Src\Application\Game\ActionScene\ActionUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Box\Box.cpp">
+      <Filter>Src\Application\Game\ActionScene\Box</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Button\Button.cpp">
+      <Filter>Src\Application\Game\ActionScene\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Spring\Spring.cpp">
+      <Filter>Src\Application\Game\ActionScene\Spring</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.cpp">
+      <Filter>Src\Application\Game\ActionScene\Door\ManualDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\TitleScene\TitleUI\TitleUI.cpp">
+      <Filter>Src\Application\Game\TitleScene\TitleUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.cpp">
+      <Filter>Src\Application\Game\ActionScene\Door\AutomaticDoor</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Goal\Goal.cpp">
+      <Filter>Src\Application\Game\ActionScene\Goal</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Target\Target.cpp">
+      <Filter>Src\Application\Game\ActionScene\Target</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Ball\Ball.cpp">
+      <Filter>Src\Application\Game\ActionScene\Ball</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

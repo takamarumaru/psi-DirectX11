@@ -7,7 +7,15 @@ struct RayResult
 	float	m_distance	= FLT_MAX;		//当たったところまでの距離
 	bool	m_hit		= false;		//当たったかどうか
 	Vector3	m_hitPos = {};				//当たった座標
-	Vector3 m_polyDir = {};				//当たったポリゴンの向き
+	Vector3 m_polyDir = {};				//当たったポリゴンの法線
+};
+
+//球面判定の結果データ
+struct SphereResult
+{
+	Vector3 m_push = {};		//当たった箇所からの押し出す力
+	bool	m_hit = false;		//当たったかどうか
+	Vector3 m_polyDir = {};		//当たったポリゴンの法線
 };
 
 //レイによる当たり判定

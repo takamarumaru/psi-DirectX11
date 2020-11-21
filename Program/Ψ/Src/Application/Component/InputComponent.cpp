@@ -14,6 +14,16 @@ InputComponent::InputComponent(GameObject& owner)
 
 	m_buttons.fill(FREE);
 }
+InputComponent::InputComponent()
+{
+	//操作軸初期化
+	for (auto& axis : m_axes)
+	{
+		axis = { 0.0f,0.0f };
+	}
+
+	m_buttons.fill(FREE);
+}
 
 void InputComponent::PushButton(Input::Buttons no)
 {
@@ -51,12 +61,25 @@ void InputComponent::ReleaceButton(Input::Buttons no)
 }
 
 //===============================================
+//デバッグ入力用
+//===============================================
+void DebugInputComponent::Update()
+{
+	//Aボタン入力処理
+	if (GetAsyncKeyState(VK_RSHIFT)) { PushButton(Input::Buttons::A); }
+	else { ReleaceButton(Input::Buttons::A); }
+	//Bボタン入力処理
+	if (GetAsyncKeyState('L')) { PushButton(Input::Buttons::B); }
+	else { ReleaceButton(Input::Buttons::B); }
+}
+
+//===============================================
 //タイトル入力用
 //===============================================
 void TitleProcessInputComponent::Update()
 {
 	//Aボタン入力処理
-	if (GetAsyncKeyState(VK_RETURN)) { PushButton(Input::Buttons::A); }
+	if (GetAsyncKeyState(VK_LBUTTON)) { PushButton(Input::Buttons::A); }
 	else { ReleaceButton(Input::Buttons::A); }
 }
 //===============================================
@@ -89,8 +112,11 @@ void PlayerInputComponent::Update()
 	//Bボタン入力処理
 	if (GetAsyncKeyState(VK_RCONTROL)) { PushButton(Input::Buttons::B); }
 	else { ReleaceButton(Input::Buttons::B); }
+	//Xボタン入力処理
+	if (GetAsyncKeyState(VK_RBUTTON)) { PushButton(Input::Buttons::X); }
+	else { ReleaceButton(Input::Buttons::X); }
 	//R1ボタン入力処理
-	if (GetAsyncKeyState('E')) { PushButton(Input::Buttons::R1); }
+	if (GetAsyncKeyState(VK_LBUTTON)) { PushButton(Input::Buttons::R1); }
 	else { ReleaceButton(Input::Buttons::R1); }
 
 

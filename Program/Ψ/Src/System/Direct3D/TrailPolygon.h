@@ -34,6 +34,12 @@ public:
 		return (int)m_pointList.size();
 	}
 
+	//リストを取得
+	inline std::deque<Math::Matrix> GetPoints()const
+	{
+		return m_pointList;
+	}
+
 	//画像をセット
 	inline void  SetTexture(const std::shared_ptr<Texture>& tex)
 	{
@@ -43,6 +49,8 @@ public:
 	//通常描画　行列のX軸方向に頂点が作られ描画される
 	//width　…　ポリゴンの幅
 	void Draw(float width);
+
+	void DrawDetached(float width);
 
 	//ビルボード描画
 	void DrawBillboard(float width);

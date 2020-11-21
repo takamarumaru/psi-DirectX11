@@ -1,20 +1,19 @@
 ﻿#pragma once
 
-#include "./Application/Game/GameObject.h"
+#include "../OperateObject.h"
 
-class Button :public GameObject
+class Box :public OperateObject
 {
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual void Update()override;
-
-	inline bool GetIsPush() { return m_isPush; }
 
 private:
 
 	//当たり判定更新
 	void UpdateCollision();
 
-	bool m_isPush = false;
+	//重力の強さ
+	float m_gravity = 0.01f;
 
 };

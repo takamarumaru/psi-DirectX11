@@ -45,7 +45,7 @@ void Box::UpdateCollision()
 	RayResult finalRayResult;
 
 	//下方向への判定を行い、着地した
-	if (CheckGround(finalRayResult, rayDistance,TAG_StageObject | TAG_Character))
+	if (CheckGround(finalRayResult, rayDistance,TAG_StageObject | TAG_Character, m_spOwner))
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
@@ -58,7 +58,7 @@ void Box::UpdateCollision()
 		m_force.z *= 0.8f;
 	}
 
-	if (CheckBump({ 0,1.0f,0 }))
+	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))
 	{
 		//摩擦による減速処理
 		m_force.x *= 0.8f;

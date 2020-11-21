@@ -138,6 +138,32 @@ public:
 		return DirectX::XMVector3Cross(v1, v2);
 	}
 
+	//壁ずりベクトル
+	static Vector3 WallScratch(const Vector3& rFront, const Vector3& rNormal)
+	{
+		Vector3 frontInv = VectorNomalize(-rFront);
+		Vector3 normal = VectorNomalize(rNormal);
+		Vector3 dot = DirectX::XMVector3Dot(frontInv,normal);
+
+		return VectorNomalize(VectorNomalize(rFront) + dot * normal);
+	}
+
+	//反射ベクトル
+	static Vector3 Reflect(const Vector3& rFront, const Vector3& rNormal)
+	{
+		Vector3 frontInv = VectorNomalize(-rFront);
+		Vector3 normal = VectorNomalize(rNormal);
+		Vector3 dot = DirectX::XMVector3Dot(frontInv, normal);
+
+		return VectorNomalize(VectorNomalize(rFront) + 2.0f * dot * normal);
+	}
+
+	//正規化
+	static Vector3 VectorNomalize(const Vector3& v)
+	{
+		return DirectX::XMVector3Normalize(v);
+	}
+
 	//Y軸の角度
 	float GetAngleY()
 	{
@@ -438,6 +464,12 @@ public:
 		_11 = x;
 		_22 = y;
 		_33 = z;
+	}
+
+	//逆行列を取得
+	Matrix Invert()
+	{
+		return DirectX::XMMatrixInverse(nullptr, *this);
 	}
 
 };

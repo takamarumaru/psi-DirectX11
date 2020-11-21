@@ -4,6 +4,8 @@
 
 #include"./Application/Game/Scene.h"
 
+#include"./Application/Game/ActionScene/OperateObject.h"
+
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/InputComponent.h"
 
@@ -13,6 +15,11 @@
 ///====================================================================
 void Player::UpdateMove()
 {
+
+	//慣性の処理
+	m_moveForce.x *= 0.7f;
+	m_moveForce.z *= 0.7f;
+
 	//入力情報の取得
 	const Math::Vector2& inputMove = m_spInputComponent->GetAxis(Input::Axes::L);
 
@@ -30,8 +37,14 @@ void Player::UpdateMove()
 	UpdateRotate(moveVec);
 	moveVec *= m_moveSpeed;
 
-	m_force.x = moveVec.x;
-	m_force.z = moveVec.z;
+	m_moveForce.x += moveVec.x;
+	m_moveForce.z += moveVec.z;
+
+	if (m_moveForce.Length()>=m_moveSpeed)
+	{
+		m_moveForce.Normalize();
+		m_moveForce *= m_moveSpeed;
+	}
 }
 
 ///====================================================================
@@ -73,16 +86,27 @@ void Player::UpdateRotate(const Vector3& rMoveDir)
 }
 
 ///====================================================================
-/// 掴む操作の更新
+/// 掴む操作の更新と操作オブジェクトのリセット関数
 ///====================================================================
 void Player::UpdateGrab()
 {
-	//オブジェクト登録用
-	static std::shared_ptr<GameObject> operateObj = nullptr;
+	//操作オブジェクト
+	static std::shared_ptr<GameObject> hitObj=nullptr;
 	//レイ判定情報
 	RayInfo rayInfo;
 	//オブジェクトまでの距離格納用
 	static float operateObjDistance = 0.0f;
+
+	//シーン遷移中なら操作を中止
+	if (SCENE.IsChangeScene())
+	{
+		if (m_isOperate)
+		{
+			//操作オブジェクト初期化
+			OperateReset();
+		}
+		return;
+	}
 
 	//登録オブジェクトが存在しない間
 	if (!m_isOperate)
@@ -116,27 +140,32 @@ void Player::UpdateGrab()
 					if (rayResult.m_distance < finalRayResult.m_distance)
 					{
 						finalRayResult = rayResult;
-						operateObj = obj;
+						hitObj = obj;
 					}
 				}
 			}
 
 			//当たったオブジェクトがあったら
-			if (operateObj)
+			if (hitObj)
 			{
 				//操作できるオブジェクト以外なら返る
-				if (!(operateObj->GetTag() & (TAG_CanControlObject)))
+				if (!(hitObj->GetTag() & (TAG_CanControlObject)))
 				{
-					operateObj = nullptr;
+					//当たったオブジェクトは削除しておく
+					hitObj = nullptr;
 					return;
 				}
+				//当たったオブジェクトを操作オブジェクトにいれる
+				m_spOperateObj = std::dynamic_pointer_cast<OperateObject>(hitObj);
 				//操作フラグを立てる
 				m_isOperate = true;
 				//プレイヤーからオブジェクトの距離を算出
-				Vector3 vec = operateObj->GetCenterPos() - rayPos;
+				Vector3 vec = m_spOperateObj->GetCenterPos() - rayPos;
 				operateObjDistance = vec.Length();
 				//オブジェクトの重力計算を停止
-				operateObj->OffFall();
+				m_spOperateObj->OffFall();
+				//オーナーポインタを渡す
+				m_spOperateObj->SetOwner(shared_from_this());
 			}
 		}
 	}
@@ -159,13 +188,10 @@ void Player::UpdateGrab()
 
 		///外側行列を生成====================================================================
 		//オブジェクトの位置を調整
-		if (APP.m_window.GetMouseWheelVal())
-		{
-			operateObjDistance=(float)APP.m_window.GetMouseWheelVal();
-		}
+		operateObjDistance += APP.m_window.GetMouseWheelVal() * m_operateObjAroundSpeed;
 		//プレイヤーとの距離を制限
-		if (operateObjDistance > 10.0f) { operateObjDistance = 10.0f; }
-		if (operateObjDistance < 3.0f) { operateObjDistance = 3.0f; }
+		if (operateObjDistance > m_operateObjMaxDst) { operateObjDistance = m_operateObjMaxDst; }
+		if (operateObjDistance < m_operateObjMinDst) { operateObjDistance = m_operateObjMinDst; }
 		//移動
 		Matrix mOuter;
 		mOuter.CreateTranslation(0.0f, 0.0f, operateObjDistance);
@@ -174,27 +200,53 @@ void Player::UpdateGrab()
 		//行列を合成
 		mOuter *= mRot * mCenter;
 		//オブジェクトから求めた行列までのベクトルを算出
-		Vector3 vForce = mOuter.GetTranslation() - operateObj->GetCenterPos();
+		Vector3 vForce = mOuter.GetTranslation() - m_spOperateObj->GetCenterPos();
 		//スピードを合成
-		vForce *= 0.095f;
+		vForce *= m_operateObjTrackingSpeed;
+		//オブジェクトが壁をすり抜けないように制限
+		if (vForce.Length() >= m_operateObjTrackingMaxSpeed)
+		{
+			vForce.Normalize();
+			vForce *= m_operateObjTrackingMaxSpeed;
+		}
 		//移動量を渡す
-		operateObj->SetForce(vForce);
+		m_spOperateObj->SetForce(vForce);
 
 		//軌跡の座標を追加
 		UpdatePowerEffect
 		(
 			mCenter.GetTranslation(),
-			operateObj->GetCenterPos(),
+			m_spOperateObj->GetCenterPos(),
 			mOuter.GetTranslation()
 		);
 
 		///R1ボタンをもう一度押したときに登録を解除する======================================
 		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
 		{
-			m_isOperate = false;		//操作フラグを解除
-			m_powerEffect.ClearPoint();	//軌跡を消す
-			operateObj->OnFall();		//重力を反映させる
-			operateObj = nullptr;		//登録を外す
+			//操作オブジェクト初期化
+			OperateReset();
+		}
+
+		//Xボタンを押したときにオブジェクトを前方に発射する==================================
+		if (m_spInputComponent->GetButton(Input::Buttons::X) & InputComponent::ENTER)
+		{
+
+			vForce= m_spOperateObj->GetCenterPos()-mCenter.GetTranslation();
+			vForce.Normalize();
+			vForce *= m_operateObjShotPower;
+			//移動量を渡す
+			m_spOperateObj->SetForce(vForce);
+			//操作オブジェクト初期化
+			OperateReset();
 		}
 	}
+}
+
+void Player::OperateReset()
+{
+	m_isOperate = false;			//操作フラグを解除
+	m_powerEffect.ClearPoint();		//軌跡を消す
+	m_spOperateObj->OnFall();		//重力を反映させる
+	m_spOperateObj->ClearOwner();	//オーナー情報を削除
+	m_spOperateObj = nullptr;		//登録を外す
 }

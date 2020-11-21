@@ -2,18 +2,17 @@
 
 #include "./Application/Game/GameObject.h"
 
-class Box :public GameObject
+class AutomaticDoor :public GameObject
 {
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
+	virtual json11::Json::object Serialize()override;
 	virtual void Update()override;
 
 private:
 
-	//当たり判定更新
 	void UpdateCollision();
 
-	//重力の強さ
-	float m_gravity = 0.01f;
+	bool m_isOpen = false;
 
 };

@@ -1,0 +1,12 @@
+{
+  "ClassName": "Target",
+  "Prefab": "Data/JsonData/TargetObject.json",
+  "ModelFilePath": "Data/Target/Target.gltf",
+  "Pos": [0,0,0],
+  "Rot": [0,0,0],
+  "Scale": [1,1,1],
+  "CenterOffset": [0,1,0],
+  "Radius":1.5,
+  "ReturnTime" :3.0,
+  "Tag": 1
+}

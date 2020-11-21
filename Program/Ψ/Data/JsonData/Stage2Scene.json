@@ -1,0 +1,58 @@
+{
+  "SceneNo":2,
+  "GameObjects": [
+    {
+      "ClassName": "ActionProcess",
+      "Name": "ActionProcess",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "Tag": 16
+    },
+    {
+      "ClassName": "ActionUI",
+      "Name": "ActionUI",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "Tag": 16
+    },
+    {
+      "Name": "Map1",
+      "Prefab": "Data/JsonData/MapObject.json",
+      "ModelFilePath": "Data/StageMap/Map2/Map2.gltf"
+    },
+    {
+      "Name": "Goal1",
+      "Pos": [0,12,0],
+      "Prefab": "Data/JsonData/GoalObject.json"
+    },
+    {
+      "Name": "Ball1",
+      "Pos": [3,0,5],
+      "Prefab": "Data/JsonData/BallObject.json"
+    },
+    {
+      "Name": "Target1",
+      "Pos": [4,0,6],
+      "Rot":[0,90,0],
+      "RailsPoint":
+      [
+        [4,0,6],
+        [4,0,-3],
+        [3,0,-4],
+        [-5,0,-4]
+      ],
+      "Prefab": "Data/JsonData/TargetObject.json"
+    },
+    {
+      "Name": "ManualDoor1",
+      "OwnerName": "Target1",
+      "Pos": [-5,0,-4],
+      "Prefab": "Data/JsonData/ManualDoorObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Player",
+      "Pos": [-9,0,9],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,-51,0]
+    }
+  ]
+}

@@ -84,6 +84,8 @@ public:
 
 ///	当たり判定=============================================
 
+	//球による当たり判定（距離判定）
+	bool GameObject::HitCheckBySphere(const SphereInfo& rInfo);
 	//レイによる当たり判定
 	bool HitCheckByRay(const RayInfo& rInfo, RayResult& rResult);
 	//球による当たり判定（mesh）
@@ -109,7 +111,7 @@ protected:
 ///	当たり判定=============================================
 
 	//地面（下方向）とのレイ判定
-	bool CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag);
+	bool CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj = nullptr);
 	//歩いて乗り越えられる段差の高さ
 	static const float s_allowToStepHeight;
 	//地面から足が離れていても着地していると判定する高さ（坂道などを登るときに宙に浮くのを防ぐ）
@@ -118,7 +120,7 @@ protected:
 	bool m_isGround=false;
 
 	//球面判定
-	bool CheckBump(Vector3 rCenterOffset);
+	bool CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj = nullptr);
 
 /// オブジェクトデータ=====================================
 
@@ -186,11 +188,4 @@ struct BoxInfo
 {
 	Model::Node m_node;
 	Matrix m_matrix;
-};
-
-//球面判定の結果データ
-struct SphereResult
-{
-	Vector3 m_push;
-	bool m_hit = false;
 };

@@ -6,6 +6,6 @@
   "Rot": [0,0,0],
   "Scale": [1,1,1],
   "CenterOffset": [0,1,0],
-  "Radius":1.0,
+  "Radius":0.9,
   "Tag": 9
 }

@@ -196,8 +196,11 @@ void SpriteShader::DrawTex(const Texture* tex, int x, int y, int w, int h, const
 		uvMin.x = srcRect->x / (float)tex->GetInfo().Width;
 		uvMin.y = srcRect->y / (float)tex->GetInfo().Height;
 
-		uvMax.x = (srcRect->x + srcRect->width) / (float)tex->GetInfo().Width;
-		uvMax.y = (srcRect->y + srcRect->height) / (float)tex->GetInfo().Height;
+		uvMax.x = srcRect->width / (float)tex->GetInfo().Width;
+		uvMax.y = srcRect->height / (float)tex->GetInfo().Height;
+
+		w = srcRect->width - srcRect->x;
+		h = srcRect->height - srcRect->y;
 	}
 
 	// 頂点作成

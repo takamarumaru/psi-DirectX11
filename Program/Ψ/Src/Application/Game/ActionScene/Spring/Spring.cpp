@@ -1,6 +1,6 @@
 ﻿#include "Spring.h"
 
-#include "Button.h"
+#include "../InputObject.h"
 
 #include"./Application/Game/Scene.h"
 
@@ -13,6 +13,8 @@ void Spring::Deserialize(const json11::Json& jsonObj)
 
 	//行列から座標へ代入
 	m_pos = m_mWorld.GetTranslation();
+	m_rot = m_mWorld.GetAngles();
+
 
 	//オーナーの名前
 	if (jsonObj["OwnerName"].is_null() == false)
@@ -29,8 +31,20 @@ void Spring::Deserialize(const json11::Json& jsonObj)
 	//押し出す力
 	if (jsonObj["PushPower"].is_null() == false)
 	{
-		m_pushPower = jsonObj["PushPower"].number_value();
+		m_pushPower = jsonObj["PushPower"].number_value() / 100.0f;
 	}
+}
+
+json11::Json::object Spring::Serialize()
+{
+	json11::Json::object objectData = GameObject::Serialize();
+
+	//オーナー名
+	objectData["OwnerName"] = m_ownerName;
+	//押し出す力
+	objectData["PushPower"] = (int)(m_pushPower * 100.0f);
+
+	return objectData;
 }
 
 void Spring::Update()
@@ -57,7 +71,7 @@ void Spring::Update()
 	if (m_animator.IsAnimationEnd())
 	{
 		m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
-		std::shared_ptr<Button> button = std::dynamic_pointer_cast<Button>(m_wpOwner.lock());
+		std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
 		if (button->GetIsPush())
 		{
 			SetAnimation("Piston", false);

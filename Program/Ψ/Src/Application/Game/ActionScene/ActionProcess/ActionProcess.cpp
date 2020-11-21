@@ -1,19 +1,17 @@
 ﻿#include "ActionProcess.h"
-#include "../Scene.h"
+#include "../../Scene.h"
 
-#include "../../Component/InputComponent.h"
+#include "../../../Component/InputComponent.h"
 
 void ActionProcess::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
 
 	//マウスカーソルを非表示
-	ShowCursor(false);
+	while (ShowCursor(false)>=0);
 
 	//インプットコンポーネント初期化
 	m_spInputComponent = std::make_shared<ActionProcessInputComponent>(*this);
-
-	//テクスチャの読み込み
 
 }
 

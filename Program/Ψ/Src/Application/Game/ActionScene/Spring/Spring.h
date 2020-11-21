@@ -6,6 +6,7 @@ class Spring :public GameObject
 {
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
+	virtual json11::Json::object Serialize()override;
 	virtual void Update()override;
 
 private:
@@ -20,7 +21,7 @@ private:
 	float m_pushTime = 0.0f;
 
 	//押しだす力
-	float m_pushPower = 0.0f;
+	double m_pushPower = 0.0f;
 
 	//オーナー情報
 	std::string m_ownerName;

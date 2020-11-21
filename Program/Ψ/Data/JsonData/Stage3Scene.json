@@ -1,0 +1,32 @@
+{
+  "SceneNo":3,
+  "GameObjects": [
+    {
+      "ClassName": "ActionProcess",
+      "Name": "ActionProcess",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "Tag": 16
+    },
+    {
+      "ClassName": "ActionUI",
+      "Name": "ActionUI",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "Tag": 16
+    },
+    {
+      "Name": "Map1",
+      "Prefab": "Data/JsonData/MapObject.json",
+      "ModelFilePath": "Data/StageMap/Map3/Map3.gltf"
+    },
+    {
+      "Name": "Goal1",
+      "Prefab": "Data/JsonData/GoalObject.json"
+    },
+    {
+      "Name": "Player",
+      "Pos": [-9,0,9],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,-51,0]
+    }
+  ]
+}

@@ -38,6 +38,7 @@ public:
 
 	//コンストラクタ：オーナーの設定・ボタンの初期化
 	InputComponent(GameObject& owner);
+	InputComponent();
 
 	virtual ~InputComponent() {}
 
@@ -72,7 +73,18 @@ protected:
 	std::array<int, Input::Buttons::BTN_MAX> m_buttons;
 
 	//持ち主
-	GameObject& m_owner;
+	GameObject m_owner;
+};
+
+//===============================================
+//デバック関係入力用
+//===============================================
+class DebugInputComponent :public InputComponent
+{
+public:
+	DebugInputComponent() :InputComponent() {}
+
+	virtual void Update()override;
 };
 
 //===============================================

@@ -92,6 +92,9 @@ bool RayToMesh(const DirectX::XMVECTOR& rRayPos, const DirectX::XMVECTOR& rRayDi
 				const Vector3 AtoB = rMesh.GetVertexPositions()[idx[2]] - rMesh.GetVertexPositions()[idx[0]];
 				//ポリゴンの外積を求める
 				rResult.m_polyDir = Vector3::Cross(BtoC,AtoB);
+				//回転を加味
+				rResult.m_polyDir = XMVector3TransformNormal(rResult.m_polyDir, rMatrix);
+				//正規化
 				rResult.m_polyDir.Normalize();
 			}
 		}
@@ -100,6 +103,8 @@ bool RayToMesh(const DirectX::XMVECTOR& rRayPos, const DirectX::XMVECTOR& rRayDi
 	rResult.m_distance = closestDist;
 	//当たった場所の算出
 	rResult.m_hitPos = rayPos + (rayDir * rResult.m_distance);
+	//回転を加味
+	rResult.m_hitPos = XMVector3TransformNormal(rResult.m_hitPos, rMatrix);
 	//ワールド座標に変換
 	rResult.m_hitPos = rMatrix.GetTranslation() + rResult.m_hitPos;
 

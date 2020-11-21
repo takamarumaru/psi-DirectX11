@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "./Application/Game/GameObject.h"
+//#include "./Application/Game/GameObject.h"
+#include "../OperateObject.h"
 
 class TextureEffect;
 
@@ -22,23 +23,23 @@ private:
 	//アクション更新
 	void UpdateGrab();
 	void UpdatePowerEffect(const Vector3 rStart, const Vector3 rEnd, const Vector3 rTarget);
+	void OperateReset();
 
 	//当たり判定更新
 	void UpdateCollision();
 
+	//重力の強さ
+	float m_gravity = 0.01f;
 	//判定距離
 	float m_radius = 0.5f;
 
-	//重力の強さ
-	float m_gravity = 0.01f;
-
 	//ジャンプ力
 	float m_jumpPow = 0.2f;
-
 	//移動速度
 	float m_moveSpeed = 0.15f;
 	float m_cameraRotSpeed = 0.15f;
-
+	//キー移動
+	Vector3 m_moveForce;
 	//回転速度
 	float m_rotateAngle = 10.0f;
 
@@ -48,10 +49,27 @@ private:
 	//影
 	std::shared_ptr<TextureEffect> m_shadow;
 
+	//操作するオブジェクト======================
+
+	std::shared_ptr<OperateObject> m_spOperateObj = nullptr;
+	//距離制限
+	float m_operateObjMaxDst = 10.0f;
+	float m_operateObjMinDst = 3.0f;
+	//追尾速度
+	float m_operateObjTrackingSpeed = 0.095f;
+	//追尾する最高速度
+	float m_operateObjTrackingMaxSpeed = 0.5f;
+	//マウスホイールによる移動速度
+	float m_operateObjAroundSpeed = 0.01f;
+	//発射するときの力
+	float m_operateObjShotPower = 0.5f;
+
 	//念　軌跡
 	TrailPolygon	m_powerEffect;
 	//ポインタ
 	std::shared_ptr<Texture> m_spPointTex;
+
+	//==========================================
 
 //============================================
 //ステート関係
@@ -88,8 +106,6 @@ private:
 	//待機ステートに切り替え
 	void ShiftWait() 
 	{
-		m_force.x = 0.0f;
-		m_force.z = 0.0f;
 		m_spActionState = std::make_shared<WaitAction>(); 
 	}
 	//移動ステートに切り替え
@@ -98,7 +114,7 @@ private:
 	void ShiftJump() 
 	{
 		m_force.y += m_jumpPow;
-		m_spActionState = std::make_shared<JumpAction>(); 
+		m_spActionState = std::make_shared<JumpAction>();
 	}
 
 	//移動ステートへの移行条件を満たしているか

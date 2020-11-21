@@ -2,6 +2,7 @@
 
 class EditorCamera;
 class CameraComponent;
+class InputComponent;
 
 class GameObject;
 
@@ -25,9 +26,17 @@ public:
 
 	//デバックライン描画
 	void AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const Math::Color& color = { 1,1,1,1 });
+	//デバックスフィア描画
+	void AddDebugSphereLine(const Math::Vector3& pos, float radius, const Math::Color& color = { 1,1,1,1 });
 
-	//シーン変更のリクエストを受け付け
+
+/// シーン===========================================
+	//変更のリクエストを受け付け
 	void RequestChangeScene(const std::string& fileName);
+	//番号取得
+	UINT GetSceneNo() { return m_nowSceneNo; }
+
+	bool IsChangeScene() { return m_isRequestChangeScene; }
 
 
 /// オブジェクト管理=================================
@@ -43,12 +52,19 @@ public:
 	void ImGuiUpdate();
 	//オブジェクト生成ウィンドウの更新
 	void ImGuiPrefabFactoryUpdate();
+	//ImGui表示
+	bool IsImGui() { return m_isImGui; }
 
 /// カメラアクセサ===================================
 	inline void SetTargetCamera(std::shared_ptr<CameraComponent> spCamera) { m_wpTaegetCamera = spCamera; }
 
 
 private:
+	//デバック表示をするか
+	bool m_isDebugLine = false;
+	//インプットコンポーネント
+	std::shared_ptr<InputComponent> m_spInputComponent = nullptr;
+
 /// シーン===========================================
 	//読み込み
 	void LoadScene(const std::string& sceneFilename);
@@ -64,6 +80,15 @@ private:
 	//シーン遷移のリクエストがあったか
 	bool m_isRequestChangeScene = false;
 
+	//現在のシーン番号
+	UINT m_nowSceneNo = 0;
+
+	//フェード処理
+	void FadeDraw();
+	//フェード処理中かどうか
+	bool m_isFade = false;
+	//フェードのテクスチャ
+	std::shared_ptr<Texture> m_spFadeTex;
 
 /// オブジェクト=====================================
 	//リスト
@@ -74,6 +99,8 @@ private:
 	std::weak_ptr<GameObject>		m_wpImGuiSelectObj;
 	//ImGuiを表示するか
 	bool m_isImGui = false;
+	//ImGuiLogを表示するか
+	bool m_isImGuiLog = false;
 
 /// カメラ===========================================
 	//エディターカメラ
@@ -82,7 +109,6 @@ private:
 	bool			m_editorCameraEnabe = false;
 	//ターゲットのカメラ
 	std::weak_ptr<CameraComponent>	m_wpTaegetCamera;
-
 
 	//デバックライン描画用の頂点配列
 	std::vector<EffectShader::Vertex> m_debugLines;

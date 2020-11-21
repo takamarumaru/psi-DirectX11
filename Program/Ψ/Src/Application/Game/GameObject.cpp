@@ -7,12 +7,18 @@
 
 
 #include "TitleScene/TitleProcess.h"
+#include "TitleScene/TitleUI/TitleUI.h"
 
-#include "ActionScene/ActionProcess.h"
-#include "ActionScene/ActionUI.h"
-#include "ActionScene/Box.h"
-#include "ActionScene/Button.h"
-#include "ActionScene/Spring.h"
+#include "ActionScene/ActionProcess/ActionProcess.h"
+#include "ActionScene/ActionUI/ActionUI.h"
+#include "ActionScene/Box/Box.h"
+#include "ActionScene/Ball/Ball.h"
+#include "ActionScene/Button/Button.h"
+#include "ActionScene/Spring/Spring.h"
+#include "ActionScene/Door/ManualDoor/ManualDoor.h"
+#include "ActionScene/Door/AutomaticDoor/AutomaticDoor.h"
+#include "ActionScene/Target/Target.h"
+#include "ActionScene/Goal/Goal.h"
 #include "ActionScene/Player/Player.h"
 
 const float GameObject::s_allowToStepHeight = 0.8f;
@@ -86,9 +92,12 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 	const std::vector<json11::Json>& rRot = jsonObj["Rot"].array_items();
 	if (rRot.size() == 3)
 	{
-		mRotate.CreateRotationX((float)rRot[0].number_value() * ToRadians);
-		mRotate.RotateY((float)rRot[1].number_value() * ToRadians);
-		mRotate.RotateZ((float)rRot[2].number_value() * ToRadians);
+		mRotate.CreateRotation
+		(
+			(float)rRot[0].number_value() * ToRadians,
+			(float)rRot[1].number_value() * ToRadians,
+			(float)rRot[2].number_value() * ToRadians
+		);
 	}
 
 	//拡縮
@@ -119,7 +128,7 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 	//当たり判定半径
 	if (jsonObj["Radius"].is_null() == false)
 	{
-		m_radius = jsonObj["Radius"].number_value();
+		m_radius = (float)jsonObj["Radius"].number_value();
 	}
 
 
@@ -136,28 +145,31 @@ json11::Json::object GameObject::Serialize()
 
 	objectData["ClassName"] = m_className;			//クラス名
 	objectData["Name"] = m_name;					//名前
-	objectData["ModelFilePath"] = m_modelFilePath;	//モデルパス
+	if (!m_modelFilePath.empty())
+	{
+		objectData["ModelFilePath"] = m_modelFilePath;	//モデルパス
+	}
 	objectData["Tag"] = (int)m_tag;					//タグ
 
 	//座標
 	json11::Json::array mat(3);
-	mat[0] = m_mWorld.GetTranslation().x;
-	mat[1] = m_mWorld.GetTranslation().y;
-	mat[2] = m_mWorld.GetTranslation().z;
+	mat[0] = (int)m_mWorld.GetTranslation().x;
+	mat[1] = (int)m_mWorld.GetTranslation().y;
+	mat[2] = (int)m_mWorld.GetTranslation().z;
 
 	objectData["Pos"] = mat;
 
 	//回転
-	mat[0] = m_mWorld.GetAngles().x * ToDegrees;
-	mat[1] = m_mWorld.GetAngles().y * ToDegrees;
-	mat[2] = m_mWorld.GetAngles().z * ToDegrees;
+	mat[0] = (int)(m_mWorld.GetAngles().x * ToDegrees);
+	mat[1] = (int)(m_mWorld.GetAngles().y * ToDegrees);
+	mat[2] = (int)(m_mWorld.GetAngles().z * ToDegrees);
 
 	objectData["Rot"] = mat;
 
 	//拡縮
-	mat[0] = m_mWorld.GetScale().x;
-	mat[1] = m_mWorld.GetScale().y;
-	mat[2] = m_mWorld.GetScale().z;
+	mat[0] = 1;
+	mat[1] = 1;
+	mat[2] = 1;
 
 	objectData["Scale"] = mat;
 	
@@ -249,10 +261,10 @@ void GameObject::ImGuiUpdate()
 
 		bool isChange = false;
 
-		isChange |= ImGui::DragFloat3("Position", &pos.x, 0.01f);
-		isChange |= ImGui::DragFloat3("Rotation", &rot.x, 0.1f);
-		isChange |= ImGui::DragFloat3("Scale", &scale.x, 0.1f);
-		isChange |= ImGui::DragFloat("AllScale", &m_allScale, 0.1f);
+		isChange |= ImGui::DragFloat3("Position", &pos.x, 1.0f);
+		isChange |= ImGui::DragFloat3("Rotation", &rot.x, 1.0f);
+		isChange |= ImGui::DragFloat3("Scale", &scale.x, 1.0f);
+		isChange |= ImGui::DragFloat("AllScale", &m_allScale, 1.0f);
 
 		if (isChange)
 		{
@@ -317,6 +329,30 @@ void GameObject::SetAnimation(const char* pAnimName, bool isLoop)
 		std::shared_ptr<AnimationData>animData = m_spModelComponent->GetAnimation(pAnimName);
 		m_animator.SetAnimation(animData,isLoop);
 	}
+}
+
+//球による当たり判定（距離判定）
+bool GameObject::HitCheckBySphere(const SphereInfo& rInfo)
+{
+	//当たったとする距離の計算（お互いの半径を足した値）
+	float hitRange = rInfo.m_radius + m_radius;
+
+	//自分の座標ベクトル
+	Vector3 myPos = m_mWorld.GetTranslation();
+
+	//二点間のベクトルを計算
+	Vector3 betweenVec = rInfo.m_pos - myPos;
+
+	//二点間の距離を計算
+	float distance = betweenVec.Length();
+
+	bool isHit = false;
+	if (distance <= hitRange)
+	{
+		isHit = true;
+	}
+
+	return isHit;
 }
 
 //レイによる当たり判定
@@ -412,7 +448,7 @@ bool GameObject::HitCheckByBox(const BoxInfo& rInfo)
 	return false;
 }
 
-bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag)
+bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj)
 {
 	//レイ判定情報
 	RayInfo rayInfo;
@@ -436,10 +472,13 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 	//全員とレイ判定
 	for (auto& obj : SCENE.GetObjects())
 	{
-		//自分自身は無理
+		//自分自身は判定しない
 		if (obj.get() == this) { continue; }
-		//ステージとの当たり判定（背景オブジェクト以外に乗るときは変更）
+		//指定されたタグのオブジェクトとだけ当たり判定
 		if (!(obj->GetTag() & (rTag))) { continue; }
+		//禁止指定されたオブジェクトは判定しない
+		if (rNotObj && obj == rNotObj){ continue; }
+
 		RayResult rayResult;
 
 		if (obj->HitCheckByRay(rayInfo, rayResult))
@@ -493,13 +532,13 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 	return m_isGround;
 }
 
-bool GameObject::CheckBump(Vector3 rCenterOffset)
+bool GameObject::CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj)
 {
 	//球情報の作成
 	SphereInfo info;
 
 	info.m_pos = m_pos;
-	info.m_pos += rCenterOffset;
+	info.m_pos += m_centerOffset;
 	info.m_radius = m_radius;
 
 	//判定結果格納用
@@ -510,15 +549,28 @@ bool GameObject::CheckBump(Vector3 rCenterOffset)
 	{
 		//自分自身は無視
 		if (obj.get() == this) { continue; }
-
+		//指定されたタグのオブジェクトとだけ当たり判定
+		if (!(obj->GetTag() & (rTag))) { continue; }
+		//指定されたオブジェクトは判定しない
+		if (rNotObj)
+		{
+			if (obj == rNotObj) { continue; }
+		}
 		SphereResult sphereResult;
 		//当たっていたら
 		if (obj->HitCheckBySphereVsMesh(info, sphereResult))
 		{
 			isHit=true;
+			//押し出された分を足しこむ
 			m_pos += sphereResult.m_push;
+			///反射処理======================================
+
+			m_force = Vector3::Reflect(m_force,sphereResult.m_push) * m_force.Length();
 		}
 	}
+
+	//デバック表示
+	SCENE.AddDebugSphereLine(info.m_pos, info.m_radius, isHit ? Math::Color(1,0,0,1): Math::Color(0,1,0,1));
 
 	return isHit;
 }
@@ -552,6 +604,11 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	{
 		return std::make_shared<Box>();
 	}
+	//ボール
+	if (name == "Ball")
+	{
+		return std::make_shared<Ball>();
+	}
 	//バネ
 	if (name == "Spring")
 	{
@@ -562,11 +619,34 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	{
 		return std::make_shared<Button>();
 	}
+	//ドア
+	if (name == "ManualDoor")
+	{
+		return std::make_shared<ManualDoor>();
+	}
+	if (name == "AutomaticDoor")
+	{
+		return std::make_shared<AutomaticDoor>();
+	}
+	//的
+	if (name == "Target")
+	{
+		return std::make_shared<Target>();
+	}
+	//ゴール
+	if (name == "Goal")
+	{
+		return std::make_shared<Goal>();
+	}
 
 	///タイトルプロセス=======================================
 	if (name == "TitleProcess")
 	{
 		return std::make_shared<TitleProcess>();
+	}
+	if (name == "TitleUI")
+	{
+		return std::make_shared<TitleUI>();
 	}
 
 	//文字列が既存のクラスに一致しなかった

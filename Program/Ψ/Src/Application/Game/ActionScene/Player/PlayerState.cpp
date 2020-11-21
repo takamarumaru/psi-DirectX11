@@ -1,6 +1,7 @@
 ﻿#include "Player.h"
 
 #include"./Application/Component/InputComponent.h"
+#include"../../Scene.h"
 
 //移動ステートへの移行条件を満たしているか
 bool Player::IsShiftWalk()
@@ -38,6 +39,10 @@ bool Player::IsShiftJump()
 //待機時の更新
 void Player::WaitAction::Update(Player& rOwner)
 {
+	//慣性の処理
+	rOwner.m_moveForce.x *= 0.7f;
+	rOwner.m_moveForce.z *= 0.7f;
+	rOwner.m_pos += rOwner.m_moveForce;
 	//移動ステートに遷移
 	if (rOwner.IsShiftWalk())
 	{

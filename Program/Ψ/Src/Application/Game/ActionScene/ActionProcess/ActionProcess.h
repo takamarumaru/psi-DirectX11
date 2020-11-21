@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include"../GameProcess.h"
+#include"../../GameProcess.h"
 
 class ActionProcess :public GameProcess
 {
