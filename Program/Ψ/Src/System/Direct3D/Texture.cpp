@@ -386,6 +386,55 @@ bool Texture::Create(int w, int h, DXGI_FORMAT format, UINT arrayCnt, const D3D1
 	return true;
 }
 
+bool Texture::CreateRenderTarget(int w, int h, DXGI_FORMAT format, UINT arrayCnt, const D3D11_SUBRESOURCE_DATA* fillData, UINT miscFlags)
+{
+	Release();
+
+	// 作成する2Dテクスチャ設定
+	D3D11_TEXTURE2D_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.Format = format;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	desc.Width = (UINT)w;
+	desc.Height = (UINT)h;
+	desc.CPUAccessFlags = 0;
+	desc.MipLevels = 1;
+	desc.ArraySize = arrayCnt;
+	desc.MiscFlags = miscFlags;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+
+	// 作成
+	if (Create(desc, fillData) == false)return false;
+
+	return true;
+}
+
+bool Texture::CreateDepthStencil(int w, int h, DXGI_FORMAT format, UINT arrayCnt, const D3D11_SUBRESOURCE_DATA* fillData, UINT miscFlags)
+{
+	Release();
+
+	// 作成する2Dテクスチャ設定
+	D3D11_TEXTURE2D_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.Format = format;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL;
+	desc.Width = (UINT)w;
+	desc.Height = (UINT)h;
+	desc.CPUAccessFlags = 0;
+	desc.MipLevels = 1;
+	desc.ArraySize = arrayCnt;
+	desc.MiscFlags = miscFlags;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+
+	// 作成
+	if (Create(desc, fillData) == false)return false;
+
+	return true;
+}
+
+
 void Texture::SetSRView(ID3D11ShaderResourceView* srv)
 {
 	if (srv == nullptr)return;

@@ -12,12 +12,12 @@ struct SphereResult;
 //タグ
 enum OBJECT_TAG
 {
-	TAG_None			= 0x00000000,	//属性なし
-	TAG_Character		= 0x00000001,	//キャラクター
-	TAG_Player			= 0x00000002,	//プレイヤー
-	TAG_StageObject		= 0x00000004,	//ステージ
-	TAG_CanControlObject= 0x00000008,	//操作できるオブジェクト
-	TAG_ProcessObject	= 0x00000010,	//プロセスオブジェクト
+	TAG_None				= 0x00000000,	//属性なし
+	TAG_Character			= 0x00000001,	//キャラクター
+	TAG_Player				= 0x00000002,	//プレイヤー
+	TAG_StageObject			= 0x00000004,	//ステージ
+	TAG_CanControlObject	= 0x00000008,	//操作できるオブジェクト
+	TAG_ProcessObject		= 0x00000010,	//プロセスオブジェクト
 };
 
 class GameObject :public std::enable_shared_from_this<GameObject>
@@ -42,6 +42,8 @@ public:
 	virtual void DrawEffect(){};
 	//2D描画
 	virtual void Draw2D(){};
+	//シャドウマップ描画
+	virtual void DrawShadowMap();
 	//ImGui更新
 	virtual void ImGuiUpdate();
 
@@ -139,6 +141,8 @@ protected:
 	Vector3 m_force;
 	//回転角度
 	Vector3 m_rot;
+	//弾性力
+	float m_elastic = 0.0f;
 
 	//タグ
 	UINT		m_tag = OBJECT_TAG::TAG_None;

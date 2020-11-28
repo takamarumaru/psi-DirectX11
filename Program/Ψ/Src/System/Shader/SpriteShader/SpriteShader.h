@@ -133,13 +133,13 @@ private:
 		Math::Matrix		mTransform;
 		Math::Vector4		Color = { 1, 1, 1, 1 };
 	};
-	KdConstantBuffer<cbSprite>	m_cb0;
+	ConstantBuffer<cbSprite>	m_cb0;
 
 	// 定数バッファ
 	struct cbProjection {
 		Math::Matrix		mProj;
 	};
-	KdConstantBuffer<cbProjection>	m_cb1;
+	ConstantBuffer<cbProjection>	m_cb1;
 
 	// Flag
 	bool					m_isBegin = false;

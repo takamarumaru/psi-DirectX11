@@ -35,7 +35,7 @@ struct GLTFMaterial
 
 	// エミッシブ：自己発光 つまり表面から放出される光　RGBのみ使用
 	std::string		EmissiveTexture;			// エミッシブテクスチャ　RGBを使用
-	Math::Vector3	Emissive = { 0,0,0 };			// 上記テクスチャのRGBのスケーリング要素
+	Math::Vector3	Emissive = { 0,0,0 };		// 上記テクスチャのRGBのスケーリング要素
 
 	//------------------------------
 	// その他テクスチャ
@@ -75,6 +75,8 @@ struct GLTFNode
 		std::vector<MeshVertex>				Vertices;
 		// 面情報配列
 		std::vector<MeshFace>				Faces;
+		// マテリアル番号配列
+		std::vector<UINT>					Materials;
 		// サブセット情報配列
 		std::vector<MeshSubset>				Subsets;
 	};

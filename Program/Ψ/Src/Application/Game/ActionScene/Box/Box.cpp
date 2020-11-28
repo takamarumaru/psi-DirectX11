@@ -52,10 +52,6 @@ void Box::UpdateCollision()
 
 		//地面があるので、ｙ方向への移動力は０に
 		m_force.y = 0.0f;
-
-		//地面の摩擦を加味
-		m_force.x *= 0.8f;
-		m_force.z *= 0.8f;
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))

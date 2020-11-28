@@ -3,7 +3,7 @@
 using namespace DirectX;
 
 //レイによる当たり判定
-bool RayToMesh(const DirectX::XMVECTOR& rRayPos, const DirectX::XMVECTOR& rRayDir, float maxDistance, const Mesh& rMesh, const Matrix& rMatrix, RayResult& rResult)
+bool RayToMesh(const DirectX::XMVECTOR& rRayPos, const DirectX::XMVECTOR& rRayDir, float maxDistance, const Mesh& rMesh, const std::vector <Material>& rMaterial, const Matrix& rMatrix, RayResult& rResult)
 {
 	//モデルの逆行列でレイを変換
 	XMMATRIX invMat = XMMatrixInverse(0,rMatrix);
@@ -96,6 +96,9 @@ bool RayToMesh(const DirectX::XMVECTOR& rRayPos, const DirectX::XMVECTOR& rRayDi
 				rResult.m_polyDir = XMVector3TransformNormal(rResult.m_polyDir, rMatrix);
 				//正規化
 				rResult.m_polyDir.Normalize();
+
+				//粗さを取得
+				rResult.m_roughness = rMaterial[rMesh.GetMaterialIdx()[faceIdx]].Roughness;
 			}
 		}
 	}

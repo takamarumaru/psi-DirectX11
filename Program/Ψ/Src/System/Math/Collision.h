@@ -1,5 +1,6 @@
 ﻿#pragma once
 class Mesh;
+class Material;
 
 //レイ判定をした時の結果情報
 struct RayResult
@@ -8,6 +9,7 @@ struct RayResult
 	bool	m_hit		= false;		//当たったかどうか
 	Vector3	m_hitPos = {};				//当たった座標
 	Vector3 m_polyDir = {};				//当たったポリゴンの法線
+	float	m_roughness = 1.0f;			//当たったポリゴンの粗さ
 };
 
 //球面判定の結果データ
@@ -24,6 +26,7 @@ bool RayToMesh(
 	const DirectX::XMVECTOR& rRayDir,
 	float maxDistance,
 	const Mesh& rMesh,
+	const std::vector<Material>& rMaterial,
 	const Matrix& rMatrix,
 	RayResult& rResult
 );

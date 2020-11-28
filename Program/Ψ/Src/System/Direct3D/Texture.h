@@ -83,6 +83,27 @@ public:
 	// 戻り値：true … 成功
 	bool Create(int w, int h, DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM, UINT arrayCnt = 1, const D3D11_SUBRESOURCE_DATA* fillData = nullptr);
 
+	// レンダーターゲットテクスチャとして作成
+	// ※テクスチャリソースを作成し、ShaderResourceViewのみを作成します
+	// ・w            … 画像の幅(ピクセル)
+	// ・h            … 画像の高さ(ピクセル)
+	// ・format        … 画像の形式　DXGI_FORMATを使用
+	// ・arrayCnt    … 「テクスチャ配列」を使用する場合、その数。1で通常の1枚テクスチャ
+	// ・fillData    … バッファに書き込むデータ　nullptrだと書き込みなし
+	// ・miscFlags    … その他フラグ(キューブマップを作成したい時に必要)
+	// 戻り値：true … 成功
+	bool CreateRenderTarget(int w, int h, DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM, UINT arrayCnt = 1, const D3D11_SUBRESOURCE_DATA* fillData = nullptr, UINT miscFlags = 0);
+
+	// 深度ステンシルテクスチャ(Zバッファ)として作成
+	// ・w            … 画像の幅(ピクセル)
+	// ・h            … 画像の高さ(ピクセル)
+	// ・format        … 画像の形式　DXGI_FORMATを使用
+	// ・arrayCnt    … 「テクスチャ配列」を使用する場合、その数。1で通常の1枚テクスチャ
+	// ・fillData    … バッファに書き込むデータ　nullptrだと書き込みなし
+	// ・miscFlags    … その他フラグ(キューブマップを作成したい時に必要)
+	// 戻り値：true … 成功
+	bool CreateDepthStencil(int w, int h, DXGI_FORMAT format = DXGI_FORMAT_R24G8_TYPELESS, UINT arrayCnt = 1, const D3D11_SUBRESOURCE_DATA* fillData = nullptr, UINT miscFlags = 0);
+
 	//====================================================
 	//
 	// ビューから作成

@@ -25,7 +25,7 @@ void Mesh::SetToDevice() const
 }
 
 
-bool Mesh::Create(const std::vector<MeshVertex>& vertices, const std::vector<MeshFace>& faces, const std::vector<MeshSubset>& subsets)
+bool Mesh::Create(const std::vector<MeshVertex>& vertices, const std::vector<MeshFace>& faces, const std::vector<UINT>& materialIdxList, const std::vector<MeshSubset>& subsets)
 {
 	Release();
 
@@ -33,6 +33,7 @@ bool Mesh::Create(const std::vector<MeshVertex>& vertices, const std::vector<Mes
 	// サブセット情報
 	//------------------------------
 	m_subsets = subsets;
+	//IMGUI_LOG.AddLog("sub:%d", m_subsets.size());
 
 	//------------------------------
 	// 頂点バッファ作成
@@ -54,10 +55,11 @@ bool Mesh::Create(const std::vector<MeshVertex>& vertices, const std::vector<Mes
 
 		// 座標のみの配列
 		m_positions.resize(vertices.size());
-		for (UINT i = 0; i < m_positions.size(); i++)
+		for (UINT i = 0; i < vertices.size(); i++)
 		{
 			m_positions[i] = vertices[i].Pos;
 		}
+
 
 		// AA境界データ作成
 		DirectX::BoundingBox::CreateFromPoints(m_aabb, m_positions.size(), &m_positions[0], sizeof(Math::Vector3));
@@ -85,6 +87,15 @@ bool Mesh::Create(const std::vector<MeshVertex>& vertices, const std::vector<Mes
 
 		// 面情報コピー
 		m_faces = faces;
+	}
+
+	if (materialIdxList.size() > 0)
+	{
+		m_materialIdxList.resize(materialIdxList.size());
+		for (UINT i = 0; i < materialIdxList.size(); i++)
+		{
+			m_materialIdxList[i] = materialIdxList[i];
+		}
 	}
 
 	return true;

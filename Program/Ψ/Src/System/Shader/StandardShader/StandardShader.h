@@ -60,13 +60,13 @@ public:
 	}
 
 	// Object用定数バッファをそのまま返す
-	KdConstantBuffer<cbObject>& ObjectCB()
+	ConstantBuffer<cbObject>& ObjectCB()
 	{
 		return m_cb0;
 	}
 
 	// material用定数バッファをそのまま返す
-	KdConstantBuffer<cbMaterial>& MaterialCB()
+	ConstantBuffer<cbMaterial>& MaterialCB()
 	{
 		return m_cb1_Material;
 	}
@@ -130,7 +130,7 @@ private:
 
 		float tmp[1];
 	};
-	KdConstantBuffer<cbObject>	m_cb0;
+	ConstantBuffer<cbObject>	m_cb0;
 
 	// 定数バッファ(マテリアル単位更新)
 	struct cbMaterial {
@@ -141,7 +141,7 @@ private:
 
 		float			tmp[3];
 	};
-	KdConstantBuffer<cbMaterial>	m_cb1_Material;
+	ConstantBuffer<cbMaterial>	m_cb1_Material;
 
 };
 

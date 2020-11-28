@@ -39,10 +39,8 @@ bool Player::IsShiftJump()
 //待機時の更新
 void Player::WaitAction::Update(Player& rOwner)
 {
-	//慣性の処理
-	rOwner.m_moveForce.x *= 0.7f;
-	rOwner.m_moveForce.z *= 0.7f;
-	rOwner.m_pos += rOwner.m_moveForce;
+	//当たり判定処理
+	rOwner.UpdateCollision();
 	//移動ステートに遷移
 	if (rOwner.IsShiftWalk())
 	{
@@ -81,6 +79,9 @@ void Player::WalkAction::Update(Player& rOwner)
 
 void Player::JumpAction::Update(Player& rOwner)
 {
+	//空気抵抗の処理
+	rOwner.m_moveForce.x *= 0.8f;
+	rOwner.m_moveForce.z *= 0.8f;
 	//移動処理
 	rOwner.UpdateMove();
 

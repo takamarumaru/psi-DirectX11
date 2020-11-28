@@ -15,7 +15,7 @@ bool Model::Load(const std::string& filename)
 {
 	//ファイルの完全パスを取得
 	std::string fileDir = GetDirFromPath(filename);
-
+	//IMGUI_LOG.AddLog(filename.c_str());
 	//GLTFの読み込み
 	std::shared_ptr<GLTFModel> spGltfModel = KdLoadGLTFModel(filename);
 	if (spGltfModel == nullptr) { return false; }
@@ -55,6 +55,7 @@ bool Model::Load(const std::string& filename)
 				(
 					rSrcNode.Mesh.Vertices,
 					rSrcNode.Mesh.Faces,
+					rSrcNode.Mesh.Materials,
 					rSrcNode.Mesh.Subsets
 				);
 			}
@@ -75,6 +76,29 @@ bool Model::Load(const std::string& filename)
 		//基本色
 		rDstMaterial.BaseColor = rSrcMaterial.BaseColor;
 		rDstMaterial.BaseColorTex = std::make_shared<Texture>();
+
+		// 金属性・粗さ
+		rDstMaterial.Metallic = rSrcMaterial.Metallic;
+		rDstMaterial.Roughness = rSrcMaterial.Roughness;
+		rDstMaterial.MetallicRoughnessTex = std::make_shared<Texture>();
+		if (rDstMaterial.MetallicRoughnessTex->Load(fileDir + rSrcMaterial.MetallicRoughnessTexture) == false)
+		{
+			// 読み込めなかった場合は、代わりに白画像を使用
+			rDstMaterial.MetallicRoughnessTex = D3D.GetWhiteTex();
+		}
+
+		//エミッシブ
+		rDstMaterial.Emissive = rSrcMaterial.Emissive;
+
+		// 法線マップ
+		rDstMaterial.NormalTex = std::make_shared<Texture>();
+		if (rDstMaterial.NormalTex->Load(fileDir + rSrcMaterial.NormalTexture) == false)
+		{
+			// 読み込めなかった場合は、代わりにZ向き法線マップを使用
+			rDstMaterial.NormalTex = D3D.GetNormalTex();
+		}
+
+
 
 		//テクスチャー読み込み
 		rDstMaterial.BaseColorTex = ResFac.GetTexture(fileDir + rSrcMaterial.BaseColorTexture);

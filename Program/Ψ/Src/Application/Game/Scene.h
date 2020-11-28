@@ -102,6 +102,7 @@ private:
 	//ImGuiLogを表示するか
 	bool m_isImGuiLog = false;
 
+
 /// カメラ===========================================
 	//エディターカメラ
 	EditorCamera*	m_pCamera;
@@ -113,6 +114,11 @@ private:
 	//デバックライン描画用の頂点配列
 	std::vector<EffectShader::Vertex> m_debugLines;
 
+/// シェーダー=======================================
+
+	// 平行光
+	Vector3 m_lightDir = { 0,-1,0 };		//方向
+	Vector3 m_lightColor = { 1,1,1 };		//光の色
 
 //===================================================
 //シングルトン実装

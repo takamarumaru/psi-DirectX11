@@ -252,7 +252,6 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 			destMaterial.NormalTexture = GetTextureFilename(srcMaterial.normalTexture.index);
 			// オクルージョンマップ
 			destMaterial.OcclusionTexture = GetTextureFilename(srcMaterial.occlusionTexture.index);
-
 		}
 
 		// マテリアルがゼロの場合は、１つだけ作成しておく
@@ -402,8 +401,9 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 		// 作業データ
 		struct GLTFPrimitive
 		{
-			std::vector<MeshVertex>			Vertices;
+			std::vector<MeshVertex>				Vertices;
 			std::vector<MeshFace>				Faces;
+			std::vector<UINT>					MaterialIdx;
 
 			UINT								MaterialNo = 0;
 
@@ -423,6 +423,7 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 			std::shared_ptr<GLTFPrimitive> destPrimitive = std::make_shared<GLTFPrimitive>();
 			tempPrimitives[pri] = destPrimitive;
 			destPrimitive->Attributes = srcPrimitive.attributes;
+
 
 			// マテリアルNo
 			destPrimitive->MaterialNo = std::max(0, srcPrimitive.material);
@@ -516,17 +517,18 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 
 				// 面数ぶんリサイズ
 				destPrimitive->Faces.resize(indexGetter.GetAccessor()->count / 3);
+				destPrimitive->MaterialIdx.resize(indexGetter.GetAccessor()->count / 3);
 				for (UINT di = 0; di < destPrimitive->Faces.size(); di++)
 				{
+					//IMGUI_LOG.AddLog("%d",di);
 					// データ型のバイト数求める(Z軸ミラーのため、1と2を入れ替えています)
 					destPrimitive->Faces[di].Idx[0] = (UINT)indexGetter.GetValue_Int(di * 3 + 0);
 					destPrimitive->Faces[di].Idx[2] = (UINT)indexGetter.GetValue_Int(di * 3 + 1);
 					destPrimitive->Faces[di].Idx[1] = (UINT)indexGetter.GetValue_Int(di * 3 + 2);
-
+					//各面のマテリアル番号を取得
+					destPrimitive->MaterialIdx[di]= destPrimitive->MaterialNo;
 				}
-
 			}
-
 		}
 
 		// マテリアルソート
@@ -573,6 +575,13 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 				}
 			}
 
+			//マテリアル番号リスト合成
+			if (prim->MaterialIdx.size() >= 1) {
+				UINT st = destNode->Mesh.Materials.size();
+				destNode->Mesh.Materials.resize(destNode->Mesh.Materials.size() + prim->MaterialIdx.size());
+				memcpy(&destNode->Mesh.Materials[st], &prim->MaterialIdx[0], prim->MaterialIdx.size() * sizeof(UINT));
+			}
+
 			// Subset
 			destNode->Mesh.Subsets[pi].FaceCount += prim->Faces.size();	// 面数を加算
 
@@ -594,6 +603,16 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 			}
 		}
 
+		// メッシュの全頂点の接線を計算する
+		for (auto&& v : destNode->Mesh.Vertices)
+		{
+			v.Tangent = Vector3::Cross({ 0,1,0 }, v.Normal);
+			if (v.Tangent.x == 0 && v.Tangent.y == 0 && v.Tangent.z == 0)
+			{
+				v.Tangent = Vector3::Cross({ 0,0,-1 }, v.Normal);
+			}
+		}
+
 
 	}
 
@@ -609,8 +628,6 @@ std::shared_ptr<GLTFModel> KdLoadGLTFModel(const std::string& path)
 
 		// 名前
 		animation->m_name = srcAni.name;
-
-		//IMGUI_LOG.AddLog(animation->m_name.c_str());
 
 		// 
 		std::vector<std::shared_ptr<GLTFAnimationData::Node>> tempNodes;

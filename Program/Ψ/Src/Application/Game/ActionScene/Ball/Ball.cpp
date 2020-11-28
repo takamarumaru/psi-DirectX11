@@ -55,35 +55,36 @@ void Ball::UpdateCollision()
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
 
-		//地面があるので、ｙ方向への移動力は０に
-		m_force.y = 0.0f;
-
-		//摩擦による減速処理
-		m_force.x *= 0.98f;
-		m_force.z *= 0.98f;
+		///上方向への反射処理
+		if (m_tag & TAG_CanControlObject)
+		{
+			m_force = Vector3::Reflect(m_force, { 0,1,0 }) * m_force.Length();
+			m_force.y *= 0.6f;	//減速
+		}
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))
 	{
 		//摩擦による減速処理
-		m_force.x *= 0.8f;
-		m_force.z *= 0.8f;
+		m_force *= 0.7f;
 	}
 }
 
 //回転の更新
 void Ball::UpdateRotate()
 {
+
 	//宙に浮いているなら返る
 	if (!m_isGround) { return; }
 
 	//移動方向
 	Vector3 moveVec = m_prevPos - m_pos;
 	//移動していないなら返る
-	if (moveVec.Length() <= 0.2f) { return; }
+	if (moveVec.Length() == 0.0f) { return; }
 
 	//ベクトルの長さ
-	float moveLen = m_force.Length() * 30.0f;
+	Vector3 force = m_force;
+	force.y = 0.0f;
 
 	//moveVecがZeroベクトルなら返る
 	if (XMVector3Equal(moveVec, { 0.0f,0.0f,0.0f })){return;}
@@ -94,7 +95,11 @@ void Ball::UpdateRotate()
 
 	//移動方向の右方向を軸に回転した回転行列を作成
 	Matrix mRotate = m_mWorld;
-	mRotate.RotateAxis(rightVec,moveLen * ToRadians);
+	mRotate.RotateAxis(rightVec, force.Length() / ((m_radius-0.3f) * M_PI));
+
+	//IMGUI_LOG.Clear();
+	//IMGUI_LOG.AddLog(u8"移動量:%.2f", force.Length());
+	//IMGUI_LOG.AddLog(u8"直径:%.2f", (1.0f * M_PI));
 
 	m_rot = mRotate.GetAngles();
 }

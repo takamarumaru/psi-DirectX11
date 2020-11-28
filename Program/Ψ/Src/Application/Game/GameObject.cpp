@@ -19,6 +19,7 @@
 #include "ActionScene/Door/AutomaticDoor/AutomaticDoor.h"
 #include "ActionScene/Target/Target.h"
 #include "ActionScene/Goal/Goal.h"
+#include "ActionScene/Light/Light.h"
 #include "ActionScene/Player/Player.h"
 
 const float GameObject::s_allowToStepHeight = 0.8f;
@@ -63,7 +64,11 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 	{
 		m_prefab = jsonObj["Prefab"].string_value();
 	}
-
+	//弾性力
+	if (jsonObj["Elastic"].is_null() == false)
+	{
+		m_elastic = jsonObj["Elastic"].number_value();
+	}
 
 
 	//モデル--------------------------------------
@@ -229,7 +234,16 @@ void GameObject::Draw()
 	if (m_spModelComponent == nullptr) { return; }
 
 	m_spModelComponent->Draw();
+
 }
+//シャドウマップ描画
+void GameObject::DrawShadowMap()
+{
+	if (m_spModelComponent == nullptr)return;
+	m_spModelComponent->DrawShadowMap();
+}
+
+
 
 void GameObject::ImGuiUpdate()
 {
@@ -375,8 +389,11 @@ bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
 		(
 			rInfo.m_pos,
 			rInfo.m_dir,
-			rInfo.mMaxRange, *(node.m_spMesh),
-			node.m_localTransform * m_mWorld, tmpResult
+			rInfo.mMaxRange, 
+			*(node.m_spMesh),
+			m_spModelComponent->GetModel()->GetMaterials(),
+			node.m_localTransform * m_mWorld,
+			tmpResult
 		);
 
 		//より近い判定を優先する
@@ -526,7 +543,17 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 
 		//相手の動いた分を自分の移動に含める
 		m_pos += vOneMove;
+
+		//摩擦による減速処理
+		float force= (1.0f - downRayResult.m_roughness) + m_elastic;
+		if (force >= 1.0f) { force = 1.0f; }
+		m_force *= force;
+		
+		IMGUI_LOG.AddLog((m_name + "========================").c_str());
+		IMGUI_LOG.AddLog(u8"減速率:%.2f", force);
 	}
+
+
 
 	//着地したかどうかを返す
 	return m_isGround;
@@ -564,8 +591,8 @@ bool GameObject::CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj)
 			//押し出された分を足しこむ
 			m_pos += sphereResult.m_push;
 			///反射処理======================================
-
-			m_force = Vector3::Reflect(m_force,sphereResult.m_push) * m_force.Length();
+			if (m_tag & TAG_CanControlObject)
+				m_force = Vector3::Reflect(m_force, sphereResult.m_push) * m_force.Length();
 		}
 	}
 
@@ -632,6 +659,11 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	if (name == "Target")
 	{
 		return std::make_shared<Target>();
+	}
+	//ライト
+	if (name == "Light")
+	{
+		return std::make_shared<Light>();
 	}
 	//ゴール
 	if (name == "Goal")

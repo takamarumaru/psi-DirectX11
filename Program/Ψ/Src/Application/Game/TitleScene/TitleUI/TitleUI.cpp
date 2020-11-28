@@ -88,8 +88,6 @@ void TitleUI::Update()
 	m_logo.m_pos.x = (rWindow.right - rWindow.left) / 2 / 2 - 50;
 	m_logo.m_pos.y = 0;
 
-	IMGUI_LOG.Clear();
-
 	for (UINT i = 0; i < m_menu.size(); i++)
 	{
 		m_menu[i].m_pos.x = -(rWindow.right - rWindow.left) / 2 / 4 - 100;

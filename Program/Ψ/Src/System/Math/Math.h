@@ -47,6 +47,14 @@ public:
 		z = v.m128_f32[2];
 		*/
 	}
+	// XMFLOAT3から代入してきた時
+	Vector3(const DirectX::XMFLOAT3& V)
+	{
+		x = V.x;
+		y = V.y;
+		z = V.z;
+	}
+
 
 	//XMVECTORに変換
 	operator DirectX::XMVECTOR() const { return DirectX::XMLoadFloat3(this); }
@@ -80,9 +88,10 @@ public:
 	}
 
 	//自分を正規化
-	void Normalize()
+	Vector3& Normalize()
 	{
 		*this = DirectX::XMVector3Normalize(*this);
+		return *this;
 	}
 
 	//ターゲットに向けてベクトルを徐々に変換
@@ -307,6 +316,14 @@ public:
 		return *this;
 	}
 
+	// 正射影行列作成
+	Matrix& CreateProjection_Orthographic(float viewWidth, float viewHeight, float nearZ, float farZ)
+	{
+		*this = DirectX::XMMatrixOrthographicLH(viewWidth, viewHeight, nearZ, farZ);
+		return *this;
+	}
+
+
 //操作=================================================//
 
 	//移動
@@ -448,6 +465,31 @@ public:
 
 		return angles;
 	}
+
+
+	// Z軸を指定方向に向ける
+	Matrix& LookTo(const Vector3& dir, const Vector3& up)
+	{
+		Vector3 vZ = dir;
+		vZ.Normalize();
+		Vector3 vX = Vector3::Cross(up, vZ).Normalize();
+		if (vX.LengthSquared() == 0)
+		{
+			vX = { 1,0,0 };
+		}
+		Vector3 vY = Vector3::Cross(vZ, vX).Normalize();
+
+		float scaleX = GetAxisX().Length();
+		float scaleY = GetAxisY().Length();
+		float scaleZ = GetAxisZ().Length();
+
+		SetAxisX(vX * scaleX);
+		SetAxisY(vY * scaleY);
+		SetAxisZ(vZ * scaleZ);
+
+		return *this;
+	}
+
 
 	//拡縮取得
 	Vector3 GetScale()const { return { _11,_22,_33 }; }

@@ -89,6 +89,7 @@ void Player::Update()
 
 	//アクション処理
 	UpdateGrab();
+
 }
 
 void Player::DrawEffect()
@@ -167,9 +168,8 @@ void Player::UpdateCollision()
 		//地面があるので、ｙ方向への移動力は０に
 		m_force.y = 0.0f;
 
-		//摩擦を加味
-		m_force.x *= 0.7f;
-		m_force.z *= 0.7f;
+		//摩擦による減速処理
+		m_moveForce *= (1.0f - downRayResult.m_roughness);
 	}
 
 	//影の更新
@@ -192,6 +192,10 @@ void Player::UpdateCollision()
 	m_shadow->SetMatrix(mShadow);
 
 	//横方向との当たり判定
-	CheckBump(TAG_StageObject | TAG_Character, operateObj);
+	if(CheckBump(TAG_StageObject | TAG_Character, operateObj))
+	{
+		m_moveForce.x = 0.0f;
+		m_moveForce.z = 0.0f;
+	};
 	
 }

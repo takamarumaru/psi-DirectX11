@@ -233,6 +233,20 @@ bool Direct3D::Init(HWND hWnd, int w, int h, bool deviceDebug, std::string& errM
 		m_texWhite->Create(1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, 1, &srd);
 	}
 
+	//=========================================================
+	// 1x1のZ向き法線マップ作成
+	//=========================================================
+	{
+		auto col = Math::Color(0.5f, 0.5, 1.0f, 1).RGBA();
+		D3D11_SUBRESOURCE_DATA srd;
+		srd.pSysMem = &col;
+		srd.SysMemPitch = 4;
+		srd.SysMemSlicePitch = 0;
+
+		m_texNormal = std::make_shared<Texture>();
+		m_texNormal->Create(1, 1, DXGI_FORMAT_R8G8B8A8_UNORM, 1, &srd);
+	}
+
 	// DrawVertices用頂点バッファを作成
 	UINT bufferSize = 80;
 	for (int i = 0; i < 10; i++)	// 

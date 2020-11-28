@@ -107,7 +107,7 @@ private:
 //
 //========================================================
 template<class DataType>
-class KdConstantBuffer {
+class ConstantBuffer {
 public:
 
 	//=================================================
@@ -178,12 +178,12 @@ public:
 	}
 
 	// 
-	~KdConstantBuffer()
+	~ConstantBuffer()
 	{
 		Release();
 	}
 
-	KdConstantBuffer() = default;
+	ConstantBuffer() = default;
 
 private:
 
@@ -199,8 +199,8 @@ private:
 
 private:
 	// コピー禁止用
-	KdConstantBuffer(const KdConstantBuffer& src) = delete;
-	void operator=(const KdConstantBuffer& src) = delete;
+	ConstantBuffer(const ConstantBuffer& src) = delete;
+	void operator=(const ConstantBuffer& src) = delete;
 };
 
 

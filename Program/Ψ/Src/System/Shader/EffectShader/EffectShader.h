@@ -118,7 +118,7 @@ private:
 		float				AlphaTestThreshold = 0;
 		float					tmp[3];
 	};
-	KdConstantBuffer<cbObject>	m_cb0;
+	ConstantBuffer<cbObject>	m_cb0;
 };
 
 

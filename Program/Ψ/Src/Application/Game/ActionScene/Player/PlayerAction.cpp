@@ -15,11 +15,6 @@
 ///====================================================================
 void Player::UpdateMove()
 {
-
-	//慣性の処理
-	m_moveForce.x *= 0.7f;
-	m_moveForce.z *= 0.7f;
-
 	//入力情報の取得
 	const Math::Vector2& inputMove = m_spInputComponent->GetAxis(Input::Axes::L);
 

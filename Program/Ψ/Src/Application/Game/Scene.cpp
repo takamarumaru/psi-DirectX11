@@ -26,6 +26,10 @@ void Scene::Deserialize()
 	//入力用コンポーネントセット
 	m_spInputComponent = std::make_shared<DebugInputComponent>();
 
+
+	SHADER.m_cb8_Light.Work().DL_Dir = m_lightDir;
+	SHADER.m_cb8_Light.Work().DL_Dir.Normalize();
+
 	//フェードテクスチャ
 	m_spFadeTex = ResFac.GetTexture("Data/Texture/fadeTex.png");
 
@@ -41,6 +45,22 @@ void Scene::Serialize()
 //更新
 void Scene::Update()
 {
+	// 点光の登録をリセットする
+	SHADER.ResetPointLight();
+
+	//疑似的な太陽の表示
+	{
+		const Vector3 sunPos = { 0.f,5.f,0.f };
+		Vector3 sunDir = m_lightDir;
+		sunDir.Normalize();
+		Vector3 color = m_lightColor;
+		color.Normalize();
+		Math::Color sunColor = color;
+		sunColor.w = 1.0f;
+		AddDebugLine(sunPos, sunPos + sunDir * 2, sunColor);
+		AddDebugSphereLine(sunPos, 0.5f, sunColor);
+	} 
+
 	//エディターカメラ更新
 	if (m_editorCameraEnabe)
 	{
@@ -56,6 +76,7 @@ void Scene::Update()
 	//選択しているオブジェクトを取得
 	auto selectObject = m_wpImGuiSelectObj.lock();
 
+	IMGUI_LOG.Clear();
 	//オブジェクト更新
 	for (auto pObject : m_spObjects)
 	{
@@ -110,21 +131,42 @@ void Scene::Draw()
 		}
 	}
 
+	//============================
+	// シャドウマップ生成描画
+	//============================
+	SHADER.m_genShadowMapShader.Begin();
+
+	// 全オブジェクトを描画
+	for (auto& obj : m_spObjects)
+	{
+		obj->DrawShadowMap();
+	}
+
+	SHADER.m_genShadowMapShader.End();
+
+
 	//ライトの情報をセット
 	SHADER.m_cb8_Light.Write();
 
 	//エフェクトシェーダを描画デバイスにセット
 	SHADER.m_effectShader.SetToDevice();
-
 	//不透明物描画
 	{
-		SHADER.m_standardShader.SetToDevice();
+		// シャドウマップをセット
+		D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
+
+		SHADER.m_modelShader.SetToDevice();
 
 		//オブジェクト描画
 		for (auto pObject : m_spObjects)
 		{
 			pObject->Draw();
 		}
+
+		// シャドウマップを解除
+		ID3D11ShaderResourceView* nullSRV = nullptr;
+		D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
+
 	}
 
 	//半透明物描画
@@ -415,6 +457,7 @@ void Scene::FadeDraw()
 //ImGui更新
 void Scene::ImGuiUpdate()
 {
+
 	//ログウィンドウ更新
 	if (m_spInputComponent->GetButton(Input::Buttons::B) & m_spInputComponent->ENTER) { m_isImGuiLog = !m_isImGuiLog; }
 	if (m_isImGuiLog)
@@ -426,8 +469,32 @@ void Scene::ImGuiUpdate()
 	if (m_spInputComponent->GetButton(Input::Buttons::A) & m_spInputComponent->ENTER) { m_isImGui = !m_isImGui; }
 	if (!m_isImGui) { return; }
 
-	auto selectObject = m_wpImGuiSelectObj.lock();
+	//太陽光の設定
+	if (ImGui::Begin("LightSettings"))
+	{
 
+		if (ImGui::DragFloat3("Direction", &m_lightDir.x, 0.01f))
+		{
+			SHADER.m_cb8_Light.Work().DL_Dir = m_lightDir;
+			SHADER.m_cb8_Light.Work().DL_Dir.Normalize();
+		}
+		if (ImGui::DragFloat3("Color", &m_lightColor.x, 0.01f))
+		{
+			SHADER.m_cb8_Light.Work().DL_Color = m_lightColor;
+		}
+	}
+	ImGui::End();
+
+	// Graphics Debug
+	if (ImGui::Begin("Graphics Debug"))
+	{
+		ImGui::Image((ImTextureID)SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRView(), ImVec2(200, 200));
+	}
+	ImGui::End();
+
+
+	//オブジェクト選択
+	auto selectObject = m_wpImGuiSelectObj.lock();
 	if (ImGui::Begin("Scene"))
 	{
 		//エディターカメラ機能
@@ -458,7 +525,7 @@ void Scene::ImGuiUpdate()
 
 	ImGui::End();
 
-	//インスペクタウィンド
+	//選択したオブジェクトのステータス表示
 	if (ImGui::Begin("Inspector"))
 	{
 

@@ -97,6 +97,15 @@
     <Filter Include="Src\Application\Game\ActionScene\Ball">
       <UniqueIdentifier>{20045cb0-af38-49f6-919f-c234f3c85d06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\System\Shader\ModelShader">
+      <UniqueIdentifier>{d683052f-0f79-470d-82e7-b23093d8be9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\System\Shader\GenerateShadowMapShader">
+      <UniqueIdentifier>{ac7f369e-ef5a-4118-866a-bae2a3209fcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Light">
+      <UniqueIdentifier>{99483b26-e345-4554-9cd0-97b6cd5894a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -282,6 +291,15 @@
     <ClInclude Include="Src\Application\Game\ActionScene\Ball\Ball.h">
       <Filter>Src\Application\Game\ActionScene\Ball</Filter>
     </ClInclude>
+    <ClInclude Include="Src\System\Shader\ModelShader\ModelShader.h">
+      <Filter>Src\System\Shader\ModelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\System\Shader\GenerateShadowMapShader\GenerateShadowMapShader.h">
+      <Filter>Src\System\Shader\GenerateShadowMapShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Light\Light.h">
+      <Filter>Src\Application\Game\ActionScene\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -434,6 +452,15 @@
     <ClCompile Include="Src\Application\Game\ActionScene\Ball\Ball.cpp">
       <Filter>Src\Application\Game\ActionScene\Ball</Filter>
     </ClCompile>
+    <ClCompile Include="Src\System\Shader\ModelShader\ModelShader.cpp">
+      <Filter>Src\System\Shader\ModelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\System\Shader\GenerateShadowMapShader\GenerateShadowMapShader.cpp">
+      <Filter>Src\System\Shader\GenerateShadowMapShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Light\Light.cpp">
+      <Filter>Src\Application\Game\ActionScene\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\System\Shader\inc_Common.hlsli">
@@ -447,6 +474,12 @@
     </None>
     <None Include="Src\System\Shader\EffectShader\inc_EffectShader.hlsli">
       <Filter>Src\System\Shader\EffectShader</Filter>
+    </None>
+    <None Include="Src\System\Shader\ModelShader\inc_ModelShader.hlsli">
+      <Filter>Src\System\Shader\ModelShader</Filter>
+    </None>
+    <None Include="Src\System\Shader\GenerateShadowMapShader\inc_GenerateShadowMapShader.hlsli">
+      <Filter>Src\System\Shader\GenerateShadowMapShader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -467,6 +500,18 @@
     </FxCompile>
     <FxCompile Include="Src\System\Shader\StandardShader\StandardShader_VS.hlsl">
       <Filter>Src\System\Shader\StandardShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\System\Shader\ModelShader\ModelShader_PS.hlsl">
+      <Filter>Src\System\Shader\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\System\Shader\ModelShader\ModelShader_VS.hlsl">
+      <Filter>Src\System\Shader\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\System\Shader\GenerateShadowMapShader\GenerateShadowMapShader_PS.hlsl">
+      <Filter>Src\System\Shader\GenerateShadowMapShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\System\Shader\GenerateShadowMapShader\GenerateShadowMapShader_VS.hlsl">
+      <Filter>Src\System\Shader\GenerateShadowMapShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -15,6 +15,12 @@ void ShaderManager::Init()
 	m_effectShader.Init();
 	// 2Dスプライトシェーダ
 	m_spriteShader.Init();
+	// 3Dモデル描画シェーダ
+	m_modelShader.Init();
+	// シャドウマップ生成シェーダー
+	m_genShadowMapShader.Init();
+
+
 
 	//============================================
 	// 定数バッファ
@@ -63,6 +69,8 @@ void ShaderManager::Release()
 	m_standardShader.Release();
 	m_effectShader.Release();
 	m_spriteShader.Release();
+	m_modelShader.Release();
+	m_genShadowMapShader.Release();
 
 	m_cb7_Camera.Release();
 	m_cb8_Light.Release();

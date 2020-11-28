@@ -5,10 +5,12 @@
 //==========================================================
 struct MeshVertex
 {
-	Math::Vector3	Pos;		// 座標
-	Math::Vector2	UV;			// UV
-	Math::Vector3	Normal;		// 法線
-	unsigned int	Color = 0xFFFFFFFF;			// RGBA色(容量削減のため、各色0～255のUINT型)
+	Math::Vector3	Pos;				// 座標
+	Math::Vector2	UV;					// UV
+	Math::Vector3	Normal;				// 法線
+	unsigned int	Color = 0xFFFFFFFF;	// RGBA色(容量削減のため、各色0～255のUINT型)
+	Math::Vector3	Tangent;			// 接線
+	UINT			MaterialIdx;		//マテリアル番号
 };
 
 //==========================================================
@@ -48,6 +50,8 @@ public:
 
 	// 頂点の座標配列を取得
 	const std::vector<Math::Vector3>&	GetVertexPositions() const { return m_positions; }
+	// 頂点のマテリアル番号を取得
+	const std::vector<UINT>& GetMaterialIdx() const { return m_materialIdxList; }
 	// 面の配列を取得
 	const std::vector<MeshFace>&		GetFaces() const { return m_faces; }
 
@@ -69,7 +73,7 @@ public:
 	// ・faces			… 面インデックス情報配列
 	// ・subsets		… サブセット情報配列
 	// 戻り値			… 成功：true
-	bool Create(const std::vector<MeshVertex>& vertices, const std::vector<MeshFace>& faces, const std::vector<MeshSubset>& subsets);
+	bool Create(const std::vector<MeshVertex>& vertices, const std::vector<MeshFace>& faces, const std::vector<UINT>& materialIdxList, const std::vector<MeshSubset>& subsets);
 
 	// 解放
 	void Release()
@@ -114,6 +118,8 @@ private:
 	std::vector<Math::Vector3>		m_positions;
 	// 面情報のみの配列(複製)
 	std::vector<MeshFace>			m_faces;
+	// 面のマテリアル番号のみの配列
+	std::vector <UINT>				m_materialIdxList;
 
 private:
 	// コピー禁止用
@@ -154,5 +160,6 @@ struct Material
 		BaseColorTex			= D3D.GetWhiteTex();
 		MetallicRoughnessTex	= D3D.GetWhiteTex();
 		EmissiveTex				= D3D.GetWhiteTex();
+		NormalTex				= D3D.GetNormalTex();
 	}
 };

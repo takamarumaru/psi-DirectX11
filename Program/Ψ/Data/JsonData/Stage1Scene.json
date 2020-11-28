@@ -108,6 +108,41 @@
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
+      "Name": "Light1",
+      "Pos": [1,6,7],
+      "Color": [2,2,2],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Name": "Light2",
+      "Pos": [5,20,5],
+      "Color": [1,1,1],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Name": "Light3",
+      "Pos": [-5,20,5],
+      "Color": [1,1,1],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Name": "Light4",
+      "Pos": [5,20,-5],
+      "Color": [1,1,1],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Name": "Light5",
+      "Pos": [-5,20,-5],
+      "Color": [1,1,1],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
       "Name": "Player",
       "Pos": [-9,0,9],
       "Prefab": "Data/JsonData/PlayerObject.json",
