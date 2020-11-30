@@ -233,6 +233,8 @@ void GameObject::Draw()
 {
 	if (m_spModelComponent == nullptr) { return; }
 
+	IMGUI_LOG.AddLog(m_name.c_str());
+
 	m_spModelComponent->Draw();
 
 }
@@ -543,6 +545,12 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 
 		//相手の動いた分を自分の移動に含める
 		m_pos += vOneMove;
+
+		///上方向への反射処理
+		if (m_tag & TAG_CanControlObject)
+		{
+			m_force = Vector3::Reflect(m_force, { 0,1,0 }) * m_force.Length();
+		}
 
 		//摩擦による減速処理
 		float force= (1.0f - downRayResult.m_roughness) + m_elastic;

@@ -228,6 +228,7 @@
     <ClCompile Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Goal\Goal.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\Light.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\Light\LightState.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\Player.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerAction.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerEffect.cpp" />

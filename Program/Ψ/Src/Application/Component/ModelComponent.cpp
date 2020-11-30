@@ -24,7 +24,11 @@ void ModelComponent::Draw()
 	//モデルがないとき
 	if (m_spModel == nullptr) { return; }
 
+	//エミッシブをセット
+	SHADER.m_modelShader.SetEmissive(m_isEmissive);
 	
+	IMGUI_LOG.AddLog("%d", m_isEmissive);
+
 	//全てのノードを一つ一つ描画
 	for (UINT i = 0; i < m_coppiedNodes.size(); i++)
 	{

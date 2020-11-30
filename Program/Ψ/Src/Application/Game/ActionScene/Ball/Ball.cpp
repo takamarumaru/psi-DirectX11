@@ -54,13 +54,7 @@ void Ball::UpdateCollision()
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
-
-		///上方向への反射処理
-		if (m_tag & TAG_CanControlObject)
-		{
-			m_force = Vector3::Reflect(m_force, { 0,1,0 }) * m_force.Length();
-			m_force.y *= 0.6f;	//減速
-		}
+		m_force.y *= 0.7f;
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))

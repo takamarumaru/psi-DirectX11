@@ -461,6 +461,9 @@
     <ClCompile Include="Src\Application\Game\ActionScene\Light\Light.cpp">
       <Filter>Src\Application\Game\ActionScene\Light</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Light\LightState.cpp">
+      <Filter>Src\Application\Game\ActionScene\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\System\Shader\inc_Common.hlsli">

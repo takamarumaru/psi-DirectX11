@@ -2,6 +2,14 @@
 
 #include "./Application/Game/GameObject.h"
 
+enum LIGHT_STATE
+{
+	NONE,
+	NORMAL,
+	BREAKING,
+	SENSOR
+};
+
 class Light :public GameObject
 {
 public:
@@ -16,4 +24,49 @@ private:
 
 	//光の強さ
 	UINT m_lightPower = 0.0f;
+
+///ステート管理=====================================
+	//基底アクションステート
+	class BaseState
+	{
+	public:
+		virtual void Deserialize(Light& rOwner,const json11::Json& jsonObj) = 0;
+		virtual void Update(Light& rOwner) = 0;
+	};
+
+	//通常のライト
+	class NormalState :public BaseState
+	{
+	public:
+		virtual void Deserialize(Light& rOwner, const json11::Json& jsonObj)override;
+		virtual void Update(Light& rOwner)override;
+	};
+
+	//壊れかけのライト
+	class BreakingState :public BaseState
+	{
+	public:
+		virtual void Deserialize(Light& rOwner, const json11::Json& jsonObj)override;
+		virtual void Update(Light& rOwner)override;
+	private:
+		int m_count = 0;	//進みつ続けるカウント
+		int m_interval = 0;	//ランダムで決まる間隔
+	};
+
+	//センサーライト
+	class SensorState :public BaseState
+	{
+	public:
+		virtual void Deserialize(Light& rOwner, const json11::Json& jsonObj)override;
+		virtual void Update(Light& rOwner)override;
+	private:
+		bool m_isSensing = false;
+		int m_range = 10;
+	};
+
+
+	//アクションステート
+	std::shared_ptr<BaseState> m_spState;
+	//ステートタグ
+	UINT m_stateTag = LIGHT_STATE::NONE;
 };

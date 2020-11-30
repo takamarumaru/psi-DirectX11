@@ -49,15 +49,11 @@ void Box::UpdateCollision()
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
-
-		//地面があるので、ｙ方向への移動力は０に
-		m_force.y = 0.0f;
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))
 	{
 		//摩擦による減速処理
-		m_force.x *= 0.8f;
-		m_force.z *= 0.8f;
+		m_force *= 0.2f;
 	}
 }

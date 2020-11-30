@@ -19,6 +19,12 @@ public:
 		m_cb0.Work().mW = m;
 	}
 
+	// エミッシブフラグをセット
+	void SetEmissive(const bool em)
+	{
+		m_cb1_Material.Work().isEmissive = em;
+	}
+
 	//================================================
 	// 描画
 	//================================================
@@ -71,7 +77,8 @@ private:
 		float			tmp1[2];
 		//[2]---------------------
 		Math::Vector3	Emissive;
-		float			tmp2;
+		bool			isEmissive = false;
+		bool			tmp2;
 		//------------------------
 	};
 	ConstantBuffer<cbMaterial>	m_cb1_Material;

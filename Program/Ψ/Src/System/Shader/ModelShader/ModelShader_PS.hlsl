@@ -84,7 +84,10 @@ float4 main(VSOutput In) : SV_Target0
 	const float3 baseSpecular = lerp(0.04, baseColor.rgb, metallic);
 
 	//発光色を加算
-	color += emissive;
+	if (g_Material.isEmissive)
+	{
+		color += emissive;
+	}
 
 	//-------------------------------
 	// シャドウマッピング(影判定)

@@ -8,5 +8,5 @@
   "CenterOffset": [0,1,0],
   "Radius":0.9,
   "Tag": 9,
-  "Elastic":0.1
+  "Elastic":-0.3
 }

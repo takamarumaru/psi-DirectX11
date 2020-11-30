@@ -29,6 +29,31 @@ void Light::Deserialize(const json11::Json& jsonObj)
 		m_lightColor.y = (float)rPos[1].number_value();
 		m_lightColor.z = (float)rPos[2].number_value();
 	}
+
+	//ステートを決定
+	if (jsonObj["State"].is_null() == false)
+	{
+		m_stateTag = (int)jsonObj["State"].number_value();
+	}
+
+	switch (m_stateTag)
+	{
+	case LIGHT_STATE::NORMAL:
+		m_spState = std::make_shared<NormalState>();
+		break;
+	case LIGHT_STATE::BREAKING:
+		m_spState = std::make_shared<BreakingState>();
+		break;
+	case LIGHT_STATE::SENSOR:
+		m_spState = std::make_shared<SensorState>();
+		break;
+	default:
+		m_spState = std::make_shared<NormalState>();
+		break;
+	}
+
+	//状態によって初期化
+	m_spState->Deserialize(*this,jsonObj);
 }
 
 json11::Json::object Light::Serialize()
@@ -52,6 +77,9 @@ void Light::Update()
 {
 	GameObject::Update();
 
+	//状態によって更新
+	m_spState->Update(*this);
+
 	//移動力をキャラクターの座標に足しこむ
 	m_pos += m_force;
 
@@ -65,8 +93,12 @@ void Light::Update()
 		m_spCameraComponent->SetCameraMatrix(m_mWorld);
 	}
 
-	//点光を追加
-	Vector3 pos = m_mWorld.GetTranslation();
-	pos.y -= 1.0f;
-	SHADER.AddPointLight(pos, m_lightPower, m_lightColor);
+	if (m_spModelComponent->GetEmissive())
+	{
+		//点光を追加
+		Vector3 pos = m_mWorld.GetTranslation();
+		pos.y -= 1.0f;
+		SHADER.AddPointLight(pos, m_lightPower, m_lightColor);
+	}
 }
+

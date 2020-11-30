@@ -19,6 +19,7 @@ struct Material
     float Metallic;     // 金属度
     float Roughness;    // 粗さ
     float3 Emissive;    //発光色
+    bool isEmissive;    //発光の有効フラグ
 };
 
 cbuffer cbMaterial : register(b1)

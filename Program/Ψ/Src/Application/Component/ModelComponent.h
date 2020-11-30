@@ -52,6 +52,13 @@ public:
 	void SetModel(const std::shared_ptr<Model>& model);
 	std::shared_ptr<Model> GetModel(){return m_spModel;}
 
+	// エミッシブフラグをセット
+	void SetEmissive(const bool em)
+	{
+		m_isEmissive = em;
+	}
+	bool GetEmissive(){return m_isEmissive;}
+
 	//StandardShaderで描画
 	void Draw();
 
@@ -66,6 +73,9 @@ private:
 
 	//有効
 	bool m_enable = true;
+
+	//エミッシブ(自己発光)フラグ
+	bool m_isEmissive = false;
 
 	//モデルデータの参照
 	std::shared_ptr<Model> m_spModel;

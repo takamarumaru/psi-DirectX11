@@ -106,6 +106,7 @@ void Button::UpdateCollision()
 				SetAnimation("On", false);
 				m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOn.png"));
 				m_isPush = true;
+				m_spModelComponent->SetEmissive(true);
 			}
 			return;
 		}
@@ -115,5 +116,6 @@ void Button::UpdateCollision()
 		SetAnimation("Off", false);
 		m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
 		m_isPush = false;
+		m_spModelComponent->SetEmissive(false);
 	}
 }
