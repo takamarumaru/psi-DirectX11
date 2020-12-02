@@ -35,6 +35,11 @@ void Player::Deserialize(const json11::Json& jsonObj)
 
 	//ポイントのテクスチャ
 	m_spPointTex = ResFac.GetTexture("Data/Texture/point.png");
+
+	//エフェクトのロード
+	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura3.efk");
+	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura2.efk");
+	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Shot.efk");
 }
 
 //更新

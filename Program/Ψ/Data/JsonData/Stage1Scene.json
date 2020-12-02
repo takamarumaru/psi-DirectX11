@@ -145,8 +145,7 @@
     {
       "Name": "Player",
       "Pos": [-9,0,9],
-      "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-51,0]
+      "Prefab": "Data/JsonData/PlayerObject.json"
     }
   ]
 }

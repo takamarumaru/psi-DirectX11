@@ -44,4 +44,8 @@
 // ウィンドウ
 #include "Window/Window.h"
 
+// Effekseer
+#include <EffekseerManager.h>
+
+
 

@@ -91,6 +91,10 @@ bool Application::Init(int w, int h)
 	//日本語対応
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, &config, glyphRangesJapanese);
 
+	//===================================================================
+	//Effekseer初期化
+	//===================================================================
+	EFFEKSEER.Initialize();
 
 
 	return true;
@@ -116,6 +120,10 @@ void Application::Release()
 
 	// ウィンドウ削除
 	m_window.Release();
+
+	// Effekseer解放
+	EFFEKSEER.Finalize();
+
 
 }
 
@@ -198,6 +206,10 @@ void Application::Execute()
 			//ImGui描画実行
 			ImGui::Render();
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+			//Effekseer描画
+			EFFEKSEER.Update();
+
 		}
 
 		//バックバッファを画面表示

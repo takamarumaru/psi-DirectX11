@@ -214,6 +214,20 @@ void Player::UpdateGrab()
 			m_spOperateObj->GetCenterPos(),
 			mOuter.GetTranslation()
 		);
+		
+
+		// オーラエフェクトの再生
+		{
+			static int playerEfcCount = 0;
+			playerEfcCount++;
+			if (playerEfcCount > 3)
+			{
+				playerEfcCount = 0;
+				//エフェクトを再生開始
+				EFFEKSEER.Play(u"Data/EffekseerData/Aura3.efk", m_spOperateObj->GetCenterPos());
+			}
+			EFFEKSEER.UpdatePos(u"Data/EffekseerData/Aura3.efk", m_spOperateObj->GetCenterPos());
+		}
 
 		///R1ボタンをもう一度押したときに登録を解除する======================================
 		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
@@ -225,6 +239,19 @@ void Player::UpdateGrab()
 		//Xボタンを押したときにオブジェクトを前方に発射する==================================
 		if (m_spInputComponent->GetButton(Input::Buttons::X) & InputComponent::ENTER)
 		{
+			//発射エフェクトの再生
+			{
+				///カメラ中心行列を生成
+				Matrix mCamCenter;
+				mCamCenter.CreateTranslation(m_mWorld.GetTranslation());
+				mCamCenter.Move(0.0f, 1.5f, 0.0f);
+				//エッフェクト外側行列の作成
+				Matrix mShotEffectOuter;
+				mShotEffectOuter.CreateTranslation(0.0f, 0.0f, 1.0f);
+				mShotEffectOuter *= mRot * mCamCenter;
+				//再生
+				EFFEKSEER.Play(u"Data/EffekseerData/Shot.efk", mShotEffectOuter);
+			}
 
 			vForce= m_spOperateObj->GetCenterPos()-mCenter.GetTranslation();
 			vForce.Normalize();

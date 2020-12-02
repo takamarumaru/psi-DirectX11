@@ -54,7 +54,8 @@ void Ball::UpdateCollision()
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
-		m_force.y *= 0.7f;
+		//摩擦による減速処理
+		m_force.y *= 0.5f;
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))

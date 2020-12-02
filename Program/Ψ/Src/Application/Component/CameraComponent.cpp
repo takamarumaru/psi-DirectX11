@@ -38,6 +38,7 @@ void CameraComponent::SetCameraMatrix(const Matrix& m)
 //カメラ情報（ビュー・射影行列など）をシェーダーにセット
 void CameraComponent::SetToShader()
 {
+
 	//追従カメラ座標をシェーダーにセット
 	SHADER.m_cb7_Camera.Work().CamPos = m_mCam.GetTranslation();
 
@@ -50,6 +51,9 @@ void CameraComponent::SetToShader()
 
 	//カメラ情報（ビュー行列、射影行列）をシェーダーの定数バッファへセット
 	SHADER.m_cb7_Camera.Write();
+
+	//カメラのビュー行列をEffekseerにも伝える
+	EFFEKSEER.SetCameraMatrix(m_mView);
 }
 
 //当たり判定更新

@@ -106,6 +106,12 @@
     <Filter Include="Src\Application\Game\ActionScene\Light">
       <UniqueIdentifier>{99483b26-e345-4554-9cd0-97b6cd5894a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\Effekseer">
+      <UniqueIdentifier>{2a4e82b0-5421-4ea9-b1cd-a84db786f4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Effekseer\include">
+      <UniqueIdentifier>{efd66055-e435-4cad-b814-05b73fd6f40b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -300,6 +306,18 @@
     <ClInclude Include="Src\Application\Game\ActionScene\Light\Light.h">
       <Filter>Src\Application\Game\ActionScene\Light</Filter>
     </ClInclude>
+    <ClInclude Include="..\Library\Effekseer\include\Effekseer.h">
+      <Filter>Library\Effekseer\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\Effekseer\include\Effekseer.Internal.h">
+      <Filter>Library\Effekseer\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\Effekseer\include\EffekseerManager.h">
+      <Filter>Library\Effekseer\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Library\Effekseer\include\EffekseerRendererDX11.h">
+      <Filter>Library\Effekseer\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -463,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Game\ActionScene\Light\LightState.cpp">
       <Filter>Src\Application\Game\ActionScene\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Library\Effekseer\include\EffekseerManager.cpp">
+      <Filter>Library\Effekseer\include</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -103,6 +103,16 @@
 #include "strconv.h"
 
 //===============================================
+// Effecseer
+//===============================================
+#pragma comment(lib, "Effekseer.lib")
+#pragma comment(lib, "EffekseerRendererDX11.lib")
+
+#include <Effekseer.h>
+#include <EffekseerRendererDX11.h>
+
+
+//===============================================
 //
 // 自作System
 //

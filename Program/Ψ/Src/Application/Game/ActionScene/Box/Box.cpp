@@ -34,6 +34,7 @@ void Box::Update()
 		m_spCameraComponent->SetCameraMatrix(m_mWorld);
 	}
 
+
 	//座標
 	m_mWorld.CreateTranslation(m_pos.x, m_pos.y, m_pos.z);
 }
