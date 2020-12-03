@@ -207,9 +207,6 @@ void Application::Execute()
 			ImGui::Render();
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-			//Effekseer描画
-			EFFEKSEER.Update();
-
 		}
 
 		//バックバッファを画面表示

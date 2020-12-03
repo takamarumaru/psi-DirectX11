@@ -38,13 +38,13 @@ void Light::Deserialize(const json11::Json& jsonObj)
 
 	switch (m_stateTag)
 	{
-	case LIGHT_STATE::NORMAL:
+	case LIGHT_STATE::LS_NORMAL:
 		m_spState = std::make_shared<NormalState>();
 		break;
-	case LIGHT_STATE::BREAKING:
+	case LIGHT_STATE::LS_BREAKING:
 		m_spState = std::make_shared<BreakingState>();
 		break;
-	case LIGHT_STATE::SENSOR:
+	case LIGHT_STATE::LS_SENSOR:
 		m_spState = std::make_shared<SensorState>();
 		break;
 	default:

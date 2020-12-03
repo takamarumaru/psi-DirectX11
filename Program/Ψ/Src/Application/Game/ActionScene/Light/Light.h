@@ -4,10 +4,10 @@
 
 enum LIGHT_STATE
 {
-	NONE,
-	NORMAL,
-	BREAKING,
-	SENSOR
+	LS_NONE,
+	LS_NORMAL,
+	LS_BREAKING,
+	LS_SENSOR
 };
 
 class Light :public GameObject
@@ -68,5 +68,5 @@ private:
 	//アクションステート
 	std::shared_ptr<BaseState> m_spState;
 	//ステートタグ
-	UINT m_stateTag = LIGHT_STATE::NONE;
+	UINT m_stateTag = LIGHT_STATE::LS_NONE;
 };

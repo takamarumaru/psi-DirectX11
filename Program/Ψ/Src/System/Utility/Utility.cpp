@@ -41,3 +41,17 @@ void MergePrefab(json11::Json& rSrcJson)
 		}
 	}
 }
+
+RestoreRenderTarget::RestoreRenderTarget()
+{
+	//今のレンダーターゲットを覚える
+	D3D.GetDevContext()->OMGetRenderTargets(1, &m_pSaveRT1, &m_pSaveZ);
+}
+
+RestoreRenderTarget::~RestoreRenderTarget()
+{
+	//レンダーターゲットを元に戻す
+	D3D.GetDevContext()->OMSetRenderTargets(1, &m_pSaveRT1, m_pSaveZ);
+	m_pSaveRT1->Release();
+	m_pSaveZ->Release();
+}

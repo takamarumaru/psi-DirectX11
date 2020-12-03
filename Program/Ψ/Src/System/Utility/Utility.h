@@ -85,6 +85,18 @@ std::string Format(const std::string& fmt, Args ... args)
 // viewから画像情報を取得する
 void GetTextureInfo(ID3D11View* view, D3D11_TEXTURE2D_DESC& outDesc);
 
+//レンダーターゲットを元に戻す
+class RestoreRenderTarget
+{
+public:
+	RestoreRenderTarget();
+	~RestoreRenderTarget();
+private:
+	//今のレンダーターゲットを覚える
+	ID3D11RenderTargetView* m_pSaveRT1 = nullptr;
+	ID3D11DepthStencilView* m_pSaveZ = nullptr;
+};
+
 
 //=====================================================
 //

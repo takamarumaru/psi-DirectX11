@@ -5,6 +5,7 @@
 #include "SpriteShader/SpriteShader.h"
 #include "ModelShader/ModelShader.h"
 #include "GenerateShadowMapShader/GenerateShadowMapShader.h"
+#include "PostProcessShader/PostProcessShader.h"
 
 //==========================================================
 //
@@ -37,6 +38,7 @@ public:
 	SpriteShader		m_spriteShader;			// 2Dテクスチャ描画シェーダ
 	ModelShader			m_modelShader;			//モデルシェーダー
 	GenerateShadowMapShader	m_genShadowMapShader;	//シャドウマップシェーダー
+	KdPostProcessShader			m_postProcessShader;	//ポストプロセスシェーダー
 
 
 	//==========================
@@ -144,6 +146,11 @@ public:
 	//ブレンドステート
 	ID3D11BlendState* m_bs_Alpha = nullptr;
 	ID3D11BlendState* m_bs_Add = nullptr;
+
+	//サンプラーステート
+	ID3D11SamplerState* m_ss_Anisotropic_Wrap = nullptr;
+	ID3D11SamplerState* m_ss_Anisotropic_Clamp = nullptr;
+	ID3D11SamplerState* m_ss_Linear_Clamp = nullptr;
 
 
 	//==========================

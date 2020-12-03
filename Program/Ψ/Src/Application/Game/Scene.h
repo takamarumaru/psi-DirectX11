@@ -120,6 +120,13 @@ private:
 	Vector3 m_lightDir = { 0,-1,0 };		//方向
 	Vector3 m_lightColor = { 1,1,1 };		//光の色
 
+	//描画する画面
+	std::shared_ptr<Texture> m_spScreenRT = nullptr;
+	std::shared_ptr<Texture> m_spScreenZ = nullptr;
+
+	BlurTexture m_blurTex;
+	std::shared_ptr<Texture> m_spHeightBrightTex = nullptr;
+
 //===================================================
 //シングルトン実装
 //===================================================

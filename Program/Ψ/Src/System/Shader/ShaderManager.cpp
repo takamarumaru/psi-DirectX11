@@ -19,6 +19,8 @@ void ShaderManager::Init()
 	m_modelShader.Init();
 	// シャドウマップ生成シェーダー
 	m_genShadowMapShader.Init();
+	//ポストプロセスシェーダー
+	m_postProcessShader.Init();
 
 
 
@@ -62,6 +64,13 @@ void ShaderManager::Init()
 	m_bs_Alpha = D3D.CreateBlendState(KdBlendMode::Alpha);
 	m_bs_Add = D3D.CreateBlendState(KdBlendMode::Add);
 
+	//サンプラーステート作成
+	m_ss_Anisotropic_Wrap = D3D.CreateSamplerState(KdSamplerFilterMode::Anisotropic, 4, KdSamplerAddressingMode::Wrap, false);
+	m_ss_Anisotropic_Clamp = D3D.CreateSamplerState(KdSamplerFilterMode::Anisotropic, 4, KdSamplerAddressingMode::Clamp, false);
+	m_ss_Linear_Clamp = D3D.CreateSamplerState(KdSamplerFilterMode::Linear, 4, KdSamplerAddressingMode::Clamp, false);
+	D3D.GetDevContext()->PSSetSamplers(0, 1, &m_ss_Anisotropic_Wrap);
+
+
 }
 
 void ShaderManager::Release()
@@ -71,6 +80,7 @@ void ShaderManager::Release()
 	m_spriteShader.Release();
 	m_modelShader.Release();
 	m_genShadowMapShader.Release();
+	m_postProcessShader.Release();
 
 	m_cb7_Camera.Release();
 	m_cb8_Light.Release();
