@@ -30,9 +30,6 @@ void Scene::Deserialize()
 	SHADER.m_cb8_Light.Work().DL_Dir = m_lightDir;
 	SHADER.m_cb8_Light.Work().DL_Dir.Normalize();
 
-	//フェードテクスチャ
-	m_spFadeTex = ResFac.GetTexture("Data/Texture/fadeTex.png");
-
 	//全体描画テクスチャ生成
 	m_spScreenRT = std::make_shared<Texture>();
 	m_spScreenRT->CreateRenderTarget(1280, 720, DXGI_FORMAT_R16G16B16A16_FLOAT);
@@ -43,6 +40,10 @@ void Scene::Deserialize()
 	m_blurTex.Create(1280, 720);
 	m_spHeightBrightTex = std::make_shared<Texture>();
 	m_spHeightBrightTex->CreateRenderTarget(1280, 720, DXGI_FORMAT_R16G16B16A16_FLOAT);
+
+	m_spToneTex = std::make_shared<Texture>();
+	m_spToneTex->CreateRenderTarget(1280, 720, DXGI_FORMAT_R16G16B16A16_FLOAT);
+
 
 }
 
@@ -87,13 +88,11 @@ void Scene::Update()
 	//選択しているオブジェクトを取得
 	auto selectObject = m_wpImGuiSelectObj.lock();
 
-	IMGUI_LOG.Clear();
 	//オブジェクト更新
 	for (auto pObject : m_spObjects)
 	{
 		//ImGuiで選択されていたら実行しない
 		if (pObject == selectObject) { continue; }
-
 		if (pObject)
 		{
 			pObject->Update();
@@ -288,64 +287,52 @@ void Scene::AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const
 	//ラインの終端頂点
 	ver.Pos = p2;
 	m_debugLines.push_back(ver);
-
 }
 
 
 //デバックスフィア描画
 void Scene::AddDebugSphereLine(const Math::Vector3& pos, float radius, const Math::Color& color)
 {
-	//EffectShader::Vertex ver;
-	//ver.Color = color;
-	//ver.UV = { 0.0f,0.0f };
+	EffectShader::Vertex ver;
+	ver.Color = color;
+	ver.UV = { 0.0f,0.0f };
 
-	//static constexpr int kDetail = 32;
-	//for (UINT i = 0; i < kDetail + 1; ++i)
-	//{
-	//	//XZ平面
-	//	ver.Pos = pos;
-	//	ver.Pos.x += cos((float)i * (360 / kDetail) * ToRadians) * radius;
-	//	ver.Pos.z += sin((float)i * (360 / kDetail) * ToRadians) * radius;
-	//	m_debugLines.push_back(ver);
+	static constexpr int kDetail = 32;
+	for (UINT i = 0; i < kDetail + 1; ++i)
+	{
+		//XZ平面
+		ver.Pos = pos;
+		ver.Pos.x += cos((float)i * (360 / kDetail) * ToRadians) * radius;
+		ver.Pos.z += sin((float)i * (360 / kDetail) * ToRadians) * radius;
+		m_debugLines.push_back(ver);
 
-	//	ver.Pos = pos;
-	//	ver.Pos.x += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
-	//	ver.Pos.z += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
-	//	m_debugLines.push_back(ver);
+		ver.Pos = pos;
+		ver.Pos.x += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+		ver.Pos.z += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+		m_debugLines.push_back(ver);
 
-	//	//XY平面
-	//	ver.Pos = pos;
-	//	ver.Pos.x += cos((float)i * (360 / kDetail) * ToRadians) * radius;
-	//	ver.Pos.y += sin((float)i * (360 / kDetail) * ToRadians) * radius;
-	//	m_debugLines.push_back(ver);
+		//XY平面
+		ver.Pos = pos;
+		ver.Pos.x += cos((float)i * (360 / kDetail) * ToRadians) * radius;
+		ver.Pos.y += sin((float)i * (360 / kDetail) * ToRadians) * radius;
+		m_debugLines.push_back(ver);
 
-	//	ver.Pos = pos;
-	//	ver.Pos.x += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
-	//	ver.Pos.y += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
-	//	m_debugLines.push_back(ver);
+		ver.Pos = pos;
+		ver.Pos.x += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+		ver.Pos.y += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+		m_debugLines.push_back(ver);
 
-	//	//YZ平面
-	//	ver.Pos = pos;
-	//	ver.Pos.y += cos((float)i * (360 / kDetail) * ToRadians) * radius;
-	//	ver.Pos.z += sin((float)i * (360 / kDetail) * ToRadians) * radius;
-	//	m_debugLines.push_back(ver);
+		//YZ平面
+		ver.Pos = pos;
+		ver.Pos.y += cos((float)i * (360 / kDetail) * ToRadians) * radius;
+		ver.Pos.z += sin((float)i * (360 / kDetail) * ToRadians) * radius;
+		m_debugLines.push_back(ver);
 
-	//	ver.Pos = pos;
-	//	ver.Pos.y += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
-	//	ver.Pos.z += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
-	//	m_debugLines.push_back(ver);
-	//}
-}
-
-void Scene::RequestChangeScene(const std::string& fileName)
-{
-	//すでにシーンリクエストがある場合は返る
-	if (m_isRequestChangeScene) { return; }
-
-	m_nextSceneFileName = fileName;
-
-	m_isFade = true;
-	m_isRequestChangeScene = true;
+		ver.Pos = pos;
+		ver.Pos.y += cos((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+		ver.Pos.z += sin((float)(i + 1) * (360 / kDetail) * ToRadians) * radius;
+		m_debugLines.push_back(ver);
+	}
 }
 
 //オブジェクトの追加
@@ -419,6 +406,9 @@ void Scene::SaveScene(const std::string& sceneFilename)
 	//Jsonのオブジェクト配列生成
 	json11::Json::array jsonObject;
 
+	//シーン番号を保存
+	jsonScene["SceneNo"] = (int)m_nowSceneNo;
+
 	//オブジェクト分のデータを取得
 	for (auto&& rObj : m_spObjects)
 	{
@@ -453,6 +443,19 @@ void Scene::SaveScene(const std::string& sceneFilename)
 
 }
 
+void Scene::RequestChangeScene(const std::string& fileName)
+{
+	//すでにシーンリクエストがある場合は返る
+	if (m_isRequestChangeScene) { return; }
+
+	m_nextSceneFileName = fileName;
+
+	m_isFade = true;
+	m_isRequestChangeScene = true;
+	//シーンを停止
+	Stop();
+}
+
 //シーンを実際に変更する
 void Scene::ExecChangeScene()
 {
@@ -462,6 +465,8 @@ void Scene::ExecChangeScene()
 	LoadScene(m_nextSceneFileName);
 
 	m_isRequestChangeScene = false;
+	//シーンを再開
+	Restart();
 }
 
 //シーンをまたぐ際のリセット
@@ -479,7 +484,7 @@ void Scene::FadeDraw()
 	static float alpha = 0;
 	if (m_isFade)
 	{
-		alpha+=0.01f;
+		alpha+=0.015f;
 		if (alpha >= 1.0f)
 		{
 			m_isFade = false;
@@ -487,7 +492,7 @@ void Scene::FadeDraw()
 	}
 	else
 	{
-		alpha -= 0.01f;
+		alpha -= 0.015f;
 		if (alpha <= 0.0f)
 		{
 			alpha = 0.0f;
@@ -495,7 +500,7 @@ void Scene::FadeDraw()
 	}
 	//2D描画
 	SHADER.m_spriteShader.SetMatrix(DirectX::XMMatrixIdentity());
-	SHADER.m_spriteShader.DrawTex(m_spFadeTex.get(), 0, 0,nullptr,&Math::Color(0,0,0, alpha));
+	SHADER.m_spriteShader.DrawBox(0,0,1280/2,720/2,&Math::Color(0,0,0, alpha));
 }
 
 //ImGui更新

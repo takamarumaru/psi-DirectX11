@@ -18,6 +18,11 @@ public:
 		m_cb0.Work().mW = m;
 	}
 
+	void SetLightDir(const Vector3& v)
+	{
+		m_lightDir = v;
+	};
+
 	//================================================
 	// 描画
 	//================================================
@@ -74,5 +79,8 @@ private:
 	ID3D11DepthStencilView* m_saveZ = nullptr;
 	UINT					m_numVP = 1;
 	D3D11_VIEWPORT			m_saveVP = {};
+
+	//光の方向
+	Vector3 m_lightDir = Vector3(-0.1f,-1.0f, 0.0f);
 
 };

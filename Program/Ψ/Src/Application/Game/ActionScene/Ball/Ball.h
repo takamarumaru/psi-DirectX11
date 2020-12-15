@@ -19,5 +19,7 @@ private:
 	//重力の強さ
 	float m_gravity = 0.01f;
 
+	Vector3 m_moveForce;
+
 
 };

@@ -2,7 +2,6 @@
 
 #include "GenerateShadowMapShader.h"
 
-
 void GenerateShadowMapShader::Begin()
 {
 	// 現在のRTとZとViewportを記憶
@@ -26,7 +25,7 @@ void GenerateShadowMapShader::Begin()
 
 	// ライトのビュー行列を適当に作成
 	Matrix mV;
-	mV.LookTo({ 0.0f, -1, 0.0f }, { 0, 1, 0 });
+	mV.LookTo(m_lightDir, {0,1,0});
 	Matrix mTrans;
 	mTrans.CreateTranslation(0, 0, -20);
 	mV = mTrans * mV;

@@ -20,8 +20,14 @@ public:
 	bool Play(const std::u16string& filePath,Vector3& position);
 	bool Play(const std::u16string& filepath, Matrix& mat);
 
+	//停止
+	bool Stop(const std::u16string& filepath);
+
 	//座標更新
 	bool UpdatePos(const std::u16string& filePath, Vector3& position);
+
+	//回転更新
+	bool UpdateRot(const std::u16string& filePath, Vector3& axis,float angle);
 
 	// エフェクト読み込み
 	std::shared_ptr<EffekseerEffectInstance> LoadEffect(const std::u16string& filepath);
@@ -105,6 +111,9 @@ public:
 
 	//座標をセット
 	void SetPos(Vector3& position);
+
+	//回転をセット
+	void SetRotateAxis(Vector3& axis,float angle);
 
 	//行列をセット
 	void SetMatrix(const Matrix& mat);

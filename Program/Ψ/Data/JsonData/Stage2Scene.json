@@ -1,5 +1,4 @@
 {
-  "SceneNo":2,
   "GameObjects": [
     {
       "ClassName": "ActionProcess",
@@ -8,38 +7,36 @@
       "Tag": 16
     },
     {
-      "ClassName": "ActionUI",
-      "Name": "ActionUI",
-      "Prefab": "Data/JsonData/BaseObject.json",
-      "Tag": 16
+      "Name": "MenuList1",
+      "Prefab": "Data/JsonData/ActionMenuListObject.json"
     },
     {
+      "ModelFilePath": "Data/StageMap/Map2/Map2.gltf",
       "Name": "Map1",
-      "Prefab": "Data/JsonData/MapObject.json",
-      "ModelFilePath": "Data/StageMap/Map2/Map2.gltf"
+      "Prefab": "Data/JsonData/MapObject.json"
     },
     {
       "Name": "Goal1",
-      "Pos": [0,0,0],
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
       "Name": "Ball1",
-      "Pos": [3,0,5],
-      "Prefab": "Data/JsonData/BallObject.json"
+      "Pos": [4,0,3],
+      "Prefab": "Data/JsonData/BallObject.json",
+      "Rot": [-6,-48,157]
     },
     {
       "Name": "Target1",
       "Pos": [4,0,6],
-      "Rot":[0,90,0],
-      "RailsPoint":
-      [
-        [4,0,6],
-        [4,0,-3],
-        [3,0,-4],
-        [-5,0,-4]
+      "Prefab": "Data/JsonData/TargetObject.json",
+      "RailsPoint": [
+        [4,0,6,0,1,0],
+        [4,0,-3,0,1,0],
+        [3,0,-4,0,1,0],
+        [-5,0,-4,0,1,0]
       ],
-      "Prefab": "Data/JsonData/TargetObject.json"
+      "ReturnTime": 3,
+      "Rot": [0,90,0]
     },
     {
       "Name": "ManualDoor1",
@@ -49,38 +46,39 @@
       "Rot": [0,90,0]
     },
     {
+      "Color": [1,1,1],
       "Name": "Light1",
       "Pos": [5,20,5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light2",
       "Pos": [-5,20,5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light3",
       "Pos": [5,20,-5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light4",
       "Pos": [-5,20,-5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
       "Name": "Player",
-      "Pos": [-9,0,9],
+      "Pos": [-8,0,8],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-51,0]
+      "Rot": [0,-545,0]
     }
-  ]
+  ],
+  "SceneNo": 2
 }

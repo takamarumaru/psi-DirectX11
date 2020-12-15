@@ -2,6 +2,7 @@
 #include "../../Scene.h"
 
 #include "../../../Component/InputComponent.h"
+#include "../../UI/Menu/MenuList.h"
 
 void ActionProcess::Deserialize(const json11::Json& jsonObj)
 {
@@ -12,15 +13,7 @@ void ActionProcess::Deserialize(const json11::Json& jsonObj)
 
 	//インプットコンポーネント初期化
 	m_spInputComponent = std::make_shared<ActionProcessInputComponent>(*this);
-
 }
-
-//2D描画
-void ActionProcess::Draw2D()
-{
-
-}
-
 void ActionProcess::Update()
 {
 	if (m_spInputComponent == nullptr) { return; }

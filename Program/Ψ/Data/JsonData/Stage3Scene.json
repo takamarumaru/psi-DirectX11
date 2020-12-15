@@ -8,20 +8,13 @@
       "Tag": 16
     },
     {
-      "ClassName": "ActionUI",
-      "Name": "ActionUI",
-      "Prefab": "Data/JsonData/BaseObject.json",
-      "Tag": 16
+      "Name": "MenuList1",
+      "Prefab": "Data/JsonData/ActionMenuListObject.json"
     },
     {
+      "ModelFilePath": "Data/StageMap/Map3/Map3.gltf",
       "Name": "Map1",
-      "Prefab": "Data/JsonData/MapObject.json",
-      "ModelFilePath": "Data/StageMap/Map3/Map3.gltf"
-    },
-    {
-      "Name": "Ball1",
-      "Pos": [3,0,5],
-      "Prefab": "Data/JsonData/BallObject.json"
+      "Prefab": "Data/JsonData/MapObject.json"
     },
     {
       "Name": "Goal1",
@@ -29,45 +22,55 @@
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light1",
       "Pos": [5,20,5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light2",
       "Pos": [-5,20,5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light3",
       "Pos": [5,20,-5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
+      "Color": [1,1,1],
       "Name": "Light4",
       "Pos": [-5,20,-5],
-      "Color": [1,1,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
     },
     {
-      "ClassName":"GameObject",
-      "Name": "testBase",
-      "Pos": [0,0,0],
-      "Tag":1,
-      "ModelFilePath": "Data/testbase/testbase.gltf"
+      "Name": "Box1",
+      "Pos": [5,0,8],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Fence1",
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Glass1",
+      "Pos": [-5,0,5],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Rot": [0,90,0],
+      "Scale": [5,5,1]
     },
     {
       "Name": "Player",
-      "Pos": [-9,0,9],
+      "Pos": [-9,0,7],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-51,0]
+      "Rot": [0,-149,0]
     }
   ]
 }

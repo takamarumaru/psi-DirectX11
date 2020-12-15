@@ -73,7 +73,7 @@ public:
 	struct cbLight
 	{
 		// 環境光
-		Math::Vector3		AmbientLight = {0.3f, 0.3f, 0.3f};
+		Math::Vector3		AmbientLight = {0.1f, 0.1f, 0.1f};
 		float					tmp;
 
 		// 平行光

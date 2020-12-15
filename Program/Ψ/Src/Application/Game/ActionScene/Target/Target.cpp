@@ -7,27 +7,7 @@
 
 void Target::Deserialize(const json11::Json& jsonObj)
 {
-	GameObject::Deserialize(jsonObj);
-
-	//行列から座標へ代入
-	m_pos = m_mWorld.GetTranslation();
-	m_rot = m_mWorld.GetAngles();
-
-	//レールのテクスチャ
-	m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
-	//レールのポイント
-	auto& rRailsPos = jsonObj["RailsPoint"].array_items();
-	for (auto&& point:rRailsPos)
-	{
-		Matrix mPoint;
-		mPoint.CreateTranslation
-		(
-			(float)point[0].int_value(),
-			(float)point[1].int_value() + 0.01f,
-			(float)point[2].int_value()
-		);
-		m_rail.AddPoint(mPoint);
-	}
+	InputObject::Deserialize(jsonObj);
 
 	//復帰時間取得
 	if (jsonObj["ReturnTime"].is_null() == false)
@@ -38,22 +18,7 @@ void Target::Deserialize(const json11::Json& jsonObj)
 
 json11::Json::object Target::Serialize()
 {
-	json11::Json::object objectData = GameObject::Serialize();
-
-	json11::Json::array points(m_rail.getNumPoints());
-
-	//レールのポイント
-	for (UINT i=0;i< m_rail.getNumPoints();i++)
-	{
-		json11::Json::array point(3);
-		point[0] = (int)m_rail.GetPoints()[i].Translation().x;
-		point[1] = (int)m_rail.GetPoints()[i].Translation().y;
-		point[2] = (int)m_rail.GetPoints()[i].Translation().z;
-
-		points[i] = point;
-	}
-
-	objectData["RailsPoint"] = points;
+	json11::Json::object objectData = InputObject::Serialize();
 
 	objectData["ReturnTime"] = m_returnTime;
 
@@ -101,14 +66,6 @@ void Target::Update()
 
 	//アニメーションの更新
 	m_animator.AdvanceTime(m_spModelComponent->GetChangeableNodes());
-}
-
-void Target::DrawEffect()
-{
-	//レールの描画
-	SHADER.m_effectShader.SetWorldMatrix(Matrix());
-	SHADER.m_effectShader.WriteToCB();
-	m_rail.DrawDetached(0.5f);
 }
 
 void Target::UpdateCollision()

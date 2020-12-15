@@ -92,8 +92,8 @@ void Player::UpdateGrab()
 	//オブジェクトまでの距離格納用
 	static float operateObjDistance = 0.0f;
 
-	//シーン遷移中なら操作を中止
-	if (SCENE.IsChangeScene())
+	//シーン停止中なら操作を中止
+	if (!SCENE.IsUpdate())
 	{
 		if (m_isOperate)
 		{
@@ -161,6 +161,8 @@ void Player::UpdateGrab()
 				m_spOperateObj->OffFall();
 				//オーナーポインタを渡す
 				m_spOperateObj->SetOwner(shared_from_this());
+				//エフェクトを再生開始
+				EFFEKSEER.Play(u"Data/EffekseerData/Aura5.efk", m_spOperateObj->GetCenterPos());
 			}
 		}
 	}
@@ -206,6 +208,24 @@ void Player::UpdateGrab()
 		}
 		//移動量を渡す
 		m_spOperateObj->SetForce(vForce);
+		
+
+		// オーラエフェクトの再生
+		{
+			static int playerEfcCount = 0;
+			playerEfcCount++;
+			if (playerEfcCount % 10 == 0)
+			{
+				//エフェクトを再生開始
+				EFFEKSEER.Play(u"Data/EffekseerData/Aura4.efk", m_spOperateObj->GetCenterPos());
+
+				playerEfcCount = 0;
+			}
+			//エフェクトの座標を更新
+			EFFEKSEER.UpdatePos(u"Data/EffekseerData/Aura4.efk", m_spOperateObj->GetCenterPos());
+			EFFEKSEER.UpdatePos(u"Data/EffekseerData/Aura5.efk", m_spOperateObj->GetCenterPos());
+		}
+		
 
 		//軌跡の座標を追加
 		UpdatePowerEffect
@@ -214,20 +234,6 @@ void Player::UpdateGrab()
 			m_spOperateObj->GetCenterPos(),
 			mOuter.GetTranslation()
 		);
-		
-
-		// オーラエフェクトの再生
-		{
-			static int playerEfcCount = 0;
-			playerEfcCount++;
-			if (playerEfcCount > 3)
-			{
-				playerEfcCount = 0;
-				//エフェクトを再生開始
-				EFFEKSEER.Play(u"Data/EffekseerData/Aura3.efk", m_spOperateObj->GetCenterPos());
-			}
-			EFFEKSEER.UpdatePos(u"Data/EffekseerData/Aura3.efk", m_spOperateObj->GetCenterPos());
-		}
 
 		///R1ボタンをもう一度押したときに登録を解除する======================================
 		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
@@ -271,4 +277,5 @@ void Player::OperateReset()
 	m_spOperateObj->OnFall();		//重力を反映させる
 	m_spOperateObj->ClearOwner();	//オーナー情報を削除
 	m_spOperateObj = nullptr;		//登録を外す
+	EFFEKSEER.Stop(u"Data/EffekseerData/Aura5.efk");//エフェクト再生停止
 }

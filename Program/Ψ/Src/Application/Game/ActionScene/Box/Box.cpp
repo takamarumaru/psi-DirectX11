@@ -7,15 +7,17 @@
 void Box::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
-
-	//行列から座標へ代入
-	m_pos = m_mWorld.GetTranslation();
-
 }
 
 void Box::Update()
 {
 	GameObject::Update();
+
+	//カメラの更新
+	if (m_spCameraComponent)
+	{
+		m_spCameraComponent->SetCameraMatrix(m_mWorld);
+	}
 
 	//重力をキャラクターのYの移動力に変える
 	if (m_isFall)
@@ -28,12 +30,6 @@ void Box::Update()
 
 	//当たり判定
 	UpdateCollision();
-
-	if (m_spCameraComponent)
-	{
-		m_spCameraComponent->SetCameraMatrix(m_mWorld);
-	}
-
 
 	//座標
 	m_mWorld.CreateTranslation(m_pos.x, m_pos.y, m_pos.z);

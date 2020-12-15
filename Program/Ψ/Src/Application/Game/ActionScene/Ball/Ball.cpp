@@ -3,15 +3,21 @@
 #include"./Application/Game/Scene.h"
 
 #include"./Application/Component/CameraComponent.h"
+#include"./Application/Component/ModelComponent.h"
+
+//正負を判定するための関数
+float SignChecker(float value)
+{
+	if (value == 0.0f)return 0.0f;
+	if (value > 0.0f)return 1.0f;
+	if (value < 0.0f)return -1.0f;
+
+	return 0.0f;
+}
 
 void Ball::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
-
-	//行列から座標へ代入
-	m_pos = m_mWorld.GetTranslation();
-	m_rot = m_mWorld.GetAngles();
-
 }
 
 void Ball::Update()
@@ -26,6 +32,7 @@ void Ball::Update()
 
 	//移動力をキャラクターの座標に足しこむ
 	m_pos += m_force;
+	m_pos += m_moveForce;
 
 	//当たり判定
 	UpdateCollision();
@@ -41,6 +48,9 @@ void Ball::Update()
 	//座標
 	m_mWorld.CreateRotation(m_rot);
 	m_mWorld.Move(m_pos.x,m_pos.y + 1.0f,m_pos.z);
+
+	//自己発光をオンに
+	m_spModelComponent->SetEmissive(true);
 }
 
 void Ball::UpdateCollision()
@@ -56,6 +66,13 @@ void Ball::UpdateCollision()
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
 		//摩擦による減速処理
 		m_force.y *= 0.5f;
+
+		IMGUI_LOG.Clear();
+		if (Vector3(finalRayResult.m_polyDir.x,0.0f, finalRayResult.m_polyDir.z).Length() >= 0.1f)
+		{
+			//法線方向との壁ずりベクトル
+			m_force += Vector3::WallScratch(Vector3(0,-1,0), finalRayResult.m_polyDir) * 0.005f;
+		}
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))
@@ -78,7 +95,7 @@ void Ball::UpdateRotate()
 	if (moveVec.Length() == 0.0f) { return; }
 
 	//ベクトルの長さ
-	Vector3 force = m_force;
+	Vector3 force = m_force + m_moveForce;
 	force.y = 0.0f;
 
 	//moveVecがZeroベクトルなら返る
@@ -91,10 +108,6 @@ void Ball::UpdateRotate()
 	//移動方向の右方向を軸に回転した回転行列を作成
 	Matrix mRotate = m_mWorld;
 	mRotate.RotateAxis(rightVec, force.Length() / ((m_radius-0.3f) * M_PI));
-
-	//IMGUI_LOG.Clear();
-	//IMGUI_LOG.AddLog(u8"移動量:%.2f", force.Length());
-	//IMGUI_LOG.AddLog(u8"直径:%.2f", (1.0f * M_PI));
 
 	m_rot = mRotate.GetAngles();
 }

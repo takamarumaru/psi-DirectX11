@@ -10,10 +10,6 @@
 void ManualDoor::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
-
-	//行列から代入
-	m_pos = m_mWorld.GetTranslation();
-	m_rot = m_mWorld.GetAngles();
 	//オーナーの名前
 	if (jsonObj["OwnerName"].is_null() == false)
 	{

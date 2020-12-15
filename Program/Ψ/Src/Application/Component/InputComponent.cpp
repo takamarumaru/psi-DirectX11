@@ -1,6 +1,7 @@
 ﻿#include "InputComponent.h"
 
 #include"./Application/main.h"
+#include"./Application/Game/Scene.h"
 
 //コンストラクタ：オーナーの設定・ボタンの初期化
 InputComponent::InputComponent(GameObject& owner)
@@ -88,6 +89,21 @@ void TitleProcessInputComponent::Update()
 void ActionProcessInputComponent::Update()
 {
 }
+//===============================================
+//メニューリスト入力用
+//===============================================
+void MenuListInputComponent::Update()
+{
+	//L1ボタン入力処理
+	if (GetAsyncKeyState(VK_ESCAPE)) { PushButton(Input::Buttons::L1); }
+	else { ReleaceButton(Input::Buttons::L1); }
+
+
+	//R1ボタン入力処理
+	if (GetAsyncKeyState(VK_LBUTTON)) { PushButton(Input::Buttons::R1); }
+	else { ReleaceButton(Input::Buttons::R1); }
+}
+
 
 //===============================================
 //プレイヤー入力用
@@ -130,20 +146,30 @@ void PlayerInputComponent::Update()
 	if (GetButton(Input::B) & ENTER)
 	{
 		m_isHideMouse = !m_isHideMouse;
-		m_isHideMouse ? ShowCursor(false) : ShowCursor(true);
+		if (m_isHideMouse)
+		{
+			while (ShowCursor(false) >= 0);
+		}
+		else
+		{
+			while (ShowCursor(true) < 0);
+		}
 	}
 	//カーソルをウィンドウの中心に固定
-	if (m_isHideMouse)
+	if (SCENE.IsUpdate())
 	{
-		//ウィンドウのRECT取得
-		RECT rWindow;
-		GetWindowRect(APP.m_window.GetWndHandle(), &rWindow);
+		if (m_isHideMouse)
+		{
+			//ウィンドウのRECT取得
+			RECT rWindow;
+			GetWindowRect(APP.m_window.GetWndHandle(), &rWindow);
 
-		SetCursorPos(
-			rWindow.left+(rWindow.right- rWindow.left)/2,
-			rWindow.top + (rWindow.bottom - rWindow.top) / 2
-		);
-		m_prevMousePos.x = rWindow.left + (rWindow.right - rWindow.left) / 2;
-		m_prevMousePos.y = rWindow.top + (rWindow.bottom - rWindow.top) / 2;
+			SetCursorPos(
+				rWindow.left + (rWindow.right - rWindow.left) / 2,
+				rWindow.top + (rWindow.bottom - rWindow.top) / 2
+			);
+			m_prevMousePos.x = rWindow.left + (rWindow.right - rWindow.left) / 2;
+			m_prevMousePos.y = rWindow.top + (rWindow.bottom - rWindow.top) / 2;
+		}
 	}
 }

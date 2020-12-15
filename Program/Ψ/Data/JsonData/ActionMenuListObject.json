@@ -1,0 +1,21 @@
+{
+    "ClassName":"MenuList",
+    "Prefab": "Data/JsonData/BaseObject.json",
+    "Pos": [250,-200,0],
+    "Rot": [0,0,0],
+    "Scale": [1,1,1],
+    "CenterOffset": [0,1,0],
+    "Radius":1.0,
+    "MenuBackTex":"Data/Texture/TitleMenuBack.png",
+    "MenuTex":"Data/Texture/Menu.png",
+    "State":2,
+    "MenuList":
+    [
+      "Data/Texture/Retry.png",
+      "Data/Texture/Settings.png",
+      
+      "Data/Texture/BacktoTitle.png"
+    ],
+    "Tag": 16
+  }
+  

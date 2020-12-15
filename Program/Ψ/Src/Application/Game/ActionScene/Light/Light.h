@@ -16,6 +16,7 @@ public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual json11::Json::object Serialize()override;
 	virtual void Update()override;
+	virtual void DrawShadowMap()override {};
 
 private:
 

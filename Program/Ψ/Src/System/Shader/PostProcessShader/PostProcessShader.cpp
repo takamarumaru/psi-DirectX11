@@ -66,7 +66,15 @@ bool KdPostProcessShader::Init()
 
 	}
 
-
+	{
+#include "PostProcess_ACESTone_PS.inc"
+		if (FAILED(D3D.GetDev()->CreatePixelShader(compiledBuffer,
+			sizeof(compiledBuffer), nullptr, &m_tonePS))) {
+			assert(0 && "ピクセルシェーダー作成失敗");
+			Release();
+			return false;
+		}
+	}
 
 	return true;
 
@@ -287,4 +295,43 @@ void KdPostProcessShader::BrightFiltering(const Texture* destRT, const Texture* 
 	saveDS->Release();
 
 	D3D.GetDevContext()->RSSetViewports(1, &saveVP);
+}
+
+void KdPostProcessShader::ToneFilteringDraw(const Texture* srcTex)
+{
+	if (srcTex == nullptr)return;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> saveDS;
+	UINT saveStencilRef = 0;
+	D3D.GetDevContext()->OMGetDepthStencilState(&saveDS, &saveStencilRef);
+	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
+
+
+	D3D.GetDevContext()->PSSetShaderResources(0, 1, srcTex->GetSRViewAddress());
+	D3D.GetDevContext()->PSSetSamplers(0, 1, &SHADER.m_ss_Linear_Clamp);
+
+	D3D.GetDevContext()->VSSetShader(m_VS, 0, 0);
+	D3D.GetDevContext()->IASetInputLayout(m_inputLayout);
+	D3D.GetDevContext()->PSSetShader(m_tonePS, 0, 0);
+
+	Vertex v[4] = {
+		{ {-1,-1,0}, {0, 1} },// 0
+		{ {-1, 1,0}, {0, 0} },// 1
+		{ { 1,-1,0}, {1, 1} },// 2
+		{ { 1, 1,0}, {1, 0} } // 3
+	};
+
+	// 頂点描画
+	D3D.DrawVertices(
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,
+		4,
+		&v[0],
+		sizeof(Vertex)
+	);
+
+
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+	D3D.GetDevContext()->PSSetShaderResources(0, 1, &nullSRV);
+	D3D.GetDevContext()->PSSetSamplers(0, 1, &SHADER.m_ss_Anisotropic_Wrap);
+	D3D.GetDevContext()->OMSetDepthStencilState(saveDS.Get(), saveStencilRef);
 }

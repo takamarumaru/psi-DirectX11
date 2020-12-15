@@ -5,7 +5,12 @@
       "ClassName": "TitleProcess",
       "Name": "TitleProcess",
       "Prefab": "Data/JsonData/BaseObject.json",
+      "TitleLogoTex":"Data/Texture/TitleLogo.png",
       "Tag": 16
+    },
+    {
+      "Name": "MenuList1",
+      "Prefab": "Data/JsonData/TitleMenuListObject.json"
     },
     {
       "Name": "Map1",
@@ -21,10 +26,10 @@
       "Pos": [3,0,8],
       "RailsPoint":
       [
-        [3,0,8],
-        [3,0,0],
-        [2,0,-1],
-        [-5,0,-1]
+        [3,0,8,0,1,0],
+        [3,0,0,0,1,0],
+        [2,0,-1,0,1,0],
+        [-5,0,-1,0,1,0]
       ],
       "Prefab": "Data/JsonData/ButtonObject.json"
     },
@@ -59,19 +64,6 @@
       "Color": [2,2,2],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json"
-    },
-    {
-      "ClassName": "TitleUI",
-      "Name": "TitleUI",
-      "Prefab": "Data/JsonData/BaseObject.json",
-      "TitleLogoTex":"Data/Texture/TitleLogo.png",
-      "MenuBackTex":"Data/Texture/TitleMenuBack.png",
-      "StrTexList":
-      [
-        "Data/Texture/GameStart.png",
-        "Data/Texture/Quit.png"
-      ],
-      "Tag": 16
     }
   ]
 }

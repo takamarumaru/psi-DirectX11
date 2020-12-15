@@ -11,10 +11,6 @@ void Light::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
 
-	//行列から座標へ代入
-	m_pos = m_mWorld.GetTranslation();
-	m_rot = m_mWorld.GetAngles();
-
 	//光の強さ
 	if (jsonObj["Power"].is_null() == false)
 	{

@@ -14,9 +14,9 @@ void Player::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
 
-	//行列から座標へ代入
-	m_pos = m_mWorld.GetTranslation();
-
+	//カメラの設定
+	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -0.01f);
+	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
 	//カメラにセット
 	SCENE.SetTargetCamera(m_spCameraComponent);
 
@@ -37,8 +37,8 @@ void Player::Deserialize(const json11::Json& jsonObj)
 	m_spPointTex = ResFac.GetTexture("Data/Texture/point.png");
 
 	//エフェクトのロード
-	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura3.efk");
-	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura2.efk");
+	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura4.efk");
+	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura5.efk");
 	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Shot.efk");
 }
 
@@ -57,10 +57,10 @@ void Player::Update()
 	UpdateCamera();
 
 	//重力をキャラクターのYの移動力に変える
-	m_force.y -= m_gravity;
+	if (SCENE.IsUpdate()) { m_force.y -= m_gravity; }
 
 	//シーン変更中は待機
-	if (SCENE.IsChangeScene())
+	if (!SCENE.IsUpdate())
 	{
 		ShiftWait();
 	}
@@ -79,21 +79,27 @@ void Player::Update()
 	m_mWorld.CreateRotation(m_rot);	//回転
 	m_mWorld.Move(m_pos);			//座標
 
+	//シーン更新不可なら行列を元に戻す
+	if (!SCENE.IsUpdate())
+	{
+		m_mWorld = m_mPrev;
+		m_pos = m_prevPos;
+	}
+
 	//行列をカメラにセット
 	if (m_spCameraComponent)
 	{
 		//移動成分だけを抽出し、視点を少し上にあげる
 		Matrix mCamera;
 		mCamera.CreateTranslation(m_mWorld.GetTranslation());
-		mCamera.Move(0.0f,1.5f,0.0f);
+		mCamera.Move(0.0f, 1.5f, 0.0f);
 		//カメラにセット
 		m_spCameraComponent->SetCameraMatrix(mCamera);
-
-		m_spCameraComponent->Update();
 	}
 
 	//アクション処理
 	UpdateGrab();
+
 
 }
 
@@ -110,6 +116,7 @@ void Player::DrawEffect()
 
 void Player::Draw2D()
 {
+	if (!SCENE.IsUpdate()) { return; }
 	//ポイントの描画
 	if (m_spPointTex) 
 	{
@@ -128,8 +135,8 @@ void Player::UpdateCamera()
 {
 	//コンポーネントがない場合は返る
 	if (!m_spCameraComponent) { return; }
-	//シーン遷移中なら返る
-	if (SCENE.IsChangeScene()) { return; }
+	//シーン停止中なら返る
+	if (!SCENE.IsUpdate()) { return; }
 	//デバック中は返る
 	if (SCENE.IsImGui()) { return; }
 

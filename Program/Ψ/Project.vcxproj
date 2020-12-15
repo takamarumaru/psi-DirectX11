@@ -166,7 +166,6 @@
     <ClInclude Include="Src\Application\Component\InputComponent.h" />
     <ClInclude Include="Src\Application\Component\ModelComponent.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.h" />
-    <ClInclude Include="Src\Application\Game\ActionScene\ActionUI\ActionUI.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Ball\Ball.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Box\Box.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Button\Button.h" />
@@ -183,9 +182,10 @@
     <ClInclude Include="Src\Application\Game\GameObject.h" />
     <ClInclude Include="Src\Application\Game\GameProcess.h" />
     <ClInclude Include="Src\Application\Game\Scene.h" />
+    <ClInclude Include="Src\Application\Game\StageSelectScene\StageSelectProcess.h" />
     <ClInclude Include="Src\Application\Game\TextureEffect.h" />
     <ClInclude Include="Src\Application\Game\TitleScene\TitleProcess.h" />
-    <ClInclude Include="Src\Application\Game\TitleScene\TitleUI\TitleUI.h" />
+    <ClInclude Include="Src\Application\Game\UI\Menu\MenuList.h" />
     <ClInclude Include="Src\Application\main.h" />
     <ClInclude Include="src\System\Direct3D\Direct3D.h" />
     <ClInclude Include="Src\System\Direct3D\GLTFLoader.h" />
@@ -226,13 +226,13 @@
     <ClCompile Include="Src\Application\Component\InputComponent.cpp" />
     <ClCompile Include="Src\Application\Component\ModelComponent.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.cpp" />
-    <ClCompile Include="Src\Application\Game\ActionScene\ActionUI\ActionUI.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Ball\Ball.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Box\Box.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Button\Button.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Goal\Goal.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\InputObject.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\Light.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\LightState.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\Player.cpp" />
@@ -244,9 +244,10 @@
     <ClCompile Include="Src\Application\Game\EditorCamera.cpp" />
     <ClCompile Include="Src\Application\Game\GameObject.cpp" />
     <ClCompile Include="Src\Application\Game\Scene.cpp" />
+    <ClCompile Include="Src\Application\Game\StageSelectScene\StageSelectProcess.cpp" />
     <ClCompile Include="Src\Application\Game\TextureEffect.cpp" />
     <ClCompile Include="Src\Application\Game\TitleScene\TitleProcess.cpp" />
-    <ClCompile Include="Src\Application\Game\TitleScene\TitleUI\TitleUI.cpp" />
+    <ClCompile Include="Src\Application\Game\UI\Menu\MenuList.cpp" />
     <ClCompile Include="Src\Application\main.cpp" />
     <ClCompile Include="src\System\Direct3D\Direct3D.cpp" />
     <ClCompile Include="Src\System\Direct3D\GLTFLoader.cpp" />
@@ -306,6 +307,10 @@
     <FxCompile Include="Src\System\Shader\ModelShader\ModelShader_VS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\System\Shader\PostProcessShader\PostProcess_ACESTone_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Src\System\Shader\PostProcessShader\PostProcess_Blur_PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

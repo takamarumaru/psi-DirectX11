@@ -15,6 +15,11 @@ public:
 	{
 		m_pointList.push_front(mat);
 	}
+	//ポイントを最後尾に追加
+	inline void AddPointBack(const Math::Matrix& mat)
+	{
+		m_pointList.push_back(mat);
+	}
 
 	//最後尾のポイントを削除
 	inline void DelPoint_Back()

@@ -56,6 +56,8 @@ public:
 
 	void BrightFiltering(const Texture* destRT, const Texture* srcTex);
 
+	void ToneFilteringDraw(const Texture* srcTex);
+
 private:
 	ID3D11VertexShader* m_VS = nullptr;
 	ID3D11InputLayout* m_inputLayout = nullptr;
@@ -78,5 +80,7 @@ private:
 
 	//
 	ID3D11PixelShader* m_HBrightPS = nullptr;
+
+	ID3D11PixelShader* m_tonePS = nullptr;
 
 };

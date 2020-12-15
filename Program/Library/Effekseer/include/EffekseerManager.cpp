@@ -77,6 +77,17 @@ bool EffekseerManager::Play(const std::u16string& filepath, Matrix& mat)
 	return true;
 }
 
+bool EffekseerManager::Stop(const std::u16string& filepath)
+{
+	//再生するエフェクトを検索
+	auto& instance = FindEffect(filepath);
+	if (instance == nullptr) { return false; }
+
+	//指定された行列で再生
+	instance->Stop();
+	return true;
+}
+
 bool EffekseerManager::UpdatePos(const std::u16string& filepath, Vector3& position)
 {
 	//再生するエフェクトを検索
@@ -85,6 +96,17 @@ bool EffekseerManager::UpdatePos(const std::u16string& filepath, Vector3& positi
 
 	//指定された行列で再生
 	instance->SetPos(position);
+	return true;
+}
+
+bool EffekseerManager::UpdateRot(const std::u16string& filepath , Vector3& axis, float angle)
+{
+	//再生するエフェクトを検索
+	auto& instance = FindEffect(filepath);
+	if (instance == nullptr) { return false; }
+
+	//指定された行列で再生
+	instance->SetRotateAxis(axis,angle);
 	return true;
 }
 
@@ -164,6 +186,11 @@ void EffekseerEffectInstance::Play(const Matrix& mat)
 void EffekseerEffectInstance::SetPos(Vector3& position)
 {
 	EFFEKSEER.GetManager()->SetLocation(m_handle, position);
+}
+
+void EffekseerEffectInstance::SetRotateAxis(Vector3& axis, float angle)
+{
+	EFFEKSEER.GetManager()->SetRotation(m_handle, axis,angle);
 }
 
 void EffekseerEffectInstance::SetMatrix(const Matrix& mat)

@@ -70,14 +70,8 @@
     <Filter Include="Src\Application\Game\ActionScene\ActionProcess">
       <UniqueIdentifier>{3a5acd99-6a6c-48a5-8da4-8a8bef90fa1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Game\ActionScene\ActionUI">
-      <UniqueIdentifier>{174e6341-6f05-456c-92fd-8b6e40c2b243}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\Game\TitleScene">
       <UniqueIdentifier>{9daea6de-f249-46bf-bca6-846c788fbd84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Src\Application\Game\TitleScene\TitleUI">
-      <UniqueIdentifier>{37a2e6bc-1c58-4ff7-9b1b-e66073a38fdb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\Game\ActionScene\Door">
       <UniqueIdentifier>{a4a3d569-bfc2-460d-9cff-a9b183e24a7b}</UniqueIdentifier>
@@ -114,6 +108,15 @@
     </Filter>
     <Filter Include="Src\System\Shader\PostProcessShader">
       <UniqueIdentifier>{436d8d37-6285-4f2f-b616-3179d95136f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\UI">
+      <UniqueIdentifier>{a61446c0-2b2a-431c-9de1-54ad0154e619}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\UI\Menu">
+      <UniqueIdentifier>{351a204e-4ce6-439e-887a-ff2a96ecb5d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\StageSelectScene">
+      <UniqueIdentifier>{825d8241-0b99-4236-92b8-7a815072a53e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -270,9 +273,6 @@
     <ClInclude Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.h">
       <Filter>Src\Application\Game\ActionScene\ActionProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\ActionScene\ActionUI\ActionUI.h">
-      <Filter>Src\Application\Game\ActionScene\ActionUI</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Game\ActionScene\Box\Box.h">
       <Filter>Src\Application\Game\ActionScene\Box</Filter>
     </ClInclude>
@@ -284,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.h">
       <Filter>Src\Application\Game\ActionScene\Door\ManualDoor</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\Game\TitleScene\TitleUI\TitleUI.h">
-      <Filter>Src\Application\Game\TitleScene\TitleUI</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.h">
       <Filter>Src\Application\Game\ActionScene\Door\AutomaticDoor</Filter>
@@ -323,6 +320,12 @@
     </ClInclude>
     <ClInclude Include="Src\System\Shader\PostProcessShader\PostProcessShader.h">
       <Filter>Src\System\Shader\PostProcessShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\UI\Menu\MenuList.h">
+      <Filter>Src\Application\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\StageSelectScene\StageSelectProcess.h">
+      <Filter>Src\Application\Game\StageSelectScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -446,9 +449,6 @@
     <ClCompile Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.cpp">
       <Filter>Src\Application\Game\ActionScene\ActionProcess</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\ActionScene\ActionUI\ActionUI.cpp">
-      <Filter>Src\Application\Game\ActionScene\ActionUI</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\Game\ActionScene\Box\Box.cpp">
       <Filter>Src\Application\Game\ActionScene\Box</Filter>
     </ClCompile>
@@ -460,9 +460,6 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.cpp">
       <Filter>Src\Application\Game\ActionScene\Door\ManualDoor</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Game\TitleScene\TitleUI\TitleUI.cpp">
-      <Filter>Src\Application\Game\TitleScene\TitleUI</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.cpp">
       <Filter>Src\Application\Game\ActionScene\Door\AutomaticDoor</Filter>
@@ -493,6 +490,15 @@
     </ClCompile>
     <ClCompile Include="Src\System\Shader\PostProcessShader\PostProcessShader.cpp">
       <Filter>Src\System\Shader\PostProcessShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\UI\Menu\MenuList.cpp">
+      <Filter>Src\Application\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\StageSelectScene\StageSelectProcess.cpp">
+      <Filter>Src\Application\Game\StageSelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\InputObject.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -559,6 +565,9 @@
       <Filter>Src\System\Shader\PostProcessShader</Filter>
     </FxCompile>
     <FxCompile Include="Src\System\Shader\PostProcessShader\PostProcess_VS.hlsl">
+      <Filter>Src\System\Shader\PostProcessShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Src\System\Shader\PostProcessShader\PostProcess_ACESTone_PS.hlsl">
       <Filter>Src\System\Shader\PostProcessShader</Filter>
     </FxCompile>
   </ItemGroup>

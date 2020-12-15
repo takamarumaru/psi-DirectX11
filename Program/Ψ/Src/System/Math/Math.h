@@ -303,6 +303,11 @@ public:
 	{
 		*this = DirectX::XMMatrixScaling(x,y,z);
 	}
+	void CreateScalling(Vector3 v)
+	{
+		*this = DirectX::XMMatrixScaling(v.x, v.y, v.z);
+	}
+
 
 	//指定軸回転行列作成
 	void CreateRotationAxis(const Vector3& axis, float angle)
@@ -493,7 +498,7 @@ public:
 
 
 	//拡縮取得
-	Vector3 GetScale()const { return { _11,_22,_33 }; }
+	Vector3 GetScale()const { return Vector3(_11,_22,_33); }
 
 	//拡縮セット
 	void SetScale(const Vector3& v)

@@ -1,0 +1,20 @@
+{
+    "ClassName":"MenuList",
+    "Prefab": "Data/JsonData/BaseObject.json",
+    "Pos": [400,-400,0],
+    "Rot": [0,0,0],
+    "Scale": [1,1,1],
+    "CenterOffset": [0,1,0],
+    "Radius":1.0,
+    "MenuBackTex":"Data/Texture/TitleMenuBack.png",
+    "State":1,
+    "MenuList":
+    [
+      "Data/Texture/GameStart.png",
+      "Data/Texture/StageSelect.png",
+      "Data/Texture/Settings.png",
+      "Data/Texture/QuitGame.png"
+    ],
+    "Tag": 16
+  }
+  

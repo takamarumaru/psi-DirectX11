@@ -35,8 +35,14 @@ public:
 	void RequestChangeScene(const std::string& fileName);
 	//番号取得
 	UINT GetSceneNo() { return m_nowSceneNo; }
-
+	//シーン遷移中か
 	bool IsChangeScene() { return m_isRequestChangeScene; }
+	//一時停止
+	void Stop() { m_isUpdate = false; }
+	//再開
+	void Restart() { m_isUpdate = true; }
+	//更新しているか
+	bool IsUpdate() { return m_isUpdate; }
 
 
 /// オブジェクト管理=================================
@@ -90,6 +96,10 @@ private:
 	//フェードのテクスチャ
 	std::shared_ptr<Texture> m_spFadeTex;
 
+	//シーンを更新するか
+	bool m_isUpdate = true;
+
+
 /// オブジェクト=====================================
 	//リスト
 	std::list<std::shared_ptr<GameObject>> m_spObjects;
@@ -126,6 +136,8 @@ private:
 
 	BlurTexture m_blurTex;
 	std::shared_ptr<Texture> m_spHeightBrightTex = nullptr;
+
+	std::shared_ptr<Texture> m_spToneTex = nullptr;
 
 //===================================================
 //シングルトン実装

@@ -7,10 +7,8 @@
 
 
 #include "TitleScene/TitleProcess.h"
-#include "TitleScene/TitleUI/TitleUI.h"
 
 #include "ActionScene/ActionProcess/ActionProcess.h"
-#include "ActionScene/ActionUI/ActionUI.h"
 #include "ActionScene/Box/Box.h"
 #include "ActionScene/Ball/Ball.h"
 #include "ActionScene/Button/Button.h"
@@ -21,6 +19,10 @@
 #include "ActionScene/Goal/Goal.h"
 #include "ActionScene/Light/Light.h"
 #include "ActionScene/Player/Player.h"
+
+#include "StageSelectScene/StageSelectProcess.h"
+
+#include "UI/MENU/MenuList.h"
 
 const float GameObject::s_allowToStepHeight = 0.8f;
 const float GameObject::s_landingHeight = 0.1f;
@@ -97,12 +99,12 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 	const std::vector<json11::Json>& rRot = jsonObj["Rot"].array_items();
 	if (rRot.size() == 3)
 	{
-		mRotate.CreateRotation
-		(
-			(float)rRot[0].number_value() * ToRadians,
-			(float)rRot[1].number_value() * ToRadians,
-			(float)rRot[2].number_value() * ToRadians
-		);
+
+		m_rot.x = rRot[0].int_value() * ToRadians;
+		m_rot.y = rRot[1].int_value() * ToRadians;
+		m_rot.z = rRot[2].int_value() * ToRadians;
+
+		mRotate.CreateRotation(m_rot);
 	}
 
 	//拡縮
@@ -115,8 +117,6 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 			(float)rScale[1].number_value(),
 			(float)rScale[2].number_value()
 		);
-
-		m_defScale = mScale.GetScale();
 	}
 
 	m_mWorld = mScale * mRotate * mTrans;
@@ -139,8 +139,10 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	//カメラの初期設定
 	m_spCameraComponent = std::make_shared<CameraComponent>(*this);
-	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -0.01f);
-	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
+
+	//情報を格納
+	m_pos = mTrans.GetTranslation();
+	m_scale = mScale.GetScale();
 }
 
 //データ保存
@@ -158,23 +160,23 @@ json11::Json::object GameObject::Serialize()
 
 	//座標
 	json11::Json::array mat(3);
-	mat[0] = (int)m_mWorld.GetTranslation().x;
-	mat[1] = (int)m_mWorld.GetTranslation().y;
-	mat[2] = (int)m_mWorld.GetTranslation().z;
+	mat[0] = (int)m_pos.x;
+	mat[1] = (int)m_pos.y;
+	mat[2] = (int)m_pos.z;
 
 	objectData["Pos"] = mat;
 
 	//回転
-	mat[0] = (int)(m_mWorld.GetAngles().x * ToDegrees);
-	mat[1] = (int)(m_mWorld.GetAngles().y * ToDegrees);
-	mat[2] = (int)(m_mWorld.GetAngles().z * ToDegrees);
+	mat[0] = (int)(m_rot.x * ToDegrees);
+	mat[1] = (int)(m_rot.y * ToDegrees);
+	mat[2] = (int)(m_rot.z * ToDegrees);
 
 	objectData["Rot"] = mat;
 
 	//拡縮
-	mat[0] = 1;
-	mat[1] = 1;
-	mat[2] = 1;
+	mat[0] = (int)m_scale.x;
+	mat[1] = (int)m_scale.y;
+	mat[2] = (int)m_scale.z;
 
 	objectData["Scale"] = mat;
 	
@@ -233,9 +235,24 @@ void GameObject::Draw()
 {
 	if (m_spModelComponent == nullptr) { return; }
 
-	IMGUI_LOG.AddLog(m_name.c_str());
+	//透過オブジェクトの場合
+	if (m_tag & TAG_TransparentObject)
+	{
+		//Z情報は使うが、Z書き込みOFF
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteDisable, 0);
+		//カリングなし
+		D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullNone);
+	}
 
+	//描画
 	m_spModelComponent->Draw();
+
+	//透過オブジェクトの場合もとに戻す
+	if (m_tag & TAG_TransparentObject)
+	{
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
+		D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
+	}
 
 }
 //シャドウマップ描画
@@ -258,12 +275,6 @@ void GameObject::ImGuiUpdate()
 		ImGui::CheckboxFlags("Player", &m_tag, TAG_Player);
 		ImGui::CheckboxFlags("StageObject", &m_tag, TAG_StageObject);
 
-
-		if (ImGui::Button(u8"JSONテキストにコピー"))
-		{
-			ImGui::SetClipboardText(Format("\"Tag\": %d", m_tag).c_str());
-		}
-
 		ImGui::TreePop();
 	}
 
@@ -271,67 +282,23 @@ void GameObject::ImGuiUpdate()
 	//TransForm
 	if (ImGui::TreeNodeEx("TransForm", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		Vector3 pos = m_mWorld.GetTranslation();
-		Vector3 rot = m_mWorld.GetAngles() * ToDegrees;
-		Vector3 scale = m_mWorld.GetScale();
+		Vector3 rot = m_rot * ToDegrees;
 
 		bool isChange = false;
 
-		isChange |= ImGui::DragFloat3("Position", &pos.x, 1.0f);
+		isChange |= ImGui::DragFloat3("Position", &m_pos.x, 1.0f);
 		isChange |= ImGui::DragFloat3("Rotation", &rot.x, 1.0f);
-		isChange |= ImGui::DragFloat3("Scale", &scale.x, 1.0f);
-		isChange |= ImGui::DragFloat("AllScale", &m_allScale, 1.0f);
+		isChange |= ImGui::DragFloat3("Scale", &m_scale.x, 1.0f);
+		//isChange |= ImGui::DragFloat("AllScale", &m_allScale, 1.0f);
 
 		if (isChange)
 		{
-			//=================================
-			//回転
-			//=================================
+			//Radianに戻す
+			m_rot = rot * ToRadians;
 
-			//計算するときにはRadianに戻す
-			rot *= ToRadians;
-
-			Matrix mRX;
-			mRX.RotateX(rot.x);
-			Matrix mRY;
-			mRY.RotateY(rot.y);
-			Matrix mRZ;
-			mRZ.RotateZ(rot.z);
-
-			m_mWorld = mRX * mRY * mRZ;
-
-			//=================================
-			//全体の拡縮
-			//=================================
-			if (m_allScale > 0)
-			{
-				Matrix mS;
-
-				mS.Scale
-				(
-					m_defScale.x * m_allScale,
-					m_defScale.y * m_allScale,
-					m_defScale.z * m_allScale
-				);
-				m_mWorld *= mS;
-			}
-
-			//=================================
-			//移動
-			//=================================
-
-			m_mWorld.SetTranslation(pos);
-			m_pos = pos;
-			m_rot = rot;
-
-		}
-		if (ImGui::Button(u8"JSONテキストにコピー"))
-		{
-			std::string s = Format("\"Pos\": [%.1f,%.1f,%.1f],\n", pos.x, pos.y, pos.z);
-			s += Format("\"Rot\": [%.1f,%.1f,%.1f],\n", rot.x, rot.y, rot.z);
-			s += Format("\"Scale\": [%.1f,%.1f,%.1f],\n", scale.x, scale.y, scale.z);
-
-			ImGui::SetClipboardText(s.c_str());
+			m_mWorld.CreateScalling(m_scale);
+			m_mWorld.Rotate(m_rot);
+			m_mWorld.Move(m_pos);
 		}
 
 		ImGui::TreePop();
@@ -549,16 +516,16 @@ bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT 
 		///上方向への反射処理
 		if (m_tag & TAG_CanControlObject)
 		{
-			m_force = Vector3::Reflect(m_force, { 0,1,0 }) * m_force.Length();
+			if (fabs(m_force.y) >= 0.1f)
+			{
+				m_force = Vector3::Reflect(m_force, downRayResult.m_polyDir) * m_force.Length();
+			}
 		}
 
 		//摩擦による減速処理
 		float force= (1.0f - downRayResult.m_roughness) + m_elastic;
 		if (force >= 1.0f) { force = 1.0f; }
 		m_force *= force;
-		
-		IMGUI_LOG.AddLog((m_name + "========================").c_str());
-		IMGUI_LOG.AddLog(u8"減速率:%.2f", force);
 	}
 
 
@@ -625,10 +592,6 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	{
 		return std::make_shared<ActionProcess>();
 	}
-	if (name == "ActionUI")
-	{
-		return std::make_shared<ActionUI>();
-	}
 	//プレイヤー
 	if (name == "Player")
 	{
@@ -684,11 +647,18 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	{
 		return std::make_shared<TitleProcess>();
 	}
-	if (name == "TitleUI")
+
+	///ステージセレクトプロセス===============================
+	if (name == "StageSelectProcess")
 	{
-		return std::make_shared<TitleUI>();
+		return std::make_shared<StageSelectProcess>();
 	}
 
+	//UI======================================================
+	if (name == "MenuList")
+	{
+		return std::make_shared<MenuList>();
+	}
 	//文字列が既存のクラスに一致しなかった
 	assert(0 && "存在しないObjectクラスです");
 

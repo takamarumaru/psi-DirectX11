@@ -108,6 +108,18 @@ public:
 
 	virtual void Update()override;
 };
+
+
+//===============================================
+//メニューリスト入力用
+//===============================================
+class MenuListInputComponent :public InputComponent
+{
+public:
+	MenuListInputComponent(GameObject& owner) :InputComponent(owner) {}
+
+	virtual void Update()override;
+};
 //===============================================
 //プレイヤー入力用
 //===============================================

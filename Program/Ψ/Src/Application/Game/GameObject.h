@@ -18,6 +18,7 @@ enum OBJECT_TAG
 	TAG_StageObject			= 0x00000004,	//ステージ
 	TAG_CanControlObject	= 0x00000008,	//操作できるオブジェクト
 	TAG_ProcessObject		= 0x00000010,	//プロセスオブジェクト
+	TAG_TransparentObject	= 0x00000020,	//透過オブジェクト
 };
 
 class GameObject :public std::enable_shared_from_this<GameObject>
@@ -56,8 +57,10 @@ public:
 	inline void SetPos(const Vector3& rPos) { m_pos = rPos; }
 	//中心座標
 	Vector3 GetCenterPos() { return m_pos + m_centerOffset; }
-	//移動量
+	//移動量をセット
 	inline void SetForce(const Vector3& rForce) { m_force = rForce; }
+	//移動量を追加
+	inline void AddForce(const Vector3& rForce) { m_force += rForce; }
 	//生死
 	inline bool IsAlive() const { return m_isAlive; }
 	inline void Destroy() { m_isAlive = false; }
@@ -141,6 +144,10 @@ protected:
 	Vector3 m_force;
 	//回転角度
 	Vector3 m_rot;
+	//拡縮
+	Vector3		m_scale;
+	//全体の拡縮
+	float		m_allScale = 1.0f;
 	//弾性力
 	float m_elastic = 0.0f;
 
@@ -160,10 +167,6 @@ protected:
 	//重力の影響を受けるか
 	bool		m_isFall = true;
 
-	//全体の拡縮
-	float		m_allScale = 1.0f;
-	//json読み込み時の拡縮
-	Vector3		m_defScale = { 1.0f,1.0f,1.0f };
 
 	//球の当たり判定半径
 	float m_radius = 1.0f;
