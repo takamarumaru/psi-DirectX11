@@ -147,7 +147,6 @@ void MenuList::Update()
 				{
 					//指定のシーンに移動
 					std::string num = item.m_name.substr(item.m_name.find_last_of("Area")+1, 2);
-					IMGUI_LOG.AddLog(num.c_str());
 					Scene::GetInstance().RequestChangeScene("Data/JsonData/Stage" + std::to_string(atoi(num.c_str())) + "Scene.json");
 				}
 

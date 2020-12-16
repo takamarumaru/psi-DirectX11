@@ -41,11 +41,21 @@ void Box::UpdateCollision()
 	float rayDistance = FLT_MAX;
 	RayResult finalRayResult;
 
-	//下方向への判定を行い、着地した
-	if (CheckGround(finalRayResult, rayDistance,TAG_StageObject | TAG_Character, m_spOwner))
+	Vector3 uv[4] =
 	{
-		//地面の上にｙ座標を移動
-		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
+		Vector3(1,0,1),
+		Vector3(1,0,-1),
+		Vector3(-1,0,1),
+		Vector3(-1,0,-1)
+	};
+	for (UINT i = 0; i < 4; i++)
+	{
+		//下方向への判定を行い、着地した
+		if (CheckGround(finalRayResult, m_pos+uv[i], rayDistance, TAG_StageObject | TAG_Character, m_spOwner))
+		{
+			//地面の上にｙ座標を移動
+			m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
+		}
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))

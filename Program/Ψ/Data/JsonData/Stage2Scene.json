@@ -17,33 +17,14 @@
     },
     {
       "Name": "Goal1",
+      "Pos": [0,15,0],
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
       "Name": "Ball1",
-      "Pos": [4,0,3],
+      "Pos": [-5,0,-3],
       "Prefab": "Data/JsonData/BallObject.json",
-      "Rot": [-6,-48,157]
-    },
-    {
-      "Name": "Target1",
-      "Pos": [4,0,6],
-      "Prefab": "Data/JsonData/TargetObject.json",
-      "RailsPoint": [
-        [4,0,6,0,1,0],
-        [4,0,-3,0,1,0],
-        [3,0,-4,0,1,0],
-        [-5,0,-4,0,1,0]
-      ],
-      "ReturnTime": 3,
-      "Rot": [0,90,0]
-    },
-    {
-      "Name": "ManualDoor1",
-      "OwnerName": "Target1",
-      "Pos": [-5,0,-4],
-      "Prefab": "Data/JsonData/ManualDoorObject.json",
-      "Rot": [0,90,0]
+      "Rot": [-67,51,-169]
     },
     {
       "Color": [1,1,1],
@@ -75,9 +56,19 @@
     },
     {
       "Name": "Player",
-      "Pos": [-8,0,8],
+      "Pos": [-2,0,-9],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-545,0]
+      "Rot": [0,-667,0]
+    },
+    {
+      "Name": "Button1",
+      "Pos": [4,0,-4],
+      "Prefab": "Data/JsonData/RecessedButtonObject.json",
+      "RailsPoint": []
+    },
+    {
+      "Name": "Box1",
+      "Prefab": "Data/JsonData/BoxObject.json"
     }
   ],
   "SceneNo": 2

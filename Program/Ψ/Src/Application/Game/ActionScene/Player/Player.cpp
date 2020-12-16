@@ -172,7 +172,7 @@ void Player::UpdateCollision()
 	std::shared_ptr<GameObject> operateObj = std::dynamic_pointer_cast<GameObject>(m_spOperateObj);
 
 	//下方向への判定を行い、着地した
-	if (CheckGround(downRayResult, rayDistance, TAG_StageObject | TAG_Character, operateObj))
+	if (CheckGround(downRayResult, m_pos, rayDistance, TAG_StageObject | TAG_Character, operateObj))
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;

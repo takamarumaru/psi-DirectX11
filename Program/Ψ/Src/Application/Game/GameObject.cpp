@@ -417,7 +417,6 @@ bool GameObject::HitCheckByBox(const BoxInfo& rInfo)
 	{
 		//ノードがモデルを持っていなかった場合は無視
 		if (!node.m_spMesh) { continue; }
-
 		if (
 			BoxToBox(
 				*rInfo.m_node.m_spMesh,
@@ -434,12 +433,12 @@ bool GameObject::HitCheckByBox(const BoxInfo& rInfo)
 	return false;
 }
 
-bool GameObject::CheckGround(RayResult& downRayResult,float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj)
+bool GameObject::CheckGround(RayResult& downRayResult,Vector3 pos,float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj)
 {
 	//レイ判定情報
 	RayInfo rayInfo;
 	//キャラクターの位置を発射地点に
-	rayInfo.m_pos = m_pos;
+	rayInfo.m_pos = pos;
 
 	//キャラクターの足元からレイを発射すると地面と当たらないので少し持ち上げる（乗り越えられる段差の高さ分だけ）
 	rayInfo.m_pos.y += s_allowToStepHeight;

@@ -29,7 +29,6 @@ public:
 	//デバックスフィア描画
 	void AddDebugSphereLine(const Math::Vector3& pos, float radius, const Math::Color& color = { 1,1,1,1 });
 
-
 /// シーン===========================================
 	//変更のリクエストを受け付け
 	void RequestChangeScene(const std::string& fileName);

@@ -42,9 +42,11 @@ void Button::UpdateCollision()
 		//ノード(Button)と判定
 		info.m_node = *m_spModelComponent->FindNode("Button");
 		//少し縦に伸ばした行列で判定
-		Matrix mat = m_mWorld;
-		mat.SetScale(m_mWorld.GetScale().x, m_mWorld.GetScale().y+1.0f, m_mWorld.GetScale().z);
+		Matrix mat;
+		mat.CreateTranslation(m_mWorld.GetTranslation().x, m_mWorld.GetTranslation().y+0.1f, m_mWorld.GetTranslation().z);
 		info.m_matrix = mat;
+
+
 
 		if (obj->HitCheckByBox(info))
 		{

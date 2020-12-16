@@ -57,6 +57,11 @@ void Scene::Serialize()
 //更新
 void Scene::Update()
 {
+	//デバックラインリストの初期化
+	if (m_debugLines.size() >= 1)
+	{
+		m_debugLines.clear();
+	}
 	// 点光の登録をリセットする
 	SHADER.ResetPointLight();
 
@@ -117,6 +122,10 @@ void Scene::Update()
 	{
 		ExecChangeScene();
 	}
+
+
+	IMGUI_LOG.Clear();
+	IMGUI_LOG.AddLog("size:%d", m_debugLines.size());
 }
 
 //描画
@@ -257,8 +266,6 @@ void Scene::Draw()
 		{
 			SHADER.m_effectShader.SetWorldMatrix(Math::Matrix());
 			SHADER.m_effectShader.DrawVertices(m_debugLines, D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-
-			m_debugLines.clear();
 		}
 		//Zバッファ使用ON・書き込みON
 		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
@@ -287,8 +294,8 @@ void Scene::AddDebugLine(const Math::Vector3& p1, const Math::Vector3& p2, const
 	//ラインの終端頂点
 	ver.Pos = p2;
 	m_debugLines.push_back(ver);
-}
 
+}
 
 //デバックスフィア描画
 void Scene::AddDebugSphereLine(const Math::Vector3& pos, float radius, const Math::Color& color)
@@ -297,7 +304,7 @@ void Scene::AddDebugSphereLine(const Math::Vector3& pos, float radius, const Mat
 	ver.Color = color;
 	ver.UV = { 0.0f,0.0f };
 
-	static constexpr int kDetail = 32;
+	static constexpr int kDetail = 16;
 	for (UINT i = 0; i < kDetail + 1; ++i)
 	{
 		//XZ平面

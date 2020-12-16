@@ -5,16 +5,6 @@
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/ModelComponent.h"
 
-//正負を判定するための関数
-float SignChecker(float value)
-{
-	if (value == 0.0f)return 0.0f;
-	if (value > 0.0f)return 1.0f;
-	if (value < 0.0f)return -1.0f;
-
-	return 0.0f;
-}
-
 void Ball::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
@@ -60,14 +50,13 @@ void Ball::UpdateCollision()
 	RayResult finalRayResult;
 
 	//下方向への判定を行い、着地した
-	if (CheckGround(finalRayResult, rayDistance,TAG_StageObject | TAG_Character, m_spOwner))
+	if (CheckGround(finalRayResult, m_pos,rayDistance,TAG_StageObject | TAG_Character, m_spOwner))
 	{
 		//地面の上にｙ座標を移動
 		m_pos.y += GameObject::s_allowToStepHeight - rayDistance;
 		//摩擦による減速処理
 		m_force.y *= 0.5f;
 
-		IMGUI_LOG.Clear();
 		if (Vector3(finalRayResult.m_polyDir.x,0.0f, finalRayResult.m_polyDir.z).Length() >= 0.1f)
 		{
 			//法線方向との壁ずりベクトル
