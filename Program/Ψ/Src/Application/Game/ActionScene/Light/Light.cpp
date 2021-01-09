@@ -34,18 +34,10 @@ void Light::Deserialize(const json11::Json& jsonObj)
 
 	switch (m_stateTag)
 	{
-	case LIGHT_STATE::LS_NORMAL:
-		m_spState = std::make_shared<NormalState>();
-		break;
-	case LIGHT_STATE::LS_BREAKING:
-		m_spState = std::make_shared<BreakingState>();
-		break;
-	case LIGHT_STATE::LS_SENSOR:
-		m_spState = std::make_shared<SensorState>();
-		break;
-	default:
-		m_spState = std::make_shared<NormalState>();
-		break;
+	case LIGHT_STATE::LS_NORMAL:	m_spState = std::make_shared<NormalState>();break;
+	case LIGHT_STATE::LS_BREAKING:	m_spState = std::make_shared<BreakingState>();break;
+	case LIGHT_STATE::LS_SENSOR:	m_spState = std::make_shared<SensorState>();break;
+	default:						m_spState = std::make_shared<NormalState>();break;
 	}
 
 	//状態によって初期化
@@ -57,6 +49,7 @@ json11::Json::object Light::Serialize()
 	json11::Json::object objectData = GameObject::Serialize();
 
 	objectData["Power"] = (int)m_lightPower;
+	objectData["State"] = (int)m_stateTag;
 
 	//座標
 	json11::Json::array mat(3);
@@ -95,6 +88,66 @@ void Light::Update()
 		Vector3 pos = m_mWorld.GetTranslation();
 		pos.y -= 1.0f;
 		SHADER.AddPointLight(pos, m_lightPower, m_lightColor);
+	}
+}
+
+void Light::ImGuiUpdate()
+{
+	GameObject::ImGuiUpdate();
+
+	if (ImGui::TreeNodeEx("ChangeColor", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		Vector3 lightColor = m_lightColor;
+
+		bool isChange = false;
+
+		isChange |= ImGui::DragFloat3("lightColor", &lightColor.x, 1.0f);
+
+		if (isChange)
+		{
+			m_lightColor = lightColor;
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("ChangePower", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		float lightPower = m_lightPower;
+
+		bool isChange = false;
+
+		isChange |= ImGui::DragFloat("lightPower", &lightPower, 1.0f);
+
+		if (isChange)
+		{
+			m_lightPower = lightPower;
+		}
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("ChangeState", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		float stateNum = m_stateTag;
+
+		bool isChange = false;
+
+		isChange |= ImGui::DragFloat("State", &stateNum, 1.0f);
+
+		if (isChange)
+		{
+			m_stateTag = stateNum;
+			switch (m_stateTag)
+			{
+			case LIGHT_STATE::LS_NORMAL:	m_spState = std::make_shared<NormalState>(); break;
+			case LIGHT_STATE::LS_BREAKING:	m_spState = std::make_shared<BreakingState>(); break;
+			case LIGHT_STATE::LS_SENSOR:	m_spState = std::make_shared<SensorState>(); break;
+			default:						m_spState = std::make_shared<NormalState>(); break;
+			}
+		}
+
+		ImGui::TreePop();
 	}
 }
 

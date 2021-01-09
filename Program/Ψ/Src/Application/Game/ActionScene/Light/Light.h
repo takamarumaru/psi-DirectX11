@@ -16,6 +16,7 @@ public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual json11::Json::object Serialize()override;
 	virtual void Update()override;
+	virtual void ImGuiUpdate()override;
 	virtual void DrawShadowMap()override {};
 
 private:
@@ -50,8 +51,9 @@ private:
 		virtual void Deserialize(Light& rOwner, const json11::Json& jsonObj)override;
 		virtual void Update(Light& rOwner)override;
 	private:
-		int m_count = 0;	//進みつ続けるカウント
+		int m_count = 0;	//進み続けるカウント
 		int m_interval = 0;	//ランダムで決まる間隔
+		bool m_isbreak = false;
 	};
 
 	//センサーライト

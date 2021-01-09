@@ -4,6 +4,7 @@
 
 #include "../Component/ModelComponent.h"
 #include "../Component/CameraComponent.h"
+#include "../Component/SoundComponent.h"
 
 
 #include "TitleScene/TitleProcess.h"
@@ -27,10 +28,8 @@
 const float GameObject::s_allowToStepHeight = 0.8f;
 const float GameObject::s_landingHeight = 0.1f;
 
-//コンストラクタ
 GameObject::GameObject(){}
 
-//デストラクタ
 GameObject::~GameObject()
 {
 	Release();
@@ -109,14 +108,29 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	//拡縮
 	const std::vector<json11::Json>& rScale = jsonObj["Scale"].array_items();
+	const std::vector<json11::Json>& rScaleOffset = jsonObj["ScaleOffset"].array_items();
+	Vector3 scale;
 	if (rScale.size() == 3)
 	{
-		mScale.CreateScalling
-		(
-			(float)rScale[0].number_value(),
-			(float)rScale[1].number_value(),
-			(float)rScale[2].number_value()
-		);
+		//拡縮度を代入
+		scale.x = (float)rScale[0].number_value();
+		scale.y = (float)rScale[1].number_value();
+		scale.z = (float)rScale[2].number_value();
+		//補正値があった場合
+		if (rScaleOffset.size() == 3)
+		{
+			scale.x += (float)rScaleOffset[0].number_value() * 0.01f;
+			scale.y += (float)rScaleOffset[1].number_value() * 0.01f;
+			scale.z += (float)rScaleOffset[2].number_value() * 0.01f;
+
+			mTrans.Move
+			(
+				(float)rScaleOffset[0].number_value() * 0.01f / 2,
+				(float)rScaleOffset[1].number_value() * 0.01f / 2,
+				(float)rScaleOffset[2].number_value() * 0.01f / 2
+			);
+		}
+		mScale.CreateScalling(scale);
 	}
 
 	m_mWorld = mScale * mRotate * mTrans;
@@ -130,15 +144,20 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 		m_centerOffset.z = (float)rCenterOffset[2].number_value();
 	}
 
+	//AudioEngineの初期化
+	m_spSoundComponent->Init();
+	// 音声のリストを取得
+	auto& soundList = jsonObj["SoundList"].array_items();
+	for (auto&& sound: soundList)
+	{
+		m_spSoundComponent->SoundLoad(sound[0].string_value().c_str(), sound[1].int_value() * 0.01f);
+	}
+
 	//当たり判定半径
 	if (jsonObj["Radius"].is_null() == false)
 	{
 		m_radius = (float)jsonObj["Radius"].number_value();
 	}
-
-
-	//カメラの初期設定
-	m_spCameraComponent = std::make_shared<CameraComponent>(*this);
 
 	//情報を格納
 	m_pos = mTrans.GetTranslation();
@@ -179,6 +198,22 @@ json11::Json::object GameObject::Serialize()
 	mat[2] = (int)m_scale.z;
 
 	objectData["Scale"] = mat;
+
+	////効果音
+	//json11::Json::array soundList(m_spSoundComponent->GetVolumeList().size());
+	//UINT soundIdx = 0;
+	////サウンドリストからデータを取得
+	//for (auto&& sound : m_spSoundComponent->GetVolumeList())
+	//{
+	//	json11::Json::array soundjson(2);
+	//	soundjson[0] = sound.first;
+	//	soundjson[1] = sound.second*100.0f;
+
+	//	soundList[soundIdx] =soundjson;
+	//	soundIdx++;
+	//}
+
+	//objectData["SoundList"] = soundList;
 	
 	//プレハブ指定がある場合
 	if (!m_prefab.empty())
@@ -228,6 +263,7 @@ void GameObject::Update()
 {
 	m_mPrev = m_mWorld;
 	m_prevPos = m_mWorld.GetTranslation();
+	m_spSoundComponent->Update();
 }
 
 //描画
@@ -250,7 +286,7 @@ void GameObject::Draw()
 	//透過オブジェクトの場合もとに戻す
 	if (m_tag & TAG_TransparentObject)
 	{
-		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
+		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteEnable, 0);
 		D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
 	}
 
@@ -274,6 +310,9 @@ void GameObject::ImGuiUpdate()
 		ImGui::CheckboxFlags("Character", &m_tag, TAG_Character);
 		ImGui::CheckboxFlags("Player", &m_tag, TAG_Player);
 		ImGui::CheckboxFlags("StageObject", &m_tag, TAG_StageObject);
+		ImGui::CheckboxFlags("CanControlObject", &m_tag, TAG_CanControlObject);
+		ImGui::CheckboxFlags("ProcessObject", &m_tag, TAG_ProcessObject);
+		ImGui::CheckboxFlags("TransparentObject", &m_tag, TAG_TransparentObject);
 
 		ImGui::TreePop();
 	}
@@ -433,7 +472,7 @@ bool GameObject::HitCheckByBox(const BoxInfo& rInfo)
 	return false;
 }
 
-bool GameObject::CheckGround(RayResult& downRayResult,Vector3 pos,float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj)
+bool GameObject::CheckGround(RayResult& finalRayResult,Vector3 pos,float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj)
 {
 	//レイ判定情報
 	RayInfo rayInfo;
@@ -469,9 +508,9 @@ bool GameObject::CheckGround(RayResult& downRayResult,Vector3 pos,float& rDstDis
 		if (obj->HitCheckByRay(rayInfo, rayResult))
 		{
 			//最も当たったところまでの距離が短いものを保持する
-			if (rayResult.m_distance < downRayResult.m_distance)
+			if (rayResult.m_distance < finalRayResult.m_distance)
 			{
-				downRayResult = rayResult;
+				finalRayResult = rayResult;
 				hitObj = obj;
 			}
 		}
@@ -481,10 +520,10 @@ bool GameObject::CheckGround(RayResult& downRayResult,Vector3 pos,float& rDstDis
 	float distanceFromGround = FLT_MAX;
 
 	//足元にステージオブジェクトがあった
-	if (downRayResult.m_hit)
+	if (finalRayResult.m_hit)
 	{
 		//地面との距離を算出
-		distanceFromGround = downRayResult.m_distance - (m_prevPos.y - m_pos.y);
+		distanceFromGround = finalRayResult.m_distance - (m_prevPos.y - m_pos.y);
 	}
 
 	//上方向に力がかかっていた場合
@@ -517,17 +556,15 @@ bool GameObject::CheckGround(RayResult& downRayResult,Vector3 pos,float& rDstDis
 		{
 			if (fabs(m_force.y) >= 0.1f)
 			{
-				m_force = Vector3::Reflect(m_force, downRayResult.m_polyDir) * m_force.Length();
+				m_force = Vector3::Reflect(m_force, finalRayResult.m_polyDir) * m_force.Length();
 			}
 		}
 
 		//摩擦による減速処理
-		float force= (1.0f - downRayResult.m_roughness) + m_elastic;
+		float force= (1.0f - finalRayResult.m_roughness) + m_elastic;
 		if (force >= 1.0f) { force = 1.0f; }
 		m_force *= force;
 	}
-
-
 
 	//着地したかどうかを返す
 	return m_isGround;
@@ -566,10 +603,30 @@ bool GameObject::CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj)
 			m_pos += sphereResult.m_push;
 			///反射処理======================================
 			if (m_tag & TAG_CanControlObject)
+			{
 				m_force = Vector3::Reflect(m_force, sphereResult.m_push) * m_force.Length();
+			}
 		}
+
 	}
 
+	//反射音の処理
+	if (isHit&&(m_tag & TAG_CanControlObject))
+	{
+		if (m_isImpactWall == false)
+		{
+			m_isImpactWall = true;
+			//力によって音量を調整
+			m_spSoundComponent->SetStateVolume(CorrectionValue(m_force.Length() / 1.0f, 1.0f, 0.0f));
+			//再生
+			m_spSoundComponent->SoundPlay("Data/Sound/Impact.wav");
+		}
+	}
+	else
+	{
+		m_isImpactWall = false;
+	}
+	
 	//デバック表示
 	SCENE.AddDebugSphereLine(info.m_pos, info.m_radius, isHit ? Math::Color(1,0,0,1): Math::Color(0,1,0,1));
 

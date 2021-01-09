@@ -16,9 +16,9 @@ void StageSelectProcess::Deserialize(const json11::Json& jsonObj)
 	while (ShowCursor(true) < 0);
 
 	//カメラの初期設定
-	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.5f, 2.5f, -5.0f);
-	m_spCameraComponent->OffsetMatrix().RotateX(-2.0f * ToRadians);
-	m_spCameraComponent->OffsetMatrix().RotateY(-80.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().CreateRotationX(10.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().RotateY(-130.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().Move(4.0f, 3.0f, 9.0f);
 	//カメラにセット
 	SCENE.SetTargetCamera(m_spCameraComponent);
 
@@ -46,16 +46,15 @@ void StageSelectProcess::Draw2D()
 
 void StageSelectProcess::Update()
 {
-	if (m_spInputComponent == nullptr) { return; }
-
-	m_spInputComponent->Update();
+	if (m_spInputComponent)
+	{
+		m_spInputComponent->Update();
+	}
 
 	//行列をカメラにセット
 	if (m_spCameraComponent)
 	{
 		//カメラにセット
 		m_spCameraComponent->SetCameraMatrix(m_mWorld);
-
-		m_spCameraComponent->Update();
 	}
 }

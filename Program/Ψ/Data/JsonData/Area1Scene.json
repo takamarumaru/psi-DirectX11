@@ -1,0 +1,122 @@
+{
+  "GameObjects": [
+    {
+      "ClassName": "ActionProcess",
+      "Name": "ActionProcess",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "Tag": 16
+    },
+    {
+      "Name": "MenuList1",
+      "Prefab": "Data/JsonData/ActionMenuListObject.json"
+    },
+    {
+      "Name": "Area",
+      "Prefab": "Data/JsonData/AreaObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light1",
+      "Pos": [7,20,8],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light2",
+      "Pos": [-7,20,8],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light3",
+      "Pos": [7,20,-6],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light4",
+      "Pos": [-4,20,-3],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light5",
+      "Pos": [0,4,6],
+      "Power": 10,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 2
+    },
+    {
+      "Name": "Box1",
+      "Pos": [-2,0,0],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Fence1",
+      "Pos": [-5,0,0],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Fence2",
+      "Pos": [-5,0,-4],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Fence3",
+      "Pos": [-5,0,-8],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Door1",
+      "OwnerName": "Button1",
+      "Pos": [-5,0,6],
+      "Prefab": "Data/JsonData/ManualDoorObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Door2",
+      "Pos": [-11,12,-4],
+      "Prefab": "Data/JsonData/AutomaticDoorObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Button1",
+      "Pos": [1,0,-6],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [1,0,-6,0,1,0],
+        [1,0,2,0,1,0],
+        [0,0,3,0,1,0],
+        [-5,0,3,0,1,0]
+      ]
+    },
+    {
+      "Name": "Player",
+      "Pos": [-9,0,-5],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,1054,0]
+    },
+    {
+      "Name": "Door3",
+      "Pos": [-14,12,6],
+      "Prefab": "Data/JsonData/AutomaticDoorObject.json"
+    },
+    {
+      "Name": "Goal",
+      "Pos": [-14,14,5],
+      "Prefab": "Data/JsonData/GoalObject.json"
+    }
+  ],
+  "SceneNo": 1
+}

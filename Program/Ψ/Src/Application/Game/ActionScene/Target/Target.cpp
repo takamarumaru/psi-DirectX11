@@ -49,6 +49,8 @@ void Target::Update()
 			m_isPush = false;
 			//Offアニメーション開始
 			SetAnimation("Off", false);
+			//ライトを消す
+			m_spModelComponent->SetEmissive(false);
 			//レールをOffに
 			m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
 		}
@@ -68,6 +70,27 @@ void Target::Update()
 	m_animator.AdvanceTime(m_spModelComponent->GetChangeableNodes());
 }
 
+void Target::ImGuiUpdate()
+{
+	InputObject::ImGuiUpdate();
+
+	if (ImGui::TreeNodeEx("ChangeInterval", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		float changeTime = m_returnTime;
+
+		bool isChange = false;
+
+		isChange |= ImGui::DragFloat("ReturnTime", &changeTime, 1.0f);
+
+		if (isChange)
+		{
+			m_returnTime = changeTime;
+		}
+
+		ImGui::TreePop();
+	}
+}
+
 void Target::UpdateCollision()
 {
 	//全てのオブジェクトと四角判定
@@ -79,7 +102,7 @@ void Target::UpdateCollision()
 		if (!(obj->GetTag() & (TAG_Character))) { continue; }
 
 		SphereInfo info;
-		info.m_pos = m_mWorld.GetTranslation() + Vector3(0,4.0f,0);
+		info.m_pos = m_mWorld.GetTranslation() + m_centerOffset;
 		info.m_radius = m_radius;
 
 		SCENE.AddDebugSphereLine(info.m_pos, info.m_radius);
@@ -94,6 +117,8 @@ void Target::UpdateCollision()
 					m_isPush = true;
 					//Onアニメーション開始
 					SetAnimation("On", false);
+					//ライトをつける
+					m_spModelComponent->SetEmissive(true);
 					//レールをOnに
 					m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOn.png"));
 					//復帰までの時間計測開始

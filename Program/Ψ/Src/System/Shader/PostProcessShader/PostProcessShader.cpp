@@ -96,7 +96,7 @@ void KdPostProcessShader::ColorDraw(const Texture* tex, const Math::Vector4& col
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> saveDS;
 	UINT saveStencilRef = 0;
 	D3D.GetDevContext()->OMGetDepthStencilState(&saveDS, &saveStencilRef);
-	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
+	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWriteDisable, 0);
 
 	m_cb0_Color.Work().Color = color;
 	m_cb0_Color.Write();
@@ -139,7 +139,7 @@ void KdPostProcessShader::BlurDraw(const Texture* tex, const Math::Vector2& dir)
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> saveDS;
 	UINT saveStencilRef = 0;
 	D3D.GetDevContext()->OMGetDepthStencilState(&saveDS, &saveStencilRef);
-	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
+	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWriteDisable, 0);
 
 	//テクセルサイズを求める
 	Math::Vector2 ts;
@@ -262,7 +262,7 @@ void KdPostProcessShader::BrightFiltering(const Texture* destRT, const Texture* 
 	UINT saveStencilRef = 0;
 	D3D.GetDevContext()->OMGetDepthStencilState(&saveDS, &saveStencilRef);
 
-	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
+	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWriteDisable, 0);
 
 
 	D3D.GetDevContext()->PSSetShaderResources(0, 1, srcTex->GetSRViewAddress());
@@ -304,7 +304,7 @@ void KdPostProcessShader::ToneFilteringDraw(const Texture* srcTex)
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> saveDS;
 	UINT saveStencilRef = 0;
 	D3D.GetDevContext()->OMGetDepthStencilState(&saveDS, &saveStencilRef);
-	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
+	D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWriteDisable, 0);
 
 
 	D3D.GetDevContext()->PSSetShaderResources(0, 1, srcTex->GetSRViewAddress());

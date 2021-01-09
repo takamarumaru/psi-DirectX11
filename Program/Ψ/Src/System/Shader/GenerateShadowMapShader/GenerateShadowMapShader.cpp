@@ -27,7 +27,7 @@ void GenerateShadowMapShader::Begin()
 	Matrix mV;
 	mV.LookTo(m_lightDir, {0,1,0});
 	Matrix mTrans;
-	mTrans.CreateTranslation(0, 0, -20);
+	mTrans.CreateTranslation(0, 0, -30);
 	mV = mTrans * mV;
 	mV.Inverse();
 

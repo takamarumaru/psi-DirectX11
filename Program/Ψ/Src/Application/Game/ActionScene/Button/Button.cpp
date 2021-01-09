@@ -3,6 +3,7 @@
 #include"./Application/Game/Scene.h"
 
 #include"./Application/Component/CameraComponent.h"
+#include"./Application/Component/SoundComponent.h"
 #include"./Application/Component/ModelComponent.h"
 
 void Button::Update()
@@ -56,6 +57,8 @@ void Button::UpdateCollision()
 				m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOn.png"));
 				m_isPush = true;
 				m_spModelComponent->SetEmissive(true);
+				//起動音を再生
+				m_spSoundComponent->SoundPlay("Data/Sound/ButtonOn.wav");
 			}
 			return;
 		}

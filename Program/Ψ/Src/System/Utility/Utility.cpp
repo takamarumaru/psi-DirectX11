@@ -20,6 +20,13 @@ void KdGetTextuxxreInfo(ID3D11View* view, D3D11_TEXTURE2D_DESC& outDesc)
 }
 
 
+float CorrectionValue(float value, float max, float min)
+{
+	if (value >= max)return max;
+	if (value <= min)return min;
+	return value;
+}
+
 void MergePrefab(json11::Json& rSrcJson)
 {
 	// プレハブ指定ありの場合は、プレハブ側のものをベースにこのJSONをミックスする

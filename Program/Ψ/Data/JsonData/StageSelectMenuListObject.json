@@ -12,6 +12,10 @@
     [
       "Data/Texture/BacktoTitle.png"
     ],
-    "Tag": 16
+    "Tag": 16,
+    "SoundList":
+    [
+      ["Data/Sound/ListSelect.wav",30]
+    ]
   }
   

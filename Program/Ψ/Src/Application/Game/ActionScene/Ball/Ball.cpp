@@ -4,6 +4,7 @@
 
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/ModelComponent.h"
+#include"./Application/Component/SoundComponent.h"
 
 void Ball::Deserialize(const json11::Json& jsonObj)
 {
@@ -62,6 +63,19 @@ void Ball::UpdateCollision()
 			//法線方向との壁ずりベクトル
 			m_force += Vector3::WallScratch(Vector3(0,-1,0), finalRayResult.m_polyDir) * 0.005f;
 		}
+
+		if (m_isImpactGround == false)
+		{
+			m_isImpactGround = true;
+			//力によって音量を調整
+			m_spSoundComponent->SetStateVolume(CorrectionValue(m_force.Length() / 0.1f, 1.0f, 0.0f));
+			//再生
+			m_spSoundComponent->SoundPlay("Data/Sound/Impact.wav");
+		}
+	}
+	else
+	{
+		m_isImpactGround = false;
 	}
 
 	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))

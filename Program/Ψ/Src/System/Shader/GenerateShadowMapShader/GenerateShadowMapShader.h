@@ -81,6 +81,6 @@ private:
 	D3D11_VIEWPORT			m_saveVP = {};
 
 	//光の方向
-	Vector3 m_lightDir = Vector3(-0.1f,-1.0f, 0.0f);
+	Vector3 m_lightDir = Vector3(0.0f,-1.0f, 0.0f);
 
 };

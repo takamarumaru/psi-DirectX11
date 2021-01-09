@@ -7,6 +7,11 @@
   "Scale": [1,1,1],
   "CenterOffset": [0,1,0],
   "Radius":3.0,
-  "Tag": 1
+  "Tag": 1,
+  "SoundList":
+  [
+    ["Data/Sound/DoorOpen.wav",10],
+    ["Data/Sound/DoorClose.wav",10]
+  ]
 }
   

@@ -109,7 +109,7 @@ void InputObject::ImGuiUpdate()
 			ImGui::DragFloat3("Offset", &newPointOffset.x, 1.0f);
 
 			//ポイントにデバックスフィアを追加
-			SCENE.AddDebugSphereLine(newPointPos, 0.2f, Math::Color(1, 0, 0, 1));
+			SCENE.AddDebugSphereLine(newPointPos, 0.2f, Math::Color(1, 0, 1, 1));
 
 			if (ImGui::Button("PointCreate"))
 			{
@@ -121,6 +121,16 @@ void InputObject::ImGuiUpdate()
 					(float)newPointPos.z + (newPointOffset.z * 0.01f)
 				);
 				m_rail.AddPointBack(mPoint);
+
+				//補正値を保存
+				m_offsetList.push_back
+				(
+					Vector3(
+						newPointOffset.x * 0.01f,
+						newPointOffset.y * 0.01f,
+						newPointOffset.z * 0.01f
+					)
+				);
 			}
 
 			ImGui::TreePop();

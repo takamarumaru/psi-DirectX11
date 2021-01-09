@@ -21,5 +21,6 @@ private:
 
 	Vector3 m_moveForce;
 
+	bool m_isImpactGround = false;
 
 };

@@ -26,10 +26,6 @@ void Player::Deserialize(const json11::Json& jsonObj)
 	//入力用コンポーネントセット
 	m_spInputComponent = std::make_shared<PlayerInputComponent>(*this);
 
-	//影を初期化
-	m_shadow = std::make_shared<TextureEffect>();
-	m_shadow->SetEffectInfo(ResFac.GetTexture("Data/Texture/shadow.png"), 2.0f,1,1,0,false,false);
-
 	//念のテクスチャ
 	m_powerEffect.SetTexture(ResFac.GetTexture("Data/Texture/powerEffect.png"));
 
@@ -105,9 +101,6 @@ void Player::Update()
 
 void Player::DrawEffect()
 {
-	//影の描画
-	m_shadow->DrawEffect();
-
 	//念の描画
 	SHADER.m_effectShader.SetWorldMatrix(Matrix());
 	SHADER.m_effectShader.WriteToCB();
@@ -183,25 +176,6 @@ void Player::UpdateCollision()
 		//摩擦による減速処理
 		m_moveForce *= (1.0f - downRayResult.m_roughness);
 	}
-
-	//影の更新
-	Matrix mShadow;
-	//ポリゴンの法線ベクトルと上方向のベクトルに垂直なベクトル
-	Vector3 crossDir = Vector3::Cross(downRayResult.m_polyDir, { 0,1,0 });
-	crossDir.Normalize();
-	//ポリゴンの法線ベクトルから見た上方向のベクトルの角度
-	float dotAngle = acosf(Vector3::Dot(downRayResult.m_polyDir, { 0,1,0 }));
-
-	//crossDirがZeroベクトルなら回転しない
-	if (!XMVector3Equal(crossDir, { 0.0f,0.0f,0.0f }))
-	{
-		//回転処理
-		mShadow.CreateRotationAxis(crossDir, -dotAngle);
-	}
-	//移動処理
-	mShadow.Move(downRayResult.m_hitPos += {0.0f, 0.05f, 0.0f});
-	//行列をセット
-	m_shadow->SetMatrix(mShadow);
 
 	//横方向との当たり判定
 	if(CheckBump(TAG_StageObject | TAG_Character, operateObj))

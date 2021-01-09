@@ -60,7 +60,7 @@
     ],
     "materials" : [
         {
-            "doubleSided" : true,
+            "alphaMode" : "BLEND",
             "emissiveFactor" : [
                 0,
                 0,
@@ -72,8 +72,8 @@
                     "index" : 0,
                     "texCoord" : 0
                 },
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                "metallicFactor" : 0.800000011920929,
+                "roughnessFactor" : 0.44999998807907104
             }
         }
     ],

@@ -6,16 +6,11 @@
 
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/ModelComponent.h"
+#include"./Application/Component/SoundComponent.h"
 
 void Spring::Deserialize(const json11::Json& jsonObj)
 {
-	GameObject::Deserialize(jsonObj);
-
-	//オーナーの名前
-	if (jsonObj["OwnerName"].is_null() == false)
-	{
-		m_ownerName = jsonObj["OwnerName"].string_value();
-	}
+	OutputObject::Deserialize(jsonObj);
 
 	//押し出す時間
 	if (jsonObj["PushTime"].is_null() == false)
@@ -32,10 +27,8 @@ void Spring::Deserialize(const json11::Json& jsonObj)
 
 json11::Json::object Spring::Serialize()
 {
-	json11::Json::object objectData = GameObject::Serialize();
+	json11::Json::object objectData = OutputObject::Serialize();
 
-	//オーナー名
-	objectData["OwnerName"] = m_ownerName;
 	//押し出す力
 	objectData["PushPower"] = (int)(m_pushPower * 100.0f);
 
@@ -65,16 +58,44 @@ void Spring::Update()
 	//オーナーからの信号がONなら動く
 	if (m_animator.IsAnimationEnd())
 	{
-		m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
-		std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
-		if (button->GetIsPush())
+		if (SCENE.FindObjectWithName(m_ownerName))
 		{
-			SetAnimation("Piston", false);
+			m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
+		
+			std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
+			if (button->GetIsPush())
+			{
+				SetAnimation("Piston", false);
+				m_spSoundComponent->SoundPlay("Data/Sound/Spring.wav");
+			}
 		}
 	}
+	
+	
 
 	//アニメーションの更新
 	m_animator.AdvanceTime(m_spModelComponent->GetChangeableNodes());
+}
+
+void Spring::ImGuiUpdate()
+{
+	OutputObject::ImGuiUpdate();
+
+	if (ImGui::TreeNodeEx("ChangePower", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		float springPower = int(m_pushPower * 100.0f);
+
+		bool isChange = false;
+
+		isChange |= ImGui::DragFloat("PushPower", &springPower, 1.0f);
+
+		if (isChange)
+		{
+			m_pushPower = springPower / 100.0f;
+		}
+
+		ImGui::TreePop();
+	}
 }
 
 void Spring::UpdateCollision()

@@ -165,6 +165,7 @@
     <ClInclude Include="Src\Application\Component\CameraComponent.h" />
     <ClInclude Include="Src\Application\Component\InputComponent.h" />
     <ClInclude Include="Src\Application\Component\ModelComponent.h" />
+    <ClInclude Include="Src\Application\Component\SoundComponent.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Ball\Ball.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Box\Box.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Src\Application\Game\ActionScene\InputObject.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Light\Light.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\OperateObject.h" />
+    <ClInclude Include="Src\Application\Game\ActionScene\OutputObject.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Player\Player.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Spring\Spring.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Target\Target.h" />
@@ -225,6 +227,7 @@
     <ClCompile Include="Src\Application\Component\CameraComponent.cpp" />
     <ClCompile Include="Src\Application\Component\InputComponent.cpp" />
     <ClCompile Include="Src\Application\Component\ModelComponent.cpp" />
+    <ClCompile Include="Src\Application\Component\SoundComponent.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\ActionProcess\ActionProcess.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Ball\Ball.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Box\Box.cpp" />
@@ -235,6 +238,7 @@
     <ClCompile Include="Src\Application\Game\ActionScene\InputObject.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\Light.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\LightState.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\OutputObject.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\Player.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerAction.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerEffect.cpp" />

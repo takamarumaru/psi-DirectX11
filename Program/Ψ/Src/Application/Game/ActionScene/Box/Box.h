@@ -16,4 +16,6 @@ private:
 	//重力の強さ
 	float m_gravity = 0.01f;
 
+	bool m_isImpactGround = false;
+
 };

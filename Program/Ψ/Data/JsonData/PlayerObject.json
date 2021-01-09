@@ -7,6 +7,14 @@
   "Scale": [1,1,1],
   "CenterOffset": [0,1.3,0],
   "Radius":0.6,
-  "Tag": 3,
-  "Elastic":0.1
+  "Tag": 35,
+  "Elastic":0.1,
+  "SoundList":
+  [
+    ["Data/Sound/PowerStart.wav",40],
+    ["Data/Sound/PowerMid.wav",30],
+    ["Data/Sound/PowerShot.wav",20]
+  ]
 }
+
+

@@ -3,6 +3,7 @@
 class ModelComponent;
 class InputComponent;
 class CameraComponent;
+class SoundComponent;
 
 struct SphereInfo;
 struct RayInfo;
@@ -31,7 +32,7 @@ public:
 
 	/// 基本動作===============================================
 
-		//データ読込・初期化
+	//データ読込・初期化
 	virtual void Deserialize(const json11::Json& jsonObj);
 	//データ保存
 	virtual json11::Json::object Serialize();
@@ -50,7 +51,7 @@ public:
 
 	/// アクセサ===============================================
 
-		//行列
+	//行列
 	inline const Matrix& GetMatrix()const { return m_mWorld; }
 	inline void SetMatrix(const Matrix& rMat) { m_mWorld = rMat; }
 	//座標
@@ -89,7 +90,7 @@ public:
 
 	///	当たり判定=============================================
 
-		//球による当たり判定（距離判定）
+	//球による当たり判定（距離判定）
 	bool GameObject::HitCheckBySphere(const SphereInfo& rInfo);
 	//レイによる当たり判定
 	bool HitCheckByRay(const RayInfo& rInfo, RayResult& rResult);
@@ -104,18 +105,18 @@ protected:
 
 	///	コンポーネント=========================================
 
-		//インプットコンポーネント
+	//インプットコンポーネント
 	std::shared_ptr<InputComponent> m_spInputComponent = nullptr;
 	//カメラコンポーネント
-	std::shared_ptr<CameraComponent> m_spCameraComponent = nullptr;
+	std::shared_ptr<CameraComponent> m_spCameraComponent = std::make_shared<CameraComponent>(*this);
 	//モデルコンポーネント
 	std::shared_ptr<ModelComponent> m_spModelComponent = std::make_shared<ModelComponent>(*this);
-	//アニメーター
-	Animator m_animator;
+	//サウンドコンポーネント
+	std::shared_ptr<SoundComponent> m_spSoundComponent = std::make_shared<SoundComponent>(*this);
 
 	///	当たり判定=============================================
 
-		//地面（下方向）とのレイ判定
+	//地面（下方向）とのレイ判定
 	bool CheckGround(RayResult& downRayResult, Vector3 pos , float& rDstDistance, UINT rTag, std::shared_ptr<GameObject> rNotObj = nullptr);
 	//歩いて乗り越えられる段差の高さ
 	static const float s_allowToStepHeight;
@@ -123,6 +124,8 @@ protected:
 	static const float s_landingHeight;
 	//着地しているかどうか
 	bool m_isGround=false;
+	//衝撃音連続再生防止用のフラグ
+	bool m_isImpactWall = false;
 
 	//球面判定
 	bool CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj = nullptr);
@@ -137,6 +140,9 @@ protected:
 	Vector3 m_pos;
 	//動く前の座標
 	Vector3 m_prevPos;
+
+	//アニメーター
+	Animator m_animator;
 
 	//中心座標へのオフセット
 	Vector3 m_centerOffset;

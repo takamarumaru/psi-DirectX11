@@ -1,9 +1,0 @@
-{
-  "ClassName": "GameObject",
-  "Prefab": "Data/JsonData/MapObject.json",
-  "ModelFilePath": "Data/StageMap/Map1/Map1.gltf",
-  "Pos": [0,0,0],
-  "Rot": [0,0,0],
-  "Scale": [1,1,1],
-  "Tag": 4
-}

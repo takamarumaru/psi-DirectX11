@@ -135,8 +135,8 @@ public:
 	//==========================
 
 	//深度ステンシル
-	ID3D11DepthStencilState* m_ds_ZEnable_ZWhiteEnable = nullptr;
-	ID3D11DepthStencilState* m_ds_ZDisable_ZWhiteDisable = nullptr;
+	ID3D11DepthStencilState* m_ds_ZEnable_ZWriteEnable = nullptr;
+	ID3D11DepthStencilState* m_ds_ZDisable_ZWriteDisable = nullptr;
 	ID3D11DepthStencilState* m_ds_ZEnable_ZWriteDisable = nullptr;
 
 	//ラスタライザステート
@@ -151,6 +151,7 @@ public:
 	ID3D11SamplerState* m_ss_Anisotropic_Wrap = nullptr;
 	ID3D11SamplerState* m_ss_Anisotropic_Clamp = nullptr;
 	ID3D11SamplerState* m_ss_Linear_Clamp = nullptr;
+	ID3D11SamplerState* m_ss_ShadowMapComparison = nullptr;
 
 
 	//==========================

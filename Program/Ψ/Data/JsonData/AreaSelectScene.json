@@ -1,0 +1,82 @@
+{
+  "SceneNo":99,
+  "GameObjects": [
+    {
+      "ClassName": "StageSelectProcess",
+      "Name": "StageSelectProcess",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "SceneTex":"Data/Texture/AREA SELECT.png",
+      "Tag": 16
+    },
+    {
+      "Name": "MenuList1",
+      "Prefab": "Data/JsonData/StageSelectMenuListObject.json"
+    },
+    {
+      "Name": "MenuList2",
+      "Pos":[750,-180,0], 
+      "MenuList":
+      [
+        "Data/Texture/Area01.png",
+        "Data/Texture/Area02.png",
+        "Data/Texture/Area03.png",
+        "Data/Texture/Area04.png",
+        "Data/Texture/Area05.png"
+      ],
+      "Prefab": "Data/JsonData/StageSelectMenuListObject.json"
+    },
+    {
+      "Name": "Area",
+      "Prefab": "Data/JsonData/AreaObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light1",
+      "Pos": [0,4,6],
+      "Power": 30,
+      "State": 2,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Name": "Box1",
+      "Pos": [-2,0,0],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Fence1",
+      "Pos": [-5,0,0],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Fence2",
+      "Pos": [-5,0,-4],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Fence3",
+      "Pos": [-5,0,-8],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Door1",
+      "OwnerName": "Button1",
+      "Pos": [-5,0,6],
+      "Prefab": "Data/JsonData/ManualDoorObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Button1",
+      "Pos": [1,0,-6],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [1,0,-6,0,1,0],
+        [1,0,2,0,1,0],
+        [0,0,3,0,1,0],
+        [-5,0,3,0,1,0]
+      ]
+    }
+  ]
+}

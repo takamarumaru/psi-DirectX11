@@ -13,6 +13,9 @@ namespace Math = DirectX::SimpleMath;
 constexpr float ToRadians = (3.141592654f / 180.0f);
 constexpr float ToDegrees = (180.0f / 3.141592654f);
 
+//数値を範囲内にとどめる関数
+float CorrectionValue(float value, float max, float min);
+
 // 安全にReleaseするための関数
 template<class T>
 void SafeRelease(T*& p)

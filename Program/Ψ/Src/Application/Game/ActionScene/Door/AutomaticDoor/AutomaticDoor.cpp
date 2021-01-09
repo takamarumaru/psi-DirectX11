@@ -6,6 +6,7 @@
 
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/ModelComponent.h"
+#include"./Application/Component/SoundComponent.h"
 
 void AutomaticDoor::Deserialize(const json11::Json& jsonObj)
 {
@@ -69,6 +70,7 @@ void AutomaticDoor::UpdateCollision()
 				{
 					SetAnimation("Open", false);
 					m_isOpen = true;
+					m_spSoundComponent->SoundPlay("Data/Sound/DoorOpen.wav");
 				}
 			}
 			else
@@ -77,6 +79,7 @@ void AutomaticDoor::UpdateCollision()
 				{
 					SetAnimation("Close", false);
 					m_isOpen = false;
+					m_spSoundComponent->SoundPlay("Data/Sound/DoorClose.wav");
 				}
 			}
 		}

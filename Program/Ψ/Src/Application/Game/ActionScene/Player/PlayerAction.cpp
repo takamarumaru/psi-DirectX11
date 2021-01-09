@@ -8,6 +8,7 @@
 
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/InputComponent.h"
+#include"./Application/Component/SoundComponent.h"
 
 
 ///====================================================================
@@ -163,6 +164,9 @@ void Player::UpdateGrab()
 				m_spOperateObj->SetOwner(shared_from_this());
 				//エフェクトを再生開始
 				EFFEKSEER.Play(u"Data/EffekseerData/Aura5.efk", m_spOperateObj->GetCenterPos());
+				//再生
+				m_spSoundComponent->SoundPlay("Data/Sound/PowerStart.wav");
+				m_spSoundComponent->SoundPlay("Data/Sound/PowerMid.wav",true);
 			}
 		}
 	}
@@ -242,7 +246,7 @@ void Player::UpdateGrab()
 			OperateReset();
 		}
 
-		//Xボタンを押したときにオブジェクトを前方に発射する==================================
+		///Xボタンを押したときにオブジェクトを前方に発射する==================================
 		if (m_spInputComponent->GetButton(Input::Buttons::X) & InputComponent::ENTER)
 		{
 			//発射エフェクトの再生
@@ -266,6 +270,8 @@ void Player::UpdateGrab()
 			m_spOperateObj->SetForce(vForce);
 			//操作オブジェクト初期化
 			OperateReset();
+			//発射音再生
+			m_spSoundComponent->SoundPlay("Data/Sound/PowerShot.wav");
 		}
 	}
 }
@@ -278,4 +284,5 @@ void Player::OperateReset()
 	m_spOperateObj->ClearOwner();	//オーナー情報を削除
 	m_spOperateObj = nullptr;		//登録を外す
 	EFFEKSEER.Stop(u"Data/EffekseerData/Aura5.efk");//エフェクト再生停止
+	m_spSoundComponent->SoundAllStop();
 }

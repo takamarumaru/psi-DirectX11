@@ -9,6 +9,7 @@ Texture2D g_dirShadowMap : register(t102);		// 平行光シャドウマップ
 
 // サンプラ（テクスチャのデータを扱う役目）
 SamplerState g_ss : register(s0);
+SamplerComparisonState g_ssShadowMapComp : register(s10);
 
 // BlinnPhong NDF
 // ・lightDir    … ライトの方向
@@ -104,6 +105,9 @@ float4 main(VSOutput In) : SV_Target0
 	//自身で射影座標に変換する場合は奥行で変換してやる(長さが求まる)
 	liPos.xyz /= liPos.w;
 
+	float ShadowX = abs(liPos.x);
+	float ShadowY = abs(liPos.y);
+
 	// 深度マップの範囲内？
 	if (abs(liPos.x) <= 1 && abs(liPos.y) <= 1 && liPos.z <= 1)
 	{
@@ -113,7 +117,24 @@ float4 main(VSOutput In) : SV_Target0
 		float z = liPos.z - 0.002; // シャドウアクネ対策
 
 		// 影判定
-		shadow = g_dirShadowMap.Sample(g_ss, uv).r < z ? 0 : 1;
+		float width, height;
+		g_dirShadowMap.GetDimensions(width, height);
+		float tw = 1.0f / width;
+		float th = 1.0f / height;
+
+		shadow = 0;
+		for (int y = -1; y <= 1; y++)
+		{
+			for (int x = -1; x <= 1; x++)
+			{
+				shadow += g_dirShadowMap.SampleCmpLevelZero(g_ssShadowMapComp, uv + float2(x * tw, y * th), z);
+			}
+		}
+		shadow *= 0.11f;
+
+		shadow = min(1.0f, shadow + pow(ShadowX, 3.0f) + pow(ShadowY, 3.0f));
+
+		//shadow = g_dirShadowMap.Sample(g_ss, uv).b;
 	}
 	//-------------------------------
 

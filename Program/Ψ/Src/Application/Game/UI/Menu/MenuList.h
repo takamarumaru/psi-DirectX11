@@ -17,6 +17,7 @@ struct ListItem
 	POINT m_pos;							//座標
 	Math::Rectangle m_rect;					//RECT
 	std::string m_name;						//名前
+	bool m_canPlaySelectSE = false;
 };
 
 class MenuList:public GameObject

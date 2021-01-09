@@ -10,60 +10,61 @@
     },
     {
       "Name": "MenuList1",
-      "Prefab": "Data/JsonData/TitleMenuListObject.json"
+      "Prefab": "Data/JsonData/TitleMenuListObject.json",
+      "Pos":[300,-450,0]
     },
     {
-      "Name": "Map1",
-      "Prefab": "Data/JsonData/MapObject.json"
+      "Name": "Area",
+      "Prefab": "Data/JsonData/AreaObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light1",
+      "Pos": [0,4,6],
+      "Power": 30,
+      "State": 2,
+      "Prefab": "Data/JsonData/LightObject.json"
     },
     {
       "Name": "Box1",
-      "Pos": [-2,0,7],
+      "Pos": [-2,0,0],
       "Prefab": "Data/JsonData/BoxObject.json"
     },
     {
-      "Name": "Button2",
-      "Pos": [3,0,8],
-      "RailsPoint":
-      [
-        [3,0,8,0,1,0],
-        [3,0,0,0,1,0],
-        [2,0,-1,0,1,0],
-        [-5,0,-1,0,1,0]
-      ],
-      "Prefab": "Data/JsonData/ButtonObject.json"
-    },
-    {
-      "Name": "Door1",
-      "OwnerName": "Button2",
-      "Pos": [-5,0,-4],
-      "Prefab": "Data/JsonData/ManualDoorObject.json",
-      "Rot": [0,90,0]
-    },
-    {
       "Name": "Fence1",
-      "Pos": [-5,0,8],
-      "Prefab": "Data/JsonData/FenceObject.json",
-      "Rot": [0,90,0]
-    },
-    {
-      "Name": "Fence2",
-      "Pos": [-5,0,4],
-      "Prefab": "Data/JsonData/FenceObject.json",
-      "Rot": [0,90,0]
-    },
-    {
-      "Name": "Fence3",
       "Pos": [-5,0,0],
       "Prefab": "Data/JsonData/FenceObject.json",
       "Rot": [0,90,0]
     },
     {
-      "Name": "Light1",
-      "Pos": [1,6,7],
-      "Color": [2,2,2],
-      "Power": 30,
-      "Prefab": "Data/JsonData/LightObject.json"
+      "Name": "Fence2",
+      "Pos": [-5,0,-4],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Fence3",
+      "Pos": [-5,0,-8],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Door1",
+      "OwnerName": "Button1",
+      "Pos": [-5,0,6],
+      "Prefab": "Data/JsonData/ManualDoorObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Button1",
+      "Pos": [1,0,-6],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [1,0,-6,0,1,0],
+        [1,0,2,0,1,0],
+        [0,0,3,0,1,0],
+        [-5,0,3,0,1,0]
+      ]
     }
   ]
 }

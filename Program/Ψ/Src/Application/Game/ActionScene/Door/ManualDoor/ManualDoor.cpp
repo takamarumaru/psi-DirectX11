@@ -6,24 +6,11 @@
 
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/ModelComponent.h"
+#include"./Application/Component/SoundComponent.h"
 
 void ManualDoor::Deserialize(const json11::Json& jsonObj)
 {
-	GameObject::Deserialize(jsonObj);
-	//オーナーの名前
-	if (jsonObj["OwnerName"].is_null() == false)
-	{
-		m_ownerName = jsonObj["OwnerName"].string_value();
-	}
-}
-
-json11::Json::object ManualDoor::Serialize()
-{
-	json11::Json::object objectData = GameObject::Serialize();
-
-	objectData["OwnerName"] = m_ownerName;
-
-	return objectData;
+	OutputObject::Deserialize(jsonObj);
 }
 
 void ManualDoor::Update()
@@ -46,22 +33,27 @@ void ManualDoor::Update()
 	//オーナーからの信号がONなら開く
 	if (m_animator.IsAnimationEnd())
 	{
-		m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
-		std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
-		if (button->GetIsPush())
+		if (SCENE.FindObjectWithName(m_ownerName))
 		{
-			if (!m_isOpen)
+			m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
+			std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
+			if (button->GetIsPush())
 			{
-				SetAnimation("Open", false);
-				m_isOpen = true;
+				if (!m_isOpen)
+				{
+					SetAnimation("Open", false);
+					m_isOpen = true;
+					m_spSoundComponent->SoundPlay("Data/Sound/DoorOpen.wav");
+				}
 			}
-		}
-		else
-		{
-			if (m_isOpen)
+			else
 			{
-				SetAnimation("Close", false);
-				m_isOpen = false;
+				if (m_isOpen)
+				{
+					SetAnimation("Close", false);
+					m_isOpen = false;
+					m_spSoundComponent->SoundPlay("Data/Sound/DoorClose.wav");
+				}
 			}
 		}
 	}

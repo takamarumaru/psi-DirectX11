@@ -4,6 +4,7 @@
 #include "../../Scene.h"
 
 #include"Application/Component/InputComponent.h"
+#include"Application/Component/SoundComponent.h"
 
 void MenuList::Deserialize(const json11::Json& jsonObj)
 {
@@ -29,12 +30,13 @@ void MenuList::Deserialize(const json11::Json& jsonObj)
 		m_itemList.push_back(item);
 	}
 
-	//ステートを決定
+	//タグを読み取る
 	if (jsonObj["State"].is_null() == false)
 	{
 		m_stateTag = (int)jsonObj["State"].number_value();
 	}
 
+	//タグによってステートを決定
 	switch (m_stateTag)
 	{
 	case MENU_STATE::MS_TITLE:
@@ -87,6 +89,8 @@ void MenuList::Draw2D()
 
 void MenuList::Update()
 {
+	GameObject::Update();
+
 	if (m_spInputComponent)
 	{
 		m_spInputComponent->Update();
@@ -100,6 +104,7 @@ void MenuList::Update()
 
 	//非表示設定なら返る
 	if (SCENE.IsChangeScene()) { return; }
+
 
 	//ウィンドウの座標を取得
 	RECT rClient;
@@ -116,8 +121,22 @@ void MenuList::Update()
 		rect.right = m_itemList[i].m_pos.x + m_itemList[i].m_rect.width / 2;
 		rect.top = m_itemList[i].m_pos.y - m_itemList[i].m_rect.height / 2;
 		rect.bottom = m_itemList[i].m_pos.y + m_itemList[i].m_rect.height / 2;
+
 		//アイテムにセット
 		m_itemList[i].m_isHit = HitCheckByRect(rect);
+
+		if (m_itemList[i].m_isHit)
+		{
+			if (m_itemList[i].m_canPlaySelectSE)
+			{
+				m_spSoundComponent->SoundPlay("Data/Sound/ListSelect.wav");
+				m_itemList[i].m_canPlaySelectSE = false;
+			}
+		}
+		else
+		{
+			m_itemList[i].m_canPlaySelectSE = true;
+		}
 	}
 
 	//左クリックで決定
@@ -132,14 +151,21 @@ void MenuList::Update()
 				if (item.m_name.find("GameStart") != std::string::npos)
 				{
 					//アクションシーンに移動
-					Scene::GetInstance().RequestChangeScene("Data/JsonData/Stage1Scene.json");
+					Scene::GetInstance().RequestChangeScene("Data/JsonData/Area1Scene.json");
 				}
 
 				//要素がRetryのとき
 				if (item.m_name.find("Retry") != std::string::npos)
 				{
 					//現在のシーンをやり直す
-					Scene::GetInstance().RequestChangeScene("Data/JsonData/Stage"+std::to_string(SCENE.GetSceneNo())+"Scene.json");
+					Scene::GetInstance().RequestChangeScene("Data/JsonData/Area"+std::to_string(SCENE.GetSceneNo())+"Scene.json");
+				}
+
+				//要素がStageSelectのとき
+				if (item.m_name.find("AreaSelect") != std::string::npos)
+				{
+					//ステージセレクトシーンに移行
+					Scene::GetInstance().RequestChangeScene("Data/JsonData/AreaSelectScene.json");
 				}
 				
 				//要素がAreaのとき
@@ -147,14 +173,7 @@ void MenuList::Update()
 				{
 					//指定のシーンに移動
 					std::string num = item.m_name.substr(item.m_name.find_last_of("Area")+1, 2);
-					Scene::GetInstance().RequestChangeScene("Data/JsonData/Stage" + std::to_string(atoi(num.c_str())) + "Scene.json");
-				}
-
-				//要素がStageSelectのとき
-				if (item.m_name.find("StageSelect") != std::string::npos)
-				{
-					//ステージセレクトシーンに移行
-					Scene::GetInstance().RequestChangeScene("Data/JsonData/StageSelectScene.json");
+					Scene::GetInstance().RequestChangeScene("Data/JsonData/Area" + std::to_string(atoi(num.c_str())) + "Scene.json");
 				}
 
 				//要素がSettingsのとき

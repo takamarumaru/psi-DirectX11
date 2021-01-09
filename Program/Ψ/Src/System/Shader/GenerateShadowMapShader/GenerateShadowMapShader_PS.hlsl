@@ -9,7 +9,7 @@ float4 main(VSOutput In) : SV_Target0
     // アルファ値が一定以下のものは捨てる
     float4 texCol = g_baseTex.Sample(g_ss, In.UV);
     // アルファテスト
-    if (texCol.a < 0.1)
+    if (texCol.a < 1.0)
     {
         discard;
     }

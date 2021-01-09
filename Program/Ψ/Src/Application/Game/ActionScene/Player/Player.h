@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-//#include "./Application/Game/GameObject.h"
+#include "./Application/Game/GameObject.h"
 #include "../OperateObject.h"
 
 class TextureEffect;
@@ -45,9 +45,6 @@ private:
 
 	//オブジェクトを操作中か
 	bool m_isOperate = false;
-
-	//影
-	std::shared_ptr<TextureEffect> m_shadow;
 
 	//操作するオブジェクト======================
 

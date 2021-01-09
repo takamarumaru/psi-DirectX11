@@ -53,9 +53,9 @@ public:
 	std::shared_ptr<Model> GetModel(){return m_spModel;}
 
 	// エミッシブフラグをセット
-	void SetEmissive(const bool em)
+	void SetEmissive(const bool val)
 	{
-		m_isEmissive = em;
+		m_isEmissive = val;
 	}
 	bool GetEmissive(){return m_isEmissive;}
 

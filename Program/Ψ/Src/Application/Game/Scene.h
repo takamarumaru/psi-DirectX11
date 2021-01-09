@@ -52,6 +52,15 @@ public:
 	//指定された名前で検索をかけて合致した最初のオブジェクトを返す
 	std::shared_ptr<GameObject> FindObjectWithName(const std::string& name);
 
+	void DebugLineClear() 
+	{
+		//デバックラインリストの初期化
+		if (m_debugLines.size() >= 1)
+		{
+			m_debugLines.clear();
+		}
+	}
+
 /// ImGui============================================
 	//更新
 	void ImGuiUpdate();

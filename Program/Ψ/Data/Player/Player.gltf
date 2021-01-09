@@ -15,16 +15,15 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Cone",
-            "rotation" : [
-                0,
-                0,
-                -1,
-                -1.6292068494294654e-07
+            "name" : "Cylinder",
+            "scale" : [
+                0.5,
+                -0.034195661544799805,
+                0.5
             ],
             "translation" : [
-                0.0032156705856323242,
-                1.0077122449874878,
+                0,
+                0.23632827401161194,
                 0
             ]
         }
@@ -54,7 +53,7 @@
                     }
                 }
             ],
-            "name" : "ConeAction",
+            "name" : "CylinderAction",
             "samplers" : [
                 {
                     "input" : 4,
@@ -74,9 +73,30 @@
             ]
         }
     ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "Material.002",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929,
+                    0
+                ],
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
     "meshes" : [
         {
-            "name" : "Cone",
+            "name" : "Cylinder",
             "primitives" : [
                 {
                     "attributes" : {
@@ -84,7 +104,8 @@
                         "NORMAL" : 1,
                         "TEXCOORD_0" : 2
                     },
-                    "indices" : 3
+                    "indices" : 3,
+                    "material" : 0
                 }
             ]
         }
@@ -93,35 +114,35 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 30,
+            "count" : 86,
             "max" : [
-                0.1331479549407959,
-                1,
-                0.11326242238283157
+                0.9898214340209961,
+                6.865324020385742,
+                0.9594930410385132
             ],
             "min" : [
-                -0.1331479549407959,
+                -0.9898214936256409,
                 -1,
-                -0.14000004529953003
+                -1
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 30,
+            "count" : 86,
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 30,
+            "count" : 86,
             "type" : "VEC2"
         },
         {
             "bufferView" : 3,
             "componentType" : 5123,
-            "count" : 48,
+            "count" : 144,
             "type" : "SCALAR"
         },
         {
@@ -158,48 +179,48 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 360,
+            "byteLength" : 1032,
             "byteOffset" : 0
         },
         {
             "buffer" : 0,
-            "byteLength" : 360,
-            "byteOffset" : 360
+            "byteLength" : 1032,
+            "byteOffset" : 1032
         },
         {
             "buffer" : 0,
-            "byteLength" : 240,
-            "byteOffset" : 720
+            "byteLength" : 688,
+            "byteOffset" : 2064
         },
         {
             "buffer" : 0,
-            "byteLength" : 96,
-            "byteOffset" : 960
+            "byteLength" : 288,
+            "byteOffset" : 2752
         },
         {
             "buffer" : 0,
             "byteLength" : 4,
-            "byteOffset" : 1056
+            "byteOffset" : 3040
         },
         {
             "buffer" : 0,
             "byteLength" : 12,
-            "byteOffset" : 1060
+            "byteOffset" : 3044
         },
         {
             "buffer" : 0,
             "byteLength" : 16,
-            "byteOffset" : 1072
+            "byteOffset" : 3056
         },
         {
             "buffer" : 0,
             "byteLength" : 12,
-            "byteOffset" : 1088
+            "byteOffset" : 3072
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 1100,
+            "byteLength" : 3084,
             "uri" : "Player.bin"
         }
     ]

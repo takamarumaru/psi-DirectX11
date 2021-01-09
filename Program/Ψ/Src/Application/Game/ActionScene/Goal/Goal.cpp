@@ -53,13 +53,13 @@ void Goal::UpdateCollision()
 			if (obj->HitCheckBySphere(info))
 			{
 				//最後のステージならタイトルに移動(デバッグ)
-				if (SCENE.GetSceneNo()==3)
+				if (SCENE.GetSceneNo()==5)
 				{
 					SCENE.RequestChangeScene("Data/JsonData/TitleScene.json");
 				}
 
 				//次のシーンに移動
-				SCENE.RequestChangeScene("Data/JsonData/Stage"+ std::to_string(SCENE.GetSceneNo()+1)+"Scene.json");
+				SCENE.RequestChangeScene("Data/JsonData/Area"+ std::to_string(SCENE.GetSceneNo()+1)+"Scene.json");
 			}
 		}
 	}

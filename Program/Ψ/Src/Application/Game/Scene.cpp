@@ -26,7 +26,7 @@ void Scene::Deserialize()
 	//入力用コンポーネントセット
 	m_spInputComponent = std::make_shared<DebugInputComponent>();
 
-
+	//平行光の初期化
 	SHADER.m_cb8_Light.Work().DL_Dir = m_lightDir;
 	SHADER.m_cb8_Light.Work().DL_Dir.Normalize();
 
@@ -57,11 +57,6 @@ void Scene::Serialize()
 //更新
 void Scene::Update()
 {
-	//デバックラインリストの初期化
-	if (m_debugLines.size() >= 1)
-	{
-		m_debugLines.clear();
-	}
 	// 点光の登録をリセットする
 	SHADER.ResetPointLight();
 
@@ -92,7 +87,7 @@ void Scene::Update()
 
 	//選択しているオブジェクトを取得
 	auto selectObject = m_wpImGuiSelectObj.lock();
-
+	//IMGUI_LOG.Clear();
 	//オブジェクト更新
 	for (auto pObject : m_spObjects)
 	{
@@ -122,154 +117,167 @@ void Scene::Update()
 	{
 		ExecChangeScene();
 	}
-
-
-	IMGUI_LOG.Clear();
-	IMGUI_LOG.AddLog("size:%d", m_debugLines.size());
 }
 
 //描画
 void Scene::Draw()
 {
-	//m_spScreenに描画
+	//ScreenRTに描画
 	{
-		RestoreRenderTarget rrt;
+		RestoreRenderTarget rrtScreen;
 
 		D3D.GetDevContext()->OMSetRenderTargets(1, m_spScreenRT->GetRTViewAddress(), m_spScreenZ->GetDSView());
 		D3D.GetDevContext()->ClearRenderTargetView(m_spScreenRT->GetRTView(), Math::Color(0, 0, 0, 1));
 		D3D.GetDevContext()->ClearDepthStencilView(m_spScreenZ->GetDSView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
-		//エディターカメラ用にシェーダーをセット
-		if (m_editorCameraEnabe)
+		//ToneTexに描画
 		{
-			if (m_pCamera)
+			RestoreRenderTarget rrtTone;
+
+			D3D.GetDevContext()->OMSetRenderTargets(1, m_spToneTex->GetRTViewAddress(), m_spScreenZ->GetDSView());
+			D3D.GetDevContext()->ClearRenderTargetView(m_spToneTex->GetRTView(), Math::Color(0, 0, 0, 1));
+			D3D.GetDevContext()->ClearDepthStencilView(m_spScreenZ->GetDSView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+
+			//エディターカメラ用にシェーダーをセット
+			if (m_editorCameraEnabe)
 			{
-				m_pCamera->SetToShader();
+				if (m_pCamera)
+				{
+					m_pCamera->SetToShader();
+				}
 			}
-		}
-		//エディターカメラ機能offの時
-		else
-		{
-			std::shared_ptr<CameraComponent> spCamera = m_wpTaegetCamera.lock();
-
-			if (spCamera)
+			//エディターカメラ機能offの時
+			else
 			{
-				spCamera->SetToShader();
-			}
-		}
+				std::shared_ptr<CameraComponent> spCamera = m_wpTaegetCamera.lock();
 
-		//ライトの情報をセット
-		SHADER.m_cb8_Light.Write();
-
-		//============================
-		// シャドウマップ生成描画
-		//============================
-		SHADER.m_genShadowMapShader.Begin();
-
-		// 全オブジェクトを描画
-		for (auto& obj : m_spObjects)
-		{
-			obj->DrawShadowMap();
-		}
-
-		SHADER.m_genShadowMapShader.End();
-
-		//エフェクトシェーダを描画デバイスにセット
-		SHADER.m_effectShader.SetToDevice();
-		//不透明物描画
-		{
-			// シャドウマップをセット
-			D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
-
-			SHADER.m_modelShader.SetToDevice();
-
-			//オブジェクト描画
-			for (auto pObject : m_spObjects)
-			{
-				pObject->Draw();
+				if (spCamera)
+				{
+					spCamera->SetToShader();
+				}
 			}
 
-			// シャドウマップを解除
-			ID3D11ShaderResourceView* nullSRV = nullptr;
-			D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
+			//ライトの情報をセット
+			SHADER.m_cb8_Light.Write();
 
+			//============================
+			// シャドウマップ生成描画
+			//============================
+			SHADER.m_genShadowMapShader.Begin();
+
+			// 全オブジェクトを描画
+			for (auto& obj : m_spObjects)
+			{
+				obj->DrawShadowMap();
+			}
+
+			SHADER.m_genShadowMapShader.End();
+
+			//エフェクトシェーダを描画デバイスにセット
+			SHADER.m_effectShader.SetToDevice();
+			//不透明物描画
+			{
+				// シャドウマップをセット
+				D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
+
+				SHADER.m_modelShader.SetToDevice();
+
+				//オブジェクト描画
+				for (auto pObject : m_spObjects)
+				{
+					pObject->Draw();
+				}
+
+				// シャドウマップを解除
+				ID3D11ShaderResourceView* nullSRV = nullptr;
+				D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
+
+			}
+
+			//半透明物描画
+			{
+				SHADER.m_effectShader.SetToDevice();
+				SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
+
+				//Z情報は使うが、Z書き込みOFF
+				D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteDisable, 0);
+				//カリングなし
+				D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullNone);
+
+				for (auto spObj : m_spObjects)
+				{
+					spObj->DrawEffect();
+				}
+
+				//もとに戻す
+				D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteEnable, 0);
+				D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
+			}
+
+			//Effekseer描画
+			EFFEKSEER.Update();
 		}
 
-		//半透明物描画
+		// ぼかしていない状況をそのまま表示
+		SHADER.m_postProcessShader.ColorDraw(m_spScreenRT.get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
+
+		// しきい値以上のピクセルを抽出
+		SHADER.m_postProcessShader.BrightFiltering(m_spHeightBrightTex.get(), m_spScreenRT.get());
+
+		// 一定以上の明るさを持ったテクスチャを各サイズぼかし画像作成
+		SHADER.m_postProcessShader.GenerateBlur(m_blurTex, m_spHeightBrightTex.get());
+
+		// 加算合成に変更
+		D3D.GetDevContext()->OMSetBlendState(SHADER.m_bs_Add, Math::Color(0, 0, 0, 0), 0xFFFFFFFF);
+
+		// 各サイズの画像を加算合成
+		for (int bCnt = 0; bCnt < 5; bCnt++)
+		{
+			SHADER.m_postProcessShader.ColorDraw(m_blurTex.m_rt[bCnt][0].get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
+		}
+
+		// 合成方法をもとに戻す
+		D3D.GetDevContext()->OMSetBlendState(SHADER.m_bs_Alpha, Math::Color(0, 0, 0, 0), 0xFFFFFFFF);
+
+
+		SHADER.m_postProcessShader.ToneFilteringDraw(m_spToneTex.get());
+
+
+
+		//2D描画用のシェーダー開始
+		{
+			SHADER.m_spriteShader.Begin();
+			//全てのオブジェクトの2D描画を行う
+			for (auto obj : m_spObjects)
+			{
+				obj->Draw2D();
+			}
+			//フェード描画
+			FadeDraw();
+			//シェーダー終了
+			SHADER.m_spriteShader.End();
+		}
+
+		//デバックライン描画
+		if (m_isDebugLine)
 		{
 			SHADER.m_effectShader.SetToDevice();
 			SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
-
-			//Z情報は使うが、Z書き込みOFF
-			D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteDisable, 0);
-			//カリングなし
-			D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullNone);
-
-			for (auto spObj : m_spObjects)
+			//Zバッファ使用OFF・書き込みOFF
+			D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWriteDisable, 0);
+			if (m_debugLines.size() >= 1)
 			{
-				spObj->DrawEffect();
+				SHADER.m_effectShader.SetWorldMatrix(Math::Matrix());
+				SHADER.m_effectShader.DrawVertices(m_debugLines, D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 			}
-
-			//もとに戻す
-			D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
-			D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
+			//Zバッファ使用ON・書き込みON
+			D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteEnable, 0);
 		}
-
-		//Effekseer描画
-		EFFEKSEER.Update();
 	}
 
-	// ぼかしていない状況をそのまま表示
-	SHADER.m_postProcessShader.ColorDraw(m_spScreenRT.get(),DirectX::SimpleMath::Vector4(1, 1, 1, 1));
+	// ScreenのTextureをBackBufferに描画
+	SHADER.m_postProcessShader.ColorDraw(m_spScreenRT.get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
 
-	// しきい値以上のピクセルを抽出
-	SHADER.m_postProcessShader.BrightFiltering(m_spHeightBrightTex.get(), m_spScreenRT.get());
-
-	// 一定以上の明るさを持ったテクスチャを各サイズぼかし画像作成
-	SHADER.m_postProcessShader.GenerateBlur(m_blurTex, m_spHeightBrightTex.get());
-
-	// 加算合成に変更
-	D3D.GetDevContext()->OMSetBlendState(SHADER.m_bs_Add,Math::Color(0, 0, 0, 0), 0xFFFFFFFF);
-
-	// 各サイズの画像を加算合成
-	for (int bCnt = 0; bCnt < 5; bCnt++)
-	{
-		SHADER.m_postProcessShader.ColorDraw(m_blurTex.m_rt[bCnt][0].get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
-	}
-
-	// 合成方法をもとに戻す
-	D3D.GetDevContext()->OMSetBlendState(SHADER.m_bs_Alpha,Math::Color(0, 0, 0, 0), 0xFFFFFFFF);
-
-
-	//2D描画用のシェーダー開始
-	{
-		SHADER.m_spriteShader.Begin();
-		//全てのオブジェクトの2D描画を行う
-		for (auto obj : m_spObjects)
-		{
-			obj->Draw2D();
-		}
-		//フェード描画
-		FadeDraw();
-		//シェーダー終了
-		SHADER.m_spriteShader.End();
-	}
-
-	//デバックライン描画
-	if (m_isDebugLine)
-	{
-		SHADER.m_effectShader.SetToDevice();
-		SHADER.m_effectShader.SetTexture(D3D.GetWhiteTex()->GetSRView());
-		//Zバッファ使用OFF・書き込みOFF
-		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZDisable_ZWhiteDisable, 0);
-		if (m_debugLines.size() >= 1)
-		{
-			SHADER.m_effectShader.SetWorldMatrix(Math::Matrix());
-			SHADER.m_effectShader.DrawVertices(m_debugLines, D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-		}
-		//Zバッファ使用ON・書き込みON
-		D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWhiteEnable, 0);
-	}
 }
 
 //解放
@@ -544,7 +552,14 @@ void Scene::ImGuiUpdate()
 	// Graphics Debug
 	if (ImGui::Begin("Graphics Debug"))
 	{
-		ImGui::Image((ImTextureID)SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRView(), ImVec2(200, 200));
+		ImGui::Image((ImTextureID)SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRView(), ImVec2(250, 250));
+	}
+	ImGui::End();
+
+	// GameWindow
+	if (ImGui::Begin("GameWindow"))
+	{
+		ImGui::Image((ImTextureID)m_spScreenRT->GetSRView(), ImVec2(720, 405));
 	}
 	ImGui::End();
 

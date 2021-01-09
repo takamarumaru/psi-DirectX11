@@ -52,8 +52,8 @@ void ShaderManager::Init()
 	// パイプラインステート関係
 	//============================================
 	//深度ステンシルステート作成
-	m_ds_ZEnable_ZWhiteEnable = D3D.CreateDepthStencilState(true, true);
-	m_ds_ZDisable_ZWhiteDisable = D3D.CreateDepthStencilState(false, false);
+	m_ds_ZEnable_ZWriteEnable = D3D.CreateDepthStencilState(true, true);
+	m_ds_ZDisable_ZWriteDisable = D3D.CreateDepthStencilState(false, false);
 	m_ds_ZEnable_ZWriteDisable = D3D.CreateDepthStencilState(true, false);
 
 	//ラスタライザステート作成
@@ -68,8 +68,10 @@ void ShaderManager::Init()
 	m_ss_Anisotropic_Wrap = D3D.CreateSamplerState(KdSamplerFilterMode::Anisotropic, 4, KdSamplerAddressingMode::Wrap, false);
 	m_ss_Anisotropic_Clamp = D3D.CreateSamplerState(KdSamplerFilterMode::Anisotropic, 4, KdSamplerAddressingMode::Clamp, false);
 	m_ss_Linear_Clamp = D3D.CreateSamplerState(KdSamplerFilterMode::Linear, 4, KdSamplerAddressingMode::Clamp, false);
-	D3D.GetDevContext()->PSSetSamplers(0, 1, &m_ss_Anisotropic_Wrap);
+	m_ss_ShadowMapComparison = D3D.CreateSamplerState(KdSamplerFilterMode::Linear, 0, KdSamplerAddressingMode::Clamp, true);
 
+	D3D.GetDevContext()->PSSetSamplers(0, 1, &m_ss_Anisotropic_Wrap);
+	D3D.GetDevContext()->PSSetSamplers(10, 1, &m_ss_ShadowMapComparison);
 
 }
 
@@ -84,5 +86,25 @@ void ShaderManager::Release()
 
 	m_cb7_Camera.Release();
 	m_cb8_Light.Release();
+
+	//深度ステンシルステート解放
+	SafeRelease(m_ds_ZEnable_ZWriteEnable);
+	SafeRelease(m_ds_ZDisable_ZWriteDisable);
+	SafeRelease(m_ds_ZEnable_ZWriteDisable);
+
+	//ラスタライザステート解放
+	SafeRelease(m_rs_CullBack);
+	SafeRelease(m_rs_CullNone);
+
+	//ブレンドステート解放
+	SafeRelease(m_bs_Alpha);
+	SafeRelease(m_bs_Add);
+
+
+	//サンプラーステート解放
+	SafeRelease(m_ss_Anisotropic_Wrap);
+	SafeRelease(m_ss_Anisotropic_Clamp);
+	SafeRelease(m_ss_Linear_Clamp);
+	SafeRelease(m_ss_ShadowMapComparison);
 
 }

@@ -1,0 +1,64 @@
+{
+  "SceneNo":7,
+  "GameObjects": [
+    {
+      "ClassName": "ActionProcess",
+      "Name": "ActionProcess",
+      "Prefab": "Data/JsonData/BaseObject.json",
+      "Tag": 16
+    },
+    {
+      "Name": "MenuList1",
+      "Prefab": "Data/JsonData/ActionMenuListObject.json"
+    },
+    {
+      "ModelFilePath": "Data/StageMap/Area7/Area7.gltf",
+      "Name": "Area",
+      "Prefab": "Data/JsonData/AreaObject.json"
+    },
+    {
+      "Name": "Goal1",
+      "Pos": [0,20,0],
+      "Prefab": "Data/JsonData/GoalObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light1",
+      "Pos": [5,20,5],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light2",
+      "Pos": [-5,20,5],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light3",
+      "Pos": [5,20,-5],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light4",
+      "Pos": [-5,20,-5],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json"
+    },
+    {
+      "Name": "Box1",
+      "Pos": [5,0,8],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Player",
+      "Pos": [-9,0,7],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,-149,0]
+    }
+  ]
+}

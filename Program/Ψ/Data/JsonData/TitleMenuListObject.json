@@ -11,10 +11,14 @@
     "MenuList":
     [
       "Data/Texture/GameStart.png",
-      "Data/Texture/StageSelect.png",
+      "Data/Texture/AreaSelect.png",
       "Data/Texture/Settings.png",
       "Data/Texture/QuitGame.png"
     ],
-    "Tag": 16
+    "Tag": 16,
+    "SoundList":
+    [
+      ["Data/Sound/ListSelect.wav",30]
+    ]
   }
   

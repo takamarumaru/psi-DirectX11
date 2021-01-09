@@ -66,6 +66,7 @@ void TrailPolygon::DrawDetached(float width)
 
 	//軌跡画像の分割数
 	float sliceCount = (float)(m_pointList.size() - 1);
+	Vector3 prevUp = {0,1,0};
 
 	//===============================
 	//頂点データ作成
@@ -88,8 +89,11 @@ void TrailPolygon::DrawDetached(float width)
 		vDir = mat.Translation() - prevMat.Translation();
 		SCENE.AddDebugLine(prevMat.Translation(), mat.Translation(), {1,0,0,1});
 
-		Math::Vector3 axisX = DirectX::XMVector3Cross(vDir, mat.Up());
+		Math::Vector3 axisX = DirectX::XMVector3Cross(vDir, prevUp);
 		axisX.Normalize();
+
+		//次に使う上側座標を求めておく
+		prevUp = DirectX::XMVector3Cross(vDir, axisX);
 
 		//座標
 		vertex[0].Pos = mat.Translation() + axisX * width * 0.5f;

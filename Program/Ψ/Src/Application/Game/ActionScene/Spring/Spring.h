@@ -1,13 +1,14 @@
 ﻿#pragma once
 
-#include "./Application/Game/GameObject.h"
+#include "../OutputObject.h"
 
-class Spring :public GameObject
+class Spring :public OutputObject
 {
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual json11::Json::object Serialize()override;
 	virtual void Update()override;
+	virtual void ImGuiUpdate()override;
 
 private:
 
@@ -22,9 +23,5 @@ private:
 
 	//押しだす力
 	double m_pushPower = 0.0f;
-
-	//オーナー情報
-	std::string m_ownerName;
-	std::weak_ptr<GameObject> m_wpOwner;
 
 };

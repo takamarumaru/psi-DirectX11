@@ -6,6 +6,7 @@
 
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/ModelComponent.h"
+#include"./Application/Component/SoundComponent.h"
 
 
 /// 通常のライト===========================================================
@@ -28,25 +29,34 @@
 		srand(timeGetTime());
 		//interval決定
 		m_interval = rand() % 10 + 30;
+
+		rOwner.m_spModelComponent->SetEmissive(true);
 	}
 	//更新
 	void Light::BreakingState::Update(Light& rOwner)
 	{
-		//ランダムの間隔で2分の1の確率でライトをつけたり消したり
+		//ランダムの間隔で一瞬ライトを消す
+
 		m_count++;
-		if (m_count > m_interval)
+		if (!m_isbreak)
 		{
-			if (rand() % 2)
-			{
-				rOwner.m_spModelComponent->SetEmissive(true);
-				m_interval = rand() % 10 + 30;
-				m_count = 0;
-			}
-			else
+			if (m_count > m_interval)
 			{
 				rOwner.m_spModelComponent->SetEmissive(false);
-				m_interval = rand() % 10 + 30;
+				m_interval = rand() % 30 + 25;
 				m_count = 0;
+				m_isbreak = true;
+			}
+		}
+		else
+		{
+			if (m_count>2)
+			{
+				rOwner.m_spModelComponent->SetEmissive(true);
+				m_interval = rand() % 150 + 10;
+				m_count = 0;
+				m_isbreak = false;
+				rOwner.m_spSoundComponent->SoundPlay("Data/Sound/OnLight.wav");
 			}
 		}
 	}

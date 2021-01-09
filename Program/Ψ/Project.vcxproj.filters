@@ -327,6 +327,12 @@
     <ClInclude Include="Src\Application\Game\StageSelectScene\StageSelectProcess.h">
       <Filter>Src\Application\Game\StageSelectScene</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\OutputObject.h">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Component\SoundComponent.h">
+      <Filter>Src\Application\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -499,6 +505,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Game\ActionScene\InputObject.cpp">
       <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\OutputObject.cpp">
+      <Filter>Src\Application\Game\ActionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Component\SoundComponent.cpp">
+      <Filter>Src\Application\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

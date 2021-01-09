@@ -16,9 +16,9 @@ void TitleProcess::Deserialize(const json11::Json& jsonObj)
 	while (ShowCursor(true) < 0);
 
 	//カメラの初期設定
-	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.5f, 2.5f, -5.0f);
-	m_spCameraComponent->OffsetMatrix().RotateX(-2.0f * ToRadians);
-	m_spCameraComponent->OffsetMatrix().RotateY(-80.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().CreateRotationX(10.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().RotateY(-130.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().Move(4.0f, 3.0f, 9.0f);
 	//カメラにセット
 	SCENE.SetTargetCamera(m_spCameraComponent);
 
@@ -38,22 +38,21 @@ void TitleProcess::Draw2D()
 	{
 		//2D描画
 		SHADER.m_spriteShader.SetMatrix(DirectX::XMMatrixIdentity());
-		SHADER.m_spriteShader.DrawTex(m_spLogoTex.get(), 300, 0);
+		SHADER.m_spriteShader.DrawTex(m_spLogoTex.get(), 1280/2-300, -100);
 	}
 }
 
 void TitleProcess::Update()
 {
-	if (m_spInputComponent == nullptr) { return; }
-
-	m_spInputComponent->Update();
+	if (m_spInputComponent)
+	{
+		m_spInputComponent->Update();
+	}
 
 	//行列をカメラにセット
 	if (m_spCameraComponent)
 	{
 		//カメラにセット
 		m_spCameraComponent->SetCameraMatrix(m_mWorld);
-
-		m_spCameraComponent->Update();
 	}
 }

@@ -187,6 +187,10 @@ void Application::Execute()
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
 
+		//デバッグラインの初期化
+		SCENE.DebugLineClear();
+
+		//ImGui更新
 		SCENE.ImGuiUpdate();
 
 
