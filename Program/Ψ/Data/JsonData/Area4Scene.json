@@ -74,8 +74,7 @@
     {
       "Name": "Ball1",
       "Pos": [6,12,6],
-      "Prefab": "Data/JsonData/BallObject.json",
-      "Rot": [0,0,-2]
+      "Prefab": "Data/JsonData/BallObject.json"
     },
     {
       "Name": "Box1",
@@ -87,7 +86,7 @@
       "Pos": [-8,4,8],
       "Prefab": "Data/JsonData/ButtonObject.json",
       "RailsPoint": [
-        [-8,4,8,1,0,0],
+        [-6,4,8,1,0,0],
         [6,4,8,0,1,0],
         [8,4,6,0,1,0],
         [8,4,-4,0,1,0]
@@ -120,12 +119,6 @@
       "Rot": [0,90,0]
     },
     {
-      "Name": "Glass1",
-      "Pos": [-4,4,-11],
-      "Prefab": "Data/JsonData/GlassObject.json",
-      "Scale": [6,3,1]
-    },
-    {
       "Name": "Glass2",
       "Pos": [-4,11,-10],
       "Prefab": "Data/JsonData/GlassObject.json",
@@ -134,9 +127,42 @@
     },
     {
       "Name": "Player",
-      "Pos": [15,3,-2],
+      "Pos": [14,3,-3],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-516,0]
+      "Rot": [0,10,0],
+      "TutorialTexList": []
+    },
+    {
+      "Name": "Glass1",
+      "Pos": [3,4,-2],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Rot": [0,90,0],
+      "Scale": [4,3,1]
+    },
+    {
+      "Name": "Glass3",
+      "Pos": [-4,4,3],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Scale": [6,3,1]
+    },
+    {
+      "DisplayTexList": [
+        ["Data\\Texture\\arrow.png",180,120,-98,0,-90],
+        ["Data\\Texture\\ball.png",150,150,70,0,0]
+      ],
+      "Name": "Display1",
+      "Pos": [-10,18,-7],
+      "Prefab": "Data/JsonData/DisplayObject.json"
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area05.png",400,50,180,-9,0],
+        ["Data/Texture/arrow.png",50,30,-115,-3,-90]
+      ],
+      "Name": "Display2",
+      "Pos": [-16,15,1],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Scale": [1,0.3,0.6]
     }
   ],
   "SceneNo": 4

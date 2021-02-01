@@ -77,9 +77,9 @@
       "Rot": [0,90,0]
     },
     {
-      "Name": "Box1",
-      "Pos": [-7,0,7],
-      "Prefab": "Data/JsonData/BoxObject.json"
+      "Name": "Ball2",
+      "Pos": [-7,1,7],
+      "Prefab": "Data/JsonData/BallObject.json"
     },
     {
       "Color": [1,1,1],
@@ -196,12 +196,6 @@
       "PushPower": 35
     },
     {
-      "Name": "Player",
-      "Pos": [-14,0,-12],
-      "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-541,0]
-    },
-    {
       "Name": "Door2",
       "Pos": [-11,14,6],
       "Prefab": "Data/JsonData/AutomaticDoorObject.json",
@@ -211,6 +205,27 @@
       "Name": "Door3",
       "Pos": [-16,14,-4],
       "Prefab": "Data/JsonData/AutomaticDoorObject.json"
+    },
+    {
+      "Name": "Player",
+      "Pos": [-14,0,-12],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,-0,0],
+      "TutorialTexList":
+      [
+        ["Data/Texture/Tutorial4.png",0,20]
+      ]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area06.png",400,50,180,-9,0],
+        ["Data/Texture/arrow.png",50,30,-115,-3,-90]
+      ],
+      "Name": "Display1",
+      "Pos": [-18,17,1],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,0,0],
+      "Scale": [1,0.3,0.6]
     }
   ],
   "SceneNo": 5

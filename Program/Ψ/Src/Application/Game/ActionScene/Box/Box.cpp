@@ -84,9 +84,10 @@ void Box::UpdateCollision()
 	}
 
 
-	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))
+	if (CheckBump(TAG_StageObject | TAG_Character, TAG_Player,m_spOwner))
 	{
 		//摩擦による減速処理
 		m_force *= 0.2f;
 	}
+
 }

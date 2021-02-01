@@ -21,12 +21,17 @@ void MenuList::Deserialize(const json11::Json& jsonObj)
 
 	//アイテムの数分メニューに追加
 	auto& rItemList = jsonObj["MenuList"].array_items();
+	auto& rItemRect = jsonObj["MenuRect"].array_items();
 	ListItem item;
 	for (auto&& itemObj : rItemList)
 	{
 		item.m_name = itemObj.string_value();
 		item.m_spTexture = ResFac.GetTexture(item.m_name);
-		item.m_rect = { 0,0,400,50 };
+		item.m_rect.x = rItemRect[0].int_value();
+		item.m_rect.y = rItemRect[1].int_value();
+		item.m_rect.width = rItemRect[2].int_value();
+		item.m_rect.height = rItemRect[3].int_value();
+		item.m_space = jsonObj["ListSpace"].int_value();
 		m_itemList.push_back(item);
 	}
 
@@ -113,8 +118,8 @@ void MenuList::Update()
 	for (UINT i = 0; i < m_itemList.size(); i++)
 	{
 		//各アイテムの座標を指定
-		m_itemList[i].m_pos.x = m_pos.x -(rClient.right - rClient.left)/2;
-		m_itemList[i].m_pos.y = m_pos.y - 55 * i - (rClient.top - rClient.bottom) / 2;
+		m_itemList[i].m_pos.x = (rClient.right - rClient.left)/2 * (m_pos.x * 0.01f);
+		m_itemList[i].m_pos.y = (rClient.top - rClient.bottom)/2 * (m_pos.y * 0.01f) - (m_itemList[i].m_rect.height + m_itemList[i].m_space) * i;
 		//RECTの生成
 		RECT rect;
 		rect.left = m_itemList[i].m_pos.x - m_itemList[i].m_rect.width / 2;
@@ -179,6 +184,7 @@ void MenuList::Update()
 				//要素がSettingsのとき
 				if (item.m_name.find("Settings") != std::string::npos)
 				{
+
 				}
 
 				//要素がBacktoTitleのとき

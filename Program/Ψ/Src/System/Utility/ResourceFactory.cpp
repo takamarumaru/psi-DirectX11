@@ -55,11 +55,11 @@ std::shared_ptr<Texture> ResourceFactory::GetTexture(const std::string& filename
 
 json11::Json ResourceFactory::GetJSON(const std::string& filename)
 {
-	//filenameのものがあるとき
+	////filenameのものがあるとき
 	//auto itFound = m_jsonMap.find(filename);
-	//ない場合
+	////ない場合
 	//if (itFound == m_jsonMap.end())
-	{
+	//{
 		//Jsonファイルを文字列として読み込む
 		json11::Json json = LoadJSON(filename);
 		if (json.is_null())
@@ -72,7 +72,7 @@ json11::Json ResourceFactory::GetJSON(const std::string& filename)
 		m_jsonMap[filename] = json;
 		//リソースに返す
 		return json;
-	}
+	//}
 	////ある場合
 	//else
 	//{

@@ -18,7 +18,7 @@ float4 main(VSOutput In) : SV_Target0
 {
     float4 texColor = g_inputTex.Sample(g_ss, In.UV);
 
-    texColor.xyz = ACESFilmicTone(texColor.xyz * 1);
+    texColor.xyz = ACESFilmicTone(texColor.xyz * 0.6);
 
     return texColor;
 }

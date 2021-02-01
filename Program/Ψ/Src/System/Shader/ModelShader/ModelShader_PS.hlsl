@@ -66,7 +66,7 @@ float4 main(VSOutput In) : SV_Target0
 	float roughness = mr.b * g_Material.Roughness;
 
 	//自身の発光度
-	float3 emissive= g_Material.Emissive;
+	float3 emissive= g_Material.Emissive*1.1f;
 
 	// ラフネスから、反射光用のSpecularPowerを求める
 	float smoothness = 1.0 - roughness; // ラフネスを逆転させ「滑らか」さにする
@@ -83,6 +83,12 @@ float4 main(VSOutput In) : SV_Target0
 	const float3 baseDiffuse = lerp(baseColor.rgb, float3(0, 0, 0), metallic);
 	// 材質の反射色　非金属ほど光の色をそのまま反射し、金属ほど材質の色が乗る
 	const float3 baseSpecular = lerp(0.04, baseColor.rgb, metallic);
+
+	//リムライティング
+	float3 rimColor = g_rimColor;
+	float rim = 1.0f - clamp(dot(wN, vCam), 0.0, 1.0);
+	rimColor *= rim;
+	color += rimColor;
 
 	//発光色を加算
 	if (g_Material.isEmissive)
@@ -133,9 +139,8 @@ float4 main(VSOutput In) : SV_Target0
 		shadow *= 0.11f;
 
 		shadow = min(1.0f, shadow + pow(ShadowX, 3.0f) + pow(ShadowY, 3.0f));
-
-		//shadow = g_dirShadowMap.Sample(g_ss, uv).b;
 	}
+
 	//-------------------------------
 
 	//-------------------------

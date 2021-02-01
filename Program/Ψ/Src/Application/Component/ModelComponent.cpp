@@ -24,8 +24,15 @@ void ModelComponent::Draw()
 	//モデルがないとき
 	if (m_spModel == nullptr) { return; }
 
+
 	//エミッシブをセット
 	SHADER.m_modelShader.SetEmissive(m_isEmissive);
+
+	//------------------------
+	// リムライト設定
+	//------------------------
+	SHADER.m_modelShader.SetRimColor(m_rimColor);
+
 
 	//全てのノードを一つ一つ描画
 	for (UINT i = 0; i < m_coppiedNodes.size(); i++)
@@ -33,11 +40,27 @@ void ModelComponent::Draw()
 		auto& rNode = m_coppiedNodes[i];
 		if (rNode.m_spMesh == nullptr) { continue; }
 
+		//当たり判定用ならカリングしない
+		if (rNode.m_name == "Collision")
+		{
+			//Z情報は使うが、Z書き込みOFF
+			D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteDisable, 0);
+			//カリングなし
+			D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullNone);
+		}
+
 		// 行列セット
 		SHADER.m_modelShader.SetWorldMatrix(rNode.m_localTransform * m_owner.GetMatrix());
 
 		// 描画
 		SHADER.m_modelShader.DrawMesh(rNode.m_spMesh.get(), m_spModel->GetMaterials());
+
+		//透過オブジェクトの場合もとに戻す
+		if (rNode.m_name == "Collision")
+		{
+			D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteEnable, 0);
+			D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
+		}
 
 	}
 }
@@ -54,6 +77,9 @@ void ModelComponent::DrawShadowMap()
 	for (UINT i = 0; i < m_coppiedNodes.size(); i++)
 	{
 		auto& rNode = m_coppiedNodes[i];
+
+		//当たり判定用のNodeならスキップ
+		if (rNode.m_name=="Collision") { continue; }
 
 		// メッシュがない場合はスキップ
 		if (rNode.m_spMesh == nullptr) { continue; }

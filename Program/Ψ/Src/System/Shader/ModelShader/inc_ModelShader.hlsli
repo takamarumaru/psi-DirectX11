@@ -10,6 +10,9 @@ cbuffer cbObject : register(b0)
 {
     // オブジェクト情報
     row_major float4x4 g_mW; // ワールド変換行列(DirectXは行優先、OpenGlなどは列優先)
+
+    float3 g_rimColor;
+    float g_rimPower;
 };
 
 // 定数バッファ(マテリアル)

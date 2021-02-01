@@ -25,7 +25,7 @@ public:
 	{
 		m_modelMap.clear();
 		m_texMap.clear();
-		//m_jsonMap.clear();
+		m_jsonMap.clear();
 	}
 
 private:

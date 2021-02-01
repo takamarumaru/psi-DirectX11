@@ -5,10 +5,10 @@
 void SquarePolygon::Init(float w, float h, const Math::Vector4& _color)
 {
 	//頂点座標の設定（幅、高さ分中央基準で離す）
-	m_vertex[0].pos = {-w/2,0,-h/2};		//左下
-	m_vertex[1].pos = {-w/2,0, h/2};		//左上
-	m_vertex[2].pos = { w/2,0,-h/2};		//右下
-	m_vertex[3].pos = { w/2,0, h/2};		//右上
+	m_vertex[0].pos = {-w/2,-h/2,0 };		//左下
+	m_vertex[1].pos = {-w/2, h/2,0 };		//左上
+	m_vertex[2].pos = { w/2,-h/2,0 };		//右下
+	m_vertex[3].pos = { w/2, h/2,0 };		//右上
 
 	m_vertex[0].color = _color;
 	m_vertex[1].color = _color;

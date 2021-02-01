@@ -56,6 +56,12 @@ public:
 	inline void SetMatrix(const Matrix& rMat) { m_mWorld = rMat; }
 	//座標
 	inline void SetPos(const Vector3& rPos) { m_pos = rPos; }
+	inline void SetPos(float x, float y, float z)
+	{
+		m_pos.x = x;
+		m_pos.y = y;
+		m_pos.z = z;
+	}
 	//中心座標
 	Vector3 GetCenterPos() { return m_pos + m_centerOffset; }
 	//移動量をセット
@@ -93,7 +99,7 @@ public:
 	//球による当たり判定（距離判定）
 	bool GameObject::HitCheckBySphere(const SphereInfo& rInfo);
 	//レイによる当たり判定
-	bool HitCheckByRay(const RayInfo& rInfo, RayResult& rResult);
+	bool HitCheckByRay(const RayInfo& rInfo, RayResult& rResult,bool isColisionModel=false);
 	//球による当たり判定（mesh）
 	bool HitCheckBySphereVsMesh(const SphereInfo& rInfo, SphereResult& rResult);
 	//四角判定
@@ -128,7 +134,7 @@ protected:
 	bool m_isImpactWall = false;
 
 	//球面判定
-	bool CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj = nullptr);
+	bool CheckBump(UINT rTag, UINT rNotTag=TAG_None, std::shared_ptr<GameObject> rNotObj = nullptr);
 
 /// オブジェクトデータ=====================================
 

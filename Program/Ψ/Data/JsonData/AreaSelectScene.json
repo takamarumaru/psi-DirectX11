@@ -14,7 +14,8 @@
     },
     {
       "Name": "MenuList2",
-      "Pos":[750,-180,0], 
+      "Pos":[15,-30,0], 
+      "MenuBackTex":"Data/Texture/AreaMenuBack.png",
       "MenuList":
       [
         "Data/Texture/Area01.png",
@@ -23,6 +24,24 @@
         "Data/Texture/Area04.png",
         "Data/Texture/Area05.png"
       ],
+      "MenuRect":[0,0,350,75],
+      "ListSpace":15,
+      "Prefab": "Data/JsonData/StageSelectMenuListObject.json"
+    },
+    {
+      "Name": "MenuList3",
+      "Pos":[70,-30,0], 
+      "MenuBackTex":"Data/Texture/AreaMenuBack.png",
+      "MenuList":
+      [
+        "Data/Texture/Area06.png",
+        "Data/Texture/Area07.png",
+        "Data/Texture/Area08.png",
+        "Data/Texture/Area09.png",
+        "Data/Texture/Area10.png"
+      ],
+      "MenuRect":[0,0,350,75],
+      "ListSpace":15,
       "Prefab": "Data/JsonData/StageSelectMenuListObject.json"
     },
     {

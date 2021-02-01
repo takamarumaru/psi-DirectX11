@@ -170,11 +170,14 @@
     <ClInclude Include="Src\Application\Game\ActionScene\Ball\Ball.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Box\Box.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Button\Button.h" />
+    <ClInclude Include="Src\Application\Game\ActionScene\Display\Display.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.h" />
+    <ClInclude Include="Src\Application\Game\ActionScene\Glass\Glass.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Goal\Goal.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\InputObject.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Light\Light.h" />
+    <ClInclude Include="Src\Application\Game\ActionScene\ObjectCreator\ObjectCreator.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\OperateObject.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\OutputObject.h" />
     <ClInclude Include="Src\Application\Game\ActionScene\Player\Player.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="Src\Application\Game\TextureEffect.h" />
     <ClInclude Include="Src\Application\Game\TitleScene\TitleProcess.h" />
     <ClInclude Include="Src\Application\Game\UI\Menu\MenuList.h" />
+    <ClInclude Include="Src\Application\Game\UI\PopUpTexture\PopUpTexture.h" />
     <ClInclude Include="Src\Application\main.h" />
     <ClInclude Include="src\System\Direct3D\Direct3D.h" />
     <ClInclude Include="Src\System\Direct3D\GLTFLoader.h" />
@@ -232,12 +236,15 @@
     <ClCompile Include="Src\Application\Game\ActionScene\Ball\Ball.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Box\Box.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Button\Button.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\Display\Display.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Door\AutomaticDoor\AutomaticDoor.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Door\ManualDoor\ManualDoor.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\Glass\Glass.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Goal\Goal.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\InputObject.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\Light.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Light\LightState.cpp" />
+    <ClCompile Include="Src\Application\Game\ActionScene\ObjectCreator\ObjectCreator.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\OutputObject.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\Player.cpp" />
     <ClCompile Include="Src\Application\Game\ActionScene\Player\PlayerAction.cpp" />
@@ -252,6 +259,7 @@
     <ClCompile Include="Src\Application\Game\TextureEffect.cpp" />
     <ClCompile Include="Src\Application\Game\TitleScene\TitleProcess.cpp" />
     <ClCompile Include="Src\Application\Game\UI\Menu\MenuList.cpp" />
+    <ClCompile Include="Src\Application\Game\UI\PopUpTexture\PopUpTexture.cpp" />
     <ClCompile Include="Src\Application\main.cpp" />
     <ClCompile Include="src\System\Direct3D\Direct3D.cpp" />
     <ClCompile Include="Src\System\Direct3D\GLTFLoader.cpp" />

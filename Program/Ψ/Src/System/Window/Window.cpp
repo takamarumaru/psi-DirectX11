@@ -183,7 +183,7 @@ void Window::SetClientSize(int w, int h)
 		TRUE);
 }
 
-bool Window::OpenFileDialog(std::string& filepath, const std::string& title, const char* filters)
+bool Window::OpenFileDialog(std::string& filepath, const std::string& title, const char* filters, const std::string startpath)
 {
 	// 現在のカレントディレクトリ保存
 	auto current = std::filesystem::current_path();
@@ -198,7 +198,7 @@ bool Window::OpenFileDialog(std::string& filepath, const std::string& title, con
 	std::string dir;
 	if (filepath.size() == 0)
 	{
-		dir = current.string() + "\\";
+		dir = current.string() + startpath +"\\";
 	}
 	else {
 		auto path = std::filesystem::absolute(filepath);

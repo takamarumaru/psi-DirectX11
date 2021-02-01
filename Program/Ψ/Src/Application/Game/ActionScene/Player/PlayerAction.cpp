@@ -9,6 +9,9 @@
 #include"./Application/Component/CameraComponent.h"
 #include"./Application/Component/InputComponent.h"
 #include"./Application/Component/SoundComponent.h"
+#include"./Application/Component/ModelComponent.h"
+
+#include"Application/Game/UI/PopUpTexture/PopUpTexture.h"
 
 
 ///====================================================================
@@ -40,6 +43,17 @@ void Player::UpdateMove()
 	{
 		m_moveForce.Normalize();
 		m_moveForce *= m_moveSpeed;
+	}
+
+	//足音を再生
+	if(m_isGround)
+	{
+		static int playerWalkCount = 0;
+		playerWalkCount++;
+		if (playerWalkCount % 20 == 0)
+		{
+			m_spSoundComponent->SoundPlay("Data/Sound/Walk.wav");
+		}
 	}
 }
 
@@ -107,39 +121,68 @@ void Player::UpdateGrab()
 	//登録オブジェクトが存在しない間
 	if (!m_isOperate)
 	{
+		//レイ発射座標からカメラの前方向に当たり判定
+		//レイ発射座標
+		Vector3 rayPos = m_spCameraComponent->GetCameraMatrix().GetTranslation();
+
+		//レイ判定情報設定
+		rayInfo.m_pos = rayPos;
+		rayInfo.m_dir = m_spCameraComponent->OffsetMatrix().GetAxisZ();
+		rayInfo.mMaxRange = FLT_MAX;
+
+
+		//最終的な結果格納用
+		RayResult finalRayResult;
+
+		//全員とレイ判定
+		for (auto& obj : SCENE.GetObjects())
+		{
+			//自分は判定しない
+			if (obj.get() == this) { continue; }
+
+			RayResult rayResult;
+			if (obj->HitCheckByRay(rayInfo, rayResult))
+			{
+				//最も当たったところまでの距離が短いものを保持する
+				if (rayResult.m_distance < finalRayResult.m_distance)
+				{
+					finalRayResult = rayResult;
+					hitObj = obj;
+				}
+			}
+		}
+
+		//当たったオブジェクトがあったら
+		if (hitObj && (hitObj->GetTag() & (TAG_CanControlObject)))
+		{
+			//チュートリアル2を表示
+			if (m_spTutorialTexList.find("Data/Texture/Tutorial2.png") != m_spTutorialTexList.end())
+			{
+				m_spTutorialTexList["Data/Texture/Tutorial2.png"]->SetVisible(true);
+			}
+		}
+		else
+		{
+			//チュートリアル2を非表示
+			if (m_spTutorialTexList.find("Data/Texture/Tutorial2.png") != m_spTutorialTexList.end())
+			{
+				m_spTutorialTexList.at("Data/Texture/Tutorial2.png")->SetVisible(false);
+			}
+			//チュートリアル3を非表示
+			if (m_spTutorialTexList.find("Data/Texture/Tutorial3.png") != m_spTutorialTexList.end())
+			{
+				m_spTutorialTexList.at("Data/Texture/Tutorial3.png")->SetVisible(false);
+			}
+			//チュートリアル4を非表示
+			if (m_spTutorialTexList.find("Data/Texture/Tutorial4.png") != m_spTutorialTexList.end())
+			{
+				m_spTutorialTexList["Data/Texture/Tutorial4.png"]->SetVisible(false);
+			}
+		}
+
 		//R1ボタンを押したとき
 		if (m_spInputComponent->GetButton(Input::Buttons::R1) & InputComponent::ENTER)
 		{
-			//レイ発射座標からカメラの前方向に当たり判定
-			//レイ発射座標
-			Vector3 rayPos = m_spCameraComponent->GetCameraMatrix().GetTranslation();
-
-			//レイ判定情報設定
-			rayInfo.m_pos = rayPos;
-			rayInfo.m_dir = m_spCameraComponent->OffsetMatrix().GetAxisZ();
-			rayInfo.mMaxRange = FLT_MAX;
-
-
-			//最終的な結果格納用
-			RayResult finalRayResult;
-
-			//全員とレイ判定
-			for (auto& obj : SCENE.GetObjects())
-			{
-				//自分は判定しない
-				if (obj.get() == this) { continue; }
-
-				RayResult rayResult;
-				if (obj->HitCheckByRay(rayInfo, rayResult))
-				{
-					//最も当たったところまでの距離が短いものを保持する
-					if (rayResult.m_distance < finalRayResult.m_distance)
-					{
-						finalRayResult = rayResult;
-						hitObj = obj;
-					}
-				}
-			}
 
 			//当たったオブジェクトがあったら
 			if (hitObj)
@@ -149,8 +192,30 @@ void Player::UpdateGrab()
 				{
 					//当たったオブジェクトは削除しておく
 					hitObj = nullptr;
+					//キャンセル音再生
+					m_spSoundComponent->SoundPlay("Data/Sound/Cancel.wav");
 					return;
 				}
+				
+				//チュートリアル2を非表示にして無効化
+				if (m_spTutorialTexList.find("Data/Texture/Tutorial2.png") != m_spTutorialTexList.end())
+				{
+					m_spTutorialTexList["Data/Texture/Tutorial2.png"]->SetVisible(false);
+					m_spTutorialTexList["Data/Texture/Tutorial2.png"]->SetEnable(false);
+				}
+
+				//チュートリアル3を表示
+				if (m_spTutorialTexList.find("Data/Texture/Tutorial3.png") != m_spTutorialTexList.end())
+				{
+					m_spTutorialTexList["Data/Texture/Tutorial3.png"]->SetVisible(true);
+				}
+
+				//チュートリアル4を表示
+				if (m_spTutorialTexList.find("Data/Texture/Tutorial4.png") != m_spTutorialTexList.end())
+				{
+					m_spTutorialTexList["Data/Texture/Tutorial4.png"]->SetVisible(true);
+				}
+
 				//当たったオブジェクトを操作オブジェクトにいれる
 				m_spOperateObj = std::dynamic_pointer_cast<OperateObject>(hitObj);
 				//操作フラグを立てる
@@ -162,6 +227,8 @@ void Player::UpdateGrab()
 				m_spOperateObj->OffFall();
 				//オーナーポインタを渡す
 				m_spOperateObj->SetOwner(shared_from_this());
+				//リムライティングを有効に
+				m_spOperateObj->GetModelComponent()->SetRimColor(Vector3(1,0,1));
 				//エフェクトを再生開始
 				EFFEKSEER.Play(u"Data/EffekseerData/Aura5.efk", m_spOperateObj->GetCenterPos());
 				//再生
@@ -173,6 +240,21 @@ void Player::UpdateGrab()
 	//登録オブジェクトが存在する間
 	else
 	{
+		//登録オブジェクトがなくなったら
+		if (!(m_spOperateObj->IsAlive()))
+		{
+			//操作オブジェクト初期化
+			OperateReset();
+			return;
+		}
+
+		if (Vector3(m_spOperateObj->GetCenterPos() - m_pos).Length() < m_operateObjMinDst)
+		{
+			//操作オブジェクト初期化
+			OperateReset();
+			return;
+		}
+
 		//オブジェクトのある方向に回転
 		UpdateRotate(m_spCameraComponent->OffsetMatrix().GetAxisZ());
 
@@ -190,6 +272,15 @@ void Player::UpdateGrab()
 		///外側行列を生成====================================================================
 		//オブジェクトの位置を調整
 		operateObjDistance += APP.m_window.GetMouseWheelVal() * m_operateObjAroundSpeed;
+		if (APP.m_window.GetMouseWheelVal() != 0.0f)
+		{
+			//チュートリアル3を非表示にして無効化
+			if (m_spTutorialTexList.find("Data/Texture/Tutorial3.png") != m_spTutorialTexList.end())
+			{
+				m_spTutorialTexList["Data/Texture/Tutorial3.png"]->SetVisible(false);
+				m_spTutorialTexList["Data/Texture/Tutorial3.png"]->SetEnable(false);
+			}
+		}
 		//プレイヤーとの距離を制限
 		if (operateObjDistance > m_operateObjMaxDst) { operateObjDistance = m_operateObjMaxDst; }
 		if (operateObjDistance < m_operateObjMinDst) { operateObjDistance = m_operateObjMinDst; }
@@ -272,17 +363,24 @@ void Player::UpdateGrab()
 			OperateReset();
 			//発射音再生
 			m_spSoundComponent->SoundPlay("Data/Sound/PowerShot.wav");
+			//チュートリアル4を非表示にして無効化
+			if (m_spTutorialTexList.find("Data/Texture/Tutorial4.png") != m_spTutorialTexList.end())
+			{
+				m_spTutorialTexList["Data/Texture/Tutorial4.png"]->SetVisible(false);
+				m_spTutorialTexList["Data/Texture/Tutorial4.png"]->SetEnable(false);
+			}
 		}
 	}
 }
 
 void Player::OperateReset()
 {
-	m_isOperate = false;			//操作フラグを解除
-	m_powerEffect.ClearPoint();		//軌跡を消す
-	m_spOperateObj->OnFall();		//重力を反映させる
-	m_spOperateObj->ClearOwner();	//オーナー情報を削除
-	m_spOperateObj = nullptr;		//登録を外す
-	EFFEKSEER.Stop(u"Data/EffekseerData/Aura5.efk");//エフェクト再生停止
+	m_isOperate = false;												//操作フラグを解除
+	m_powerEffect.ClearPoint();											//軌跡を消す
+	m_spOperateObj->OnFall();											//重力を反映させる
+	m_spOperateObj->GetModelComponent()->SetRimColor(Vector3(0, 0, 0)); //リムライティングを無効に
+	m_spOperateObj->ClearOwner();										//オーナー情報を削除
+	m_spOperateObj = nullptr;											//登録を外す
+	EFFEKSEER.Stop(u"Data/EffekseerData/Aura5.efk");					//エフェクト再生停止
 	m_spSoundComponent->SoundAllStop();
 }

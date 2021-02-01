@@ -45,6 +45,9 @@ public:
 	//入力の更新
 	virtual void Update() {}
 
+	//入力関係の初期化
+	virtual void Init() {};
+
 	//操作軸取得
 	inline const Math::Vector2& GetAxis(Input::Axes no)const
 	{
@@ -129,6 +132,7 @@ public:
 	PlayerInputComponent(GameObject& owner) :InputComponent(owner) {}
 
 	virtual void Update()override;
+	virtual void Init()override;
 private:
 	//マウスの前座標
 	POINT m_prevMousePos;

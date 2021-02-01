@@ -51,7 +51,8 @@ public:
 	// ・filepath		… 選択されたファイルパスが入る
 	// ・title			… ウィンドウのタイトル文字
 	// ・filters		… 指定された拡張子のみ表示されるようになる
-	static bool OpenFileDialog(std::string& filepath, const std::string& title = "ファイルを開く", const char* filters = "全てのファイル\0*.*\0");
+	// ・startpath		… 開いたときの初期パス
+	static bool OpenFileDialog(std::string& filepath, const std::string& title = "ファイルを開く", const char* filters = "全てのファイル\0*.*\0", const std::string startpath = "");
 	// ファイル名をつけて保存ダイアログボックスを表示
 	// ・filepath		… 選択されたファイルパスが入る
 	// ・title			… ウィンドウのタイトル文字

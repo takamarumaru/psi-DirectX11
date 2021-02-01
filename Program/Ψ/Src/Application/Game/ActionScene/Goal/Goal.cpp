@@ -53,7 +53,7 @@ void Goal::UpdateCollision()
 			if (obj->HitCheckBySphere(info))
 			{
 				//最後のステージならタイトルに移動(デバッグ)
-				if (SCENE.GetSceneNo()==5)
+				if (SCENE.GetSceneNo()==10)
 				{
 					SCENE.RequestChangeScene("Data/JsonData/TitleScene.json");
 				}

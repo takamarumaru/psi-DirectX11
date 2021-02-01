@@ -2,10 +2,15 @@
 
 #include "../Scene.h"
 
+#include"Application/Component/ModelComponent.h"
+
 
 void InputObject::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
+
+	//自己発光をオフに
+	m_spModelComponent->SetEmissive(false);
 
 	//レールのテクスチャ
 	m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));

@@ -18,6 +18,9 @@
 #include "ActionScene/Door/AutomaticDoor/AutomaticDoor.h"
 #include "ActionScene/Target/Target.h"
 #include "ActionScene/Goal/Goal.h"
+#include "ActionScene/Glass/Glass.h"
+#include "ActionScene/Display/Display.h"
+#include "ActionScene/ObjectCreator/ObjectCreator.h"
 #include "ActionScene/Light/Light.h"
 #include "ActionScene/Player/Player.h"
 
@@ -108,29 +111,14 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 
 	//拡縮
 	const std::vector<json11::Json>& rScale = jsonObj["Scale"].array_items();
-	const std::vector<json11::Json>& rScaleOffset = jsonObj["ScaleOffset"].array_items();
-	Vector3 scale;
 	if (rScale.size() == 3)
 	{
-		//拡縮度を代入
-		scale.x = (float)rScale[0].number_value();
-		scale.y = (float)rScale[1].number_value();
-		scale.z = (float)rScale[2].number_value();
-		//補正値があった場合
-		if (rScaleOffset.size() == 3)
-		{
-			scale.x += (float)rScaleOffset[0].number_value() * 0.01f;
-			scale.y += (float)rScaleOffset[1].number_value() * 0.01f;
-			scale.z += (float)rScaleOffset[2].number_value() * 0.01f;
-
-			mTrans.Move
-			(
-				(float)rScaleOffset[0].number_value() * 0.01f / 2,
-				(float)rScaleOffset[1].number_value() * 0.01f / 2,
-				(float)rScaleOffset[2].number_value() * 0.01f / 2
-			);
-		}
-		mScale.CreateScalling(scale);
+		mScale.CreateScalling
+		(
+			(float)rScale[0].number_value(),
+			(float)rScale[1].number_value(),
+			(float)rScale[2].number_value()
+		);
 	}
 
 	m_mWorld = mScale * mRotate * mTrans;
@@ -153,6 +141,21 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 		m_spSoundComponent->SoundLoad(sound[0].string_value().c_str(), sound[1].int_value() * 0.01f);
 	}
 
+	//リムライト
+	const std::vector<json11::Json>& rRimLightColor = jsonObj["RimLightColor"].array_items();
+	if (rRimLightColor.size() == 3)
+	{
+		if (m_spModelComponent)
+		{
+			m_spModelComponent->SetRimColor
+			(
+				(float)rRimLightColor[0].number_value(),
+				(float)rRimLightColor[1].number_value(),
+				(float)rRimLightColor[2].number_value()
+			);
+		}
+	}
+
 	//当たり判定半径
 	if (jsonObj["Radius"].is_null() == false)
 	{
@@ -162,6 +165,9 @@ void GameObject::Deserialize(const json11::Json& jsonObj)
 	//情報を格納
 	m_pos = mTrans.GetTranslation();
 	m_scale = mScale.GetScale();
+
+	//自己発光をオンに
+	m_spModelComponent->SetEmissive(true);
 }
 
 //データ保存
@@ -193,27 +199,11 @@ json11::Json::object GameObject::Serialize()
 	objectData["Rot"] = mat;
 
 	//拡縮
-	mat[0] = (int)m_scale.x;
-	mat[1] = (int)m_scale.y;
-	mat[2] = (int)m_scale.z;
+	mat[0] = m_scale.x;
+	mat[1] = m_scale.y;
+	mat[2] = m_scale.z;
 
 	objectData["Scale"] = mat;
-
-	////効果音
-	//json11::Json::array soundList(m_spSoundComponent->GetVolumeList().size());
-	//UINT soundIdx = 0;
-	////サウンドリストからデータを取得
-	//for (auto&& sound : m_spSoundComponent->GetVolumeList())
-	//{
-	//	json11::Json::array soundjson(2);
-	//	soundjson[0] = sound.first;
-	//	soundjson[1] = sound.second*100.0f;
-
-	//	soundList[soundIdx] =soundjson;
-	//	soundIdx++;
-	//}
-
-	//objectData["SoundList"] = soundList;
 	
 	//プレハブ指定がある場合
 	if (!m_prefab.empty())
@@ -378,7 +368,7 @@ bool GameObject::HitCheckBySphere(const SphereInfo& rInfo)
 }
 
 //レイによる当たり判定
-bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
+bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult,bool isColisionModel)
 {
 	//判定をする対象のモデルがない場合は当たっていないとして帰る
 	if (!m_spModelComponent) { return false; }
@@ -388,7 +378,11 @@ bool GameObject::HitCheckByRay(const RayInfo& rInfo, RayResult& rResult)
 	//全てのノード（メッシュ）分当たり判定を行う
 	for (auto& node : m_spModelComponent->GetNodes())
 	{
+		//メッシュがないなら戻る
 		if (!node.m_spMesh) { continue; }
+
+		//当たり判定用のNodeならスキップ
+		if (!isColisionModel&&node.m_name == "Collision") { continue; }
 
 		RayResult tmpResult;//結果返送用
 
@@ -505,7 +499,7 @@ bool GameObject::CheckGround(RayResult& finalRayResult,Vector3 pos,float& rDstDi
 
 		RayResult rayResult;
 
-		if (obj->HitCheckByRay(rayInfo, rayResult))
+		if (obj->HitCheckByRay(rayInfo, rayResult,true))
 		{
 			//最も当たったところまでの距離が短いものを保持する
 			if (rayResult.m_distance < finalRayResult.m_distance)
@@ -549,10 +543,13 @@ bool GameObject::CheckGround(RayResult& finalRayResult,Vector3 pos,float& rDstDi
 		auto vOneMove = mOneMove.GetTranslation();
 
 		//相手の動いた分を自分の移動に含める
-		m_pos += vOneMove;
+		if (!(hitObj->GetTag() & TAG_Player))
+		{
+			m_pos += vOneMove;
+		}
 
 		///上方向への反射処理
-		if (m_tag & TAG_CanControlObject)
+		if (m_isFall && m_tag & TAG_CanControlObject)
 		{
 			if (fabs(m_force.y) >= 0.1f)
 			{
@@ -570,7 +567,7 @@ bool GameObject::CheckGround(RayResult& finalRayResult,Vector3 pos,float& rDstDi
 	return m_isGround;
 }
 
-bool GameObject::CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj)
+bool GameObject::CheckBump(UINT rTag, UINT rNotTag, std::shared_ptr<GameObject> rNotObj)
 {
 	//球情報の作成
 	SphereInfo info;
@@ -589,6 +586,7 @@ bool GameObject::CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj)
 		if (obj.get() == this) { continue; }
 		//指定されたタグのオブジェクトとだけ当たり判定
 		if (!(obj->GetTag() & (rTag))) { continue; }
+		if (obj->GetTag() & rNotTag) { continue; }
 		//指定されたオブジェクトは判定しない
 		if (rNotObj)
 		{
@@ -608,6 +606,16 @@ bool GameObject::CheckBump(UINT rTag, std::shared_ptr<GameObject> rNotObj)
 			}
 		}
 
+	}
+
+
+	if (isHit)
+	{
+		IMGUI_LOG.AddLog("====================================");
+		IMGUI_LOG.AddLog(m_name.c_str());
+		Vector3 pushPos = m_pos - m_prevPos;
+		IMGUI_LOG.AddLog("len:%.5f", pushPos.Length());
+		IMGUI_LOG.AddLog("\n");
 	}
 
 	//反射音の処理
@@ -691,6 +699,21 @@ std::shared_ptr<GameObject> CreateGameObject(const std::string& name)
 	if (name == "Light")
 	{
 		return std::make_shared<Light>();
+	}
+	//ガラス
+	if (name == "Glass")
+	{
+		return std::make_shared<Glass>();
+	}
+	//オブジェクト射出口
+	if (name == "ObjectCreator")
+	{
+		return std::make_shared<ObjectCreator>();
+	}
+	//表示板
+	if (name == "Display")
+	{
+		return std::make_shared<Display>();
 	}
 	//ゴール
 	if (name == "Goal")

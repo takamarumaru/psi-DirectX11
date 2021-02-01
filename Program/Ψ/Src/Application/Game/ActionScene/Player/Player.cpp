@@ -8,6 +8,7 @@
 #include"./Application/Component/InputComponent.h"
 
 #include"Application/Game/TextureEffect.h"
+#include"Application/Game/UI/PopUpTexture/PopUpTexture.h"
 
 //初期化
 void Player::Deserialize(const json11::Json& jsonObj)
@@ -16,7 +17,8 @@ void Player::Deserialize(const json11::Json& jsonObj)
 
 	//カメラの設定
 	m_spCameraComponent->OffsetMatrix().CreateTranslation(0.0f, 0.0f, -0.01f);
-	m_spCameraComponent->OffsetMatrix().RotateX(0.0f * ToRadians);
+	m_spCameraComponent->OffsetMatrix().RotateY(m_rot.y);
+	m_spCameraComponent->OffsetMatrix().RotateX(m_rot.x);
 	//カメラにセット
 	SCENE.SetTargetCamera(m_spCameraComponent);
 
@@ -25,6 +27,7 @@ void Player::Deserialize(const json11::Json& jsonObj)
 
 	//入力用コンポーネントセット
 	m_spInputComponent = std::make_shared<PlayerInputComponent>(*this);
+	m_spInputComponent->Init();
 
 	//念のテクスチャ
 	m_powerEffect.SetTexture(ResFac.GetTexture("Data/Texture/powerEffect.png"));
@@ -36,6 +39,47 @@ void Player::Deserialize(const json11::Json& jsonObj)
 	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura4.efk");
 	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Aura5.efk");
 	EFFEKSEER.LoadEffect(u"Data/EffekseerData/Shot.efk");
+
+	//チュートリアルの画像をロード
+	auto& rTutorialTex = jsonObj["TutorialTexList"].array_items();
+	for (auto&& texture : rTutorialTex)
+	{
+		//画像と座標を保存
+		std::shared_ptr<PopUpTexture> tex = std::make_shared<PopUpTexture>();
+		tex->SetTexture(ResFac.GetTexture(texture[0].string_value()));
+		tex->SetPos(texture[1].number_value()*0.01f, texture[2].number_value() * 0.01f, 0.0f);
+		m_spTutorialTexList[texture[0].string_value().c_str()] = tex;
+	}
+
+	//チュートリアル１を表示
+	if (m_spTutorialTexList.find("Data/Texture/Tutorial1.png") != m_spTutorialTexList.end())
+	{
+		m_spTutorialTexList["Data/Texture/Tutorial1.png"]->SetVisible(true);
+	}
+
+}
+
+json11::Json::object Player::Serialize()
+{
+	json11::Json::object objectData = GameObject::Serialize();
+
+	json11::Json::array tutorialTexList(m_spTutorialTexList.size());
+
+	UINT i=0;
+	for (auto&& texture : m_spTutorialTexList)
+	{
+		json11::Json::array tutorialTex(3);
+		tutorialTex[0] = texture.first.c_str();
+		tutorialTex[1] = (int)(texture.second->GetCenterPos().x * 100.0f);
+		tutorialTex[2] = (int)(texture.second->GetCenterPos().y * 100.0f);
+
+		tutorialTexList[i] = tutorialTex;
+		i++;
+	}
+
+	objectData["TutorialTexList"] = tutorialTexList;
+
+	return objectData;
 }
 
 //更新
@@ -96,7 +140,12 @@ void Player::Update()
 	//アクション処理
 	UpdateGrab();
 
-
+	//チュートリアルテクスチャの更新
+	for (auto&& texture : m_spTutorialTexList)
+	{
+		if (texture.second)
+		texture.second->Update();
+	}
 }
 
 void Player::DrawEffect()
@@ -120,6 +169,13 @@ void Player::Draw2D()
 			SHADER.m_spriteShader.SetMatrix(DirectX::XMMatrixIdentity());
 			SHADER.m_spriteShader.DrawTex(m_spPointTex.get(), 0, 0);
 		}
+	}
+
+	//チュートリアルテクスチャの描画
+	for (auto&& texture : m_spTutorialTexList)
+	{
+ 		if(texture.second)
+		texture.second->Draw2D();
 	}
 }
 
@@ -178,7 +234,7 @@ void Player::UpdateCollision()
 	}
 
 	//横方向との当たり判定
-	if(CheckBump(TAG_StageObject | TAG_Character, operateObj))
+	if(CheckBump(TAG_StageObject | TAG_Character,TAG_None, operateObj))
 	{
 		m_moveForce.x = 0.0f;
 		m_moveForce.z = 0.0f;

@@ -118,6 +118,18 @@
     <Filter Include="Src\Application\Game\StageSelectScene">
       <UniqueIdentifier>{825d8241-0b99-4236-92b8-7a815072a53e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Game\UI\PopUpTexture">
+      <UniqueIdentifier>{25451c49-ae59-4664-8034-964595beed8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Glass">
+      <UniqueIdentifier>{e01da772-049f-42dd-82c0-4bc759e24157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\ObjectCreator">
+      <UniqueIdentifier>{dd14f6de-6d2d-4e04-877f-60a99d7c4be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Game\ActionScene\Display">
+      <UniqueIdentifier>{f74f20ed-9db6-407a-a018-df449dbea697}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -333,6 +345,18 @@
     <ClInclude Include="Src\Application\Component\SoundComponent.h">
       <Filter>Src\Application\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Game\UI\PopUpTexture\PopUpTexture.h">
+      <Filter>Src\Application\Game\UI\PopUpTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Glass\Glass.h">
+      <Filter>Src\Application\Game\ActionScene\Glass</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\ObjectCreator\ObjectCreator.h">
+      <Filter>Src\Application\Game\ActionScene\ObjectCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Game\ActionScene\Display\Display.h">
+      <Filter>Src\Application\Game\ActionScene\Display</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -511,6 +535,18 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Component\SoundComponent.cpp">
       <Filter>Src\Application\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\UI\PopUpTexture\PopUpTexture.cpp">
+      <Filter>Src\Application\Game\UI\PopUpTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Glass\Glass.cpp">
+      <Filter>Src\Application\Game\ActionScene\Glass</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\ObjectCreator\ObjectCreator.cpp">
+      <Filter>Src\Application\Game\ActionScene\ObjectCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Game\ActionScene\Display\Display.cpp">
+      <Filter>Src\Application\Game\ActionScene\Display</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

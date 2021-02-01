@@ -23,7 +23,7 @@
     {
       "Color": [1,1,1],
       "Name": "Light1",
-      "Pos": [3,6,1],
+      "Pos": [-4,6,1],
       "Power": 30,
       "Prefab": "Data/JsonData/LightObject.json",
       "State": 1
@@ -56,18 +56,6 @@
       "Name": "Box1",
       "Pos": [1,0,6],
       "Prefab": "Data/JsonData/BoxObject.json"
-    },
-    {
-      "Name": "Player",
-      "Pos": [17,0,-6],
-      "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-77,0]
-    },
-    {
-      "Name": "Glass1",
-      "Pos": [-1,0,5],
-      "Prefab": "Data/JsonData/GlassObject.json",
-      "Scale": [5,2,1]
     },
     {
       "Name": "Fence1",
@@ -124,6 +112,29 @@
       "Name": "Goal",
       "Pos": [-21,21,8],
       "Prefab": "Data/JsonData/GoalObject.json"
+    },
+    {
+      "Name": "Glass1",
+      "Pos": [-1,0,4.5],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Scale": [5,2,0.5]
+    },
+    {
+      "Name": "Player",
+      "Pos": [17,0,-6],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,-90,0]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area04.png",400,50,180,-9,0],
+        ["Data/Texture/arrow.png",50,30,-115,-3,-90]
+      ],
+      "Name": "Display1",
+      "Pos": [-16,22,10],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,90,0],
+      "Scale": [1,0.3,0.6]
     }
   ],
   "SceneNo": 3

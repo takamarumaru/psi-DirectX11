@@ -77,11 +77,6 @@ void SoundComponent::SoundPlay(const char* soundName,bool isLoop)
 	{
 		instance->SetVolume(m_soundVolumeList[soundName] * byDistanceVolume * byStateVolume);
 		instance->Play(isLoop);
-
-		IMGUI_LOG.AddLog("=======================");
-		IMGUI_LOG.AddLog(m_owner.GetName());
-		IMGUI_LOG.AddLog("Distance : %.2f", byDistanceVolume);
-		IMGUI_LOG.AddLog("State    : %.2f", byStateVolume);
 	}
 	//再生中インスタンスリストに加える
 	m_instances.push_back(std::move(instance));

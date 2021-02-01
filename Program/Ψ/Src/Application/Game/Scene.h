@@ -42,6 +42,8 @@ public:
 	void Restart() { m_isUpdate = true; }
 	//更新しているか
 	bool IsUpdate() { return m_isUpdate; }
+	//画面遷移しているか
+	bool IsFade() { return m_isFade; }
 
 
 /// オブジェクト管理=================================

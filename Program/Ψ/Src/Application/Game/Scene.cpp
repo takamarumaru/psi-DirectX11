@@ -87,7 +87,7 @@ void Scene::Update()
 
 	//選択しているオブジェクトを取得
 	auto selectObject = m_wpImGuiSelectObj.lock();
-	//IMGUI_LOG.Clear();
+	IMGUI_LOG.Clear();
 	//オブジェクト更新
 	for (auto pObject : m_spObjects)
 	{
@@ -122,7 +122,7 @@ void Scene::Update()
 //描画
 void Scene::Draw()
 {
-	//ScreenRTに描画
+	//ToneTexに描画
 	{
 		RestoreRenderTarget rrtScreen;
 
@@ -173,8 +173,6 @@ void Scene::Draw()
 
 			SHADER.m_genShadowMapShader.End();
 
-			//エフェクトシェーダを描画デバイスにセット
-			SHADER.m_effectShader.SetToDevice();
 			//不透明物描画
 			{
 				// シャドウマップをセット
@@ -185,6 +183,7 @@ void Scene::Draw()
 				//オブジェクト描画
 				for (auto pObject : m_spObjects)
 				{
+					if(!(pObject->GetTag()&TAG_TransparentObject))
 					pObject->Draw();
 				}
 
@@ -214,15 +213,35 @@ void Scene::Draw()
 				D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
 			}
 
+			//半透明オブジェクト描画
+			{
+				// シャドウマップをセット
+				D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
+
+				SHADER.m_modelShader.SetToDevice();
+
+				//オブジェクト描画
+				for (auto pObject : m_spObjects)
+				{
+					if (pObject->GetTag() & TAG_TransparentObject)
+						pObject->Draw();
+				}
+
+				// シャドウマップを解除
+				ID3D11ShaderResourceView* nullSRV = nullptr;
+				D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
+
+			}
+
 			//Effekseer描画
 			EFFEKSEER.Update();
 		}
 
 		// ぼかしていない状況をそのまま表示
-		SHADER.m_postProcessShader.ColorDraw(m_spScreenRT.get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
+		SHADER.m_postProcessShader.ColorDraw(m_spToneTex.get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
 
 		// しきい値以上のピクセルを抽出
-		SHADER.m_postProcessShader.BrightFiltering(m_spHeightBrightTex.get(), m_spScreenRT.get());
+		SHADER.m_postProcessShader.BrightFiltering(m_spHeightBrightTex.get(), m_spToneTex.get());
 
 		// 一定以上の明るさを持ったテクスチャを各サイズぼかし画像作成
 		SHADER.m_postProcessShader.GenerateBlur(m_blurTex, m_spHeightBrightTex.get());
@@ -238,11 +257,6 @@ void Scene::Draw()
 
 		// 合成方法をもとに戻す
 		D3D.GetDevContext()->OMSetBlendState(SHADER.m_bs_Alpha, Math::Color(0, 0, 0, 0), 0xFFFFFFFF);
-
-
-		SHADER.m_postProcessShader.ToneFilteringDraw(m_spToneTex.get());
-
-
 
 		//2D描画用のシェーダー開始
 		{
@@ -275,9 +289,10 @@ void Scene::Draw()
 		}
 	}
 
-	// ScreenのTextureをBackBufferに描画
-	SHADER.m_postProcessShader.ColorDraw(m_spScreenRT.get(), DirectX::SimpleMath::Vector4(1, 1, 1, 1));
 
+	SHADER.m_postProcessShader.ToneFilteringDraw(m_spScreenRT.get());
+
+	
 }
 
 //解放
@@ -559,13 +574,14 @@ void Scene::ImGuiUpdate()
 	// GameWindow
 	if (ImGui::Begin("GameWindow"))
 	{
-		ImGui::Image((ImTextureID)m_spScreenRT->GetSRView(), ImVec2(720, 405));
+		ImGui::Image((ImTextureID)m_spScreenRT->GetSRView(), ImVec2(992, 558));
 	}
 	ImGui::End();
 
 
 	//オブジェクト選択
 	auto selectObject = m_wpImGuiSelectObj.lock();
+
 	if (ImGui::Begin("Scene"))
 	{
 		//エディターカメラ機能
@@ -629,7 +645,7 @@ void Scene::ImGuiPrefabFactoryUpdate()
 			if (ImGui::Button(u8"objectパス取得"))
 			{
 				//エクスプローラを開く
-				Window::OpenFileDialog(objectPath, "jsonファイルを開く", "Objectのjsonファイル\0*Object*\0*.json\0\0");
+				Window::OpenFileDialog(objectPath, "jsonファイルを開く", "Objectのjsonファイル\0*Object*\0*.json\0\0","\\Data\\JsonData");
 			}
 
 			//名前入力
@@ -706,7 +722,7 @@ void Scene::ImGuiPrefabFactoryUpdate()
 			if (ImGui::Button(u8"Sceneパス取得"))
 			{
 				//エクスプローラを開く
-				Window::OpenFileDialog(scenePath, "jsonファイルを開く", "Sceneのjsonファイル\0*Scene*\0*.json\0\0");
+				Window::OpenFileDialog(scenePath, "jsonファイルを開く", "Sceneのjsonファイル\0*Scene*\0*.json\0\0", "\\Data\\JsonData");
 			}
 
 			//シーン読み込み

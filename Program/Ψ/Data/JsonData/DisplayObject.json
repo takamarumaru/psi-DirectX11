@@ -1,0 +1,12 @@
+{
+    "ClassName": "Display",
+    "Prefab": "Data/JsonData/DisplayObject.json",
+    "ModelFilePath": "Data/Display/Display.gltf",
+    "Pos": [0,0,0],
+    "Rot": [0,0,0],
+    "Scale": [1,1,1],
+    "CenterOffset": [0,1,0],
+    "Radius":1.0,
+    "Tag": 1
+  }
+  

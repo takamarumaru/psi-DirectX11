@@ -104,10 +104,24 @@ void MenuListInputComponent::Update()
 	else { ReleaceButton(Input::Buttons::R1); }
 }
 
-
 //===============================================
 //プレイヤー入力用
 //===============================================
+
+void PlayerInputComponent::Init()
+{
+	//カーソルをウィンドウの中心に固定
+	//ウィンドウのRECT取得
+	RECT rWindow;
+	GetWindowRect(APP.m_window.GetWndHandle(), &rWindow);
+
+	SetCursorPos(
+		rWindow.left + (rWindow.right - rWindow.left) / 2,
+		rWindow.top + (rWindow.bottom - rWindow.top) / 2
+	);
+	m_prevMousePos.x = rWindow.left + (rWindow.right - rWindow.left) / 2;
+	m_prevMousePos.y = rWindow.top + (rWindow.bottom - rWindow.top) / 2;
+}
 void PlayerInputComponent::Update()
 {
 	//操作軸初期化
@@ -173,3 +187,4 @@ void PlayerInputComponent::Update()
 		}
 	}
 }
+

@@ -59,6 +59,10 @@ public:
 	}
 	bool GetEmissive(){return m_isEmissive;}
 
+	//リムをセット
+	void SetRimColor(const Vector3 v){ m_rimColor = v; }
+	void SetRimColor(const float r,const float g,const float b) { m_rimColor = Vector3(r,g,b); }
+	Vector3 GetRimColor() const { return m_rimColor; }
 	//StandardShaderで描画
 	void Draw();
 
@@ -81,5 +85,9 @@ private:
 	std::shared_ptr<Model> m_spModel;
 
 	GameObject& m_owner;
+
+	//Rim
+	Math::Vector3 m_rimColor = { 0,0,0 };
+	float rimPower = 1.0f;
 
 };

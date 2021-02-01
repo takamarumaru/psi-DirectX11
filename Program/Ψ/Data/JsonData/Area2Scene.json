@@ -113,12 +113,6 @@
       "State": 1
     },
     {
-      "Name": "Player",
-      "Pos": [8,-6,21],
-      "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-346,0]
-    },
-    {
       "Color": [1,1,1],
       "Name": "Light6",
       "Pos": [2,4,16],
@@ -148,6 +142,24 @@
       "Name": "Door1",
       "Pos": [-8,0,11],
       "Prefab": "Data/JsonData/AutomaticDoorObject.json"
+    },
+    {
+      "Name": "Player",
+      "Pos": [7,-6,21],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "Rot": [0,180,0],
+      "TutorialTexList": []
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area03.png",400,50,180,-9,0],
+        ["Data/Texture/arrow.png",50,30,-115,-3,-90]
+      ],
+      "Name": "Display1",
+      "Pos": [-16,8,10],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,90,0],
+      "Scale": [1,0.3,0.6]
     }
   ],
   "SceneNo": 2

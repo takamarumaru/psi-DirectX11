@@ -1,7 +1,7 @@
 {
     "ClassName":"MenuList",
     "Prefab": "Data/JsonData/BaseObject.json",
-    "Pos":[1050,-100,0],
+    "Pos":[70,-70,0],
     "Rot": [0,0,0],
     "Scale": [1,1,1],
     "CenterOffset": [0,1,0],
@@ -12,6 +12,8 @@
     [
       "Data/Texture/BacktoTitle.png"
     ],
+    "MenuRect":[0,0,400,50],
+    "ListSpace":5,
     "Tag": 16,
     "SoundList":
     [

@@ -4,11 +4,13 @@
 #include "../OperateObject.h"
 
 class TextureEffect;
+class PopUpTexture;
 
 class Player :public GameObject
 {
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
+	virtual json11::Json::object Serialize()override;
 	virtual void Update()override;
 	virtual void DrawEffect()override;
 	virtual void Draw2D()override;
@@ -63,8 +65,10 @@ private:
 
 	//念　軌跡
 	TrailPolygon	m_powerEffect;
-	//ポインタ
+	//カーソル
 	std::shared_ptr<Texture> m_spPointTex;
+	//チュートリアル画像のリスト
+	std::unordered_map<std::string,std::shared_ptr<PopUpTexture>> m_spTutorialTexList;
 
 	//==========================================
 

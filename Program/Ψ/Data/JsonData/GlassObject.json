@@ -1,5 +1,5 @@
 {
-    "ClassName": "GameObject",
+    "ClassName": "Glass",
     "Prefab": "Data/JsonData/GlassObject.json",
     "ModelFilePath": "Data/Glass/Glass.gltf",
     "Pos": [0,0,0],
@@ -8,6 +8,7 @@
     "ScaleOffset": [-1,-1,-1],
     "CenterOffset": [0,1,0],
     "Radius":1.0,
-    "Tag": 33
+    "Tag": 33,
+    "RimLightColor":[0.25,0.3,0.3]
   }
   

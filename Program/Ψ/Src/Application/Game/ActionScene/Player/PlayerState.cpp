@@ -2,6 +2,7 @@
 
 #include"./Application/Component/InputComponent.h"
 #include"../../Scene.h"
+#include"Application/Game/UI/PopUpTexture/PopUpTexture.h"
 
 //移動ステートへの移行条件を満たしているか
 bool Player::IsShiftWalk()
@@ -13,6 +14,11 @@ bool Player::IsShiftWalk()
 	//移動してたら
 	if (inputMove.LengthSquared() != 0.0f)
 	{
+		//チュートリアル１を非表示
+		if (m_spTutorialTexList.find("Data/Texture/Tutorial1.png") != m_spTutorialTexList.end())
+		{
+			m_spTutorialTexList["Data/Texture/Tutorial1.png"]->SetVisible(false);
+		}
 		return true;
 	}
 

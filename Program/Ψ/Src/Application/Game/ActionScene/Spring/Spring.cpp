@@ -23,6 +23,7 @@ void Spring::Deserialize(const json11::Json& jsonObj)
 	{
 		m_pushPower = jsonObj["PushPower"].number_value() / 100.0f;
 	}
+
 }
 
 json11::Json::object Spring::Serialize()
@@ -66,10 +67,18 @@ void Spring::Update()
 			if (button->GetIsPush())
 			{
 				SetAnimation("Piston", false);
+				//自己発光をオンに
+				m_spModelComponent->SetEmissive(true);
 				m_spSoundComponent->SoundPlay("Data/Sound/Spring.wav");
+			}
+			else
+			{
+				//自己発光をオフに
+				m_spModelComponent->SetEmissive(false);
 			}
 		}
 	}
+
 	
 	
 

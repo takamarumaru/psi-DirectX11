@@ -78,7 +78,7 @@ void Ball::UpdateCollision()
 		m_isImpactGround = false;
 	}
 
-	if (CheckBump(TAG_StageObject | TAG_Character,m_spOwner))
+	if (CheckBump(TAG_StageObject | TAG_Character,TAG_Player,m_spOwner))
 	{
 		//摩擦による減速処理
 		m_force *= 0.7f;
@@ -88,7 +88,6 @@ void Ball::UpdateCollision()
 //回転の更新
 void Ball::UpdateRotate()
 {
-
 	//宙に浮いているなら返る
 	if (!m_isGround) { return; }
 
@@ -97,20 +96,21 @@ void Ball::UpdateRotate()
 	//移動していないなら返る
 	if (moveVec.Length() == 0.0f) { return; }
 
-	//ベクトルの長さ
+	//オブジェクトにかかっているXZ方向の力を算出
 	Vector3 force = m_force + m_moveForce;
 	force.y = 0.0f;
 
-	//moveVecがZeroベクトルなら返る
+	//moveVecのベクトルが０の場合、外積を計算するときにエラーが出るので返る
 	if (XMVector3Equal(moveVec, { 0.0f,0.0f,0.0f })){return;}
 
 	//移動方向の右方向
 	Vector3 rightVec = Vector3::Cross(moveVec,{ 0.0f,1.0f,0.0f });
 	if (XMVector3Equal(rightVec, { 0.0f,0.0f,0.0f })) { return; }
 
-	//移動方向の右方向を軸に回転した回転行列を作成
+	//移動方向の右方向を軸に、力の距離分回転した回転行列を作成
 	Matrix mRotate = m_mWorld;
 	mRotate.RotateAxis(rightVec, force.Length() / ((m_radius-0.3f) * M_PI));
 
+	//回転角度を指定
 	m_rot = mRotate.GetAngles();
 }

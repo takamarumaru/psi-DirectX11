@@ -16,8 +16,9 @@ struct ListItem
 	bool m_isHit = false;					//当たり判定
 	POINT m_pos;							//座標
 	Math::Rectangle m_rect;					//RECT
+	int m_space = 0;
 	std::string m_name;						//名前
-	bool m_canPlaySelectSE = false;
+	bool m_canPlaySelectSE = false;			//SE連続防止用フラグ
 };
 
 class MenuList:public GameObject

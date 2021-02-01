@@ -22,6 +22,11 @@
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
+      "Name": "BallCreator1",
+      "Pos": [0,20,0],
+      "Prefab": "Data/JsonData/ObjectCreatorObject.json"
+    },
+    {
       "Color": [1,1,1],
       "Name": "Light1",
       "Pos": [5,20,5],
@@ -58,7 +63,7 @@
       "Name": "Player",
       "Pos": [-9,0,7],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-149,0]
+      "Rot": [0,0,0]
     }
   ]
 }

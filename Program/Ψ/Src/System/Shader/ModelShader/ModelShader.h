@@ -25,6 +25,12 @@ public:
 		m_cb1_Material.Work().isEmissive = em;
 	}
 
+	//リムライトのカラーを設定
+	void SetRimColor(const Math::Vector3& color)
+	{
+		m_cb0.Work().RimColor = color;
+	}
+
 	//================================================
 	// 描画
 	//================================================
@@ -64,6 +70,9 @@ private:
 	struct cbObject
 	{
 		Math::Matrix		mW;		// ワールド行列　行列は16バイトx4バイトの64バイトなのでピッタリ。
+
+		Math::Vector3 RimColor = { 0.0f,0.0f,0.0f };
+		float RimPower = 1.0f;
 	};
 	ConstantBuffer<cbObject>	m_cb0;
 
