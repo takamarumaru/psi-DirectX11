@@ -303,6 +303,7 @@ void GameObject::ImGuiUpdate()
 		ImGui::CheckboxFlags("CanControlObject", &m_tag, TAG_CanControlObject);
 		ImGui::CheckboxFlags("ProcessObject", &m_tag, TAG_ProcessObject);
 		ImGui::CheckboxFlags("TransparentObject", &m_tag, TAG_TransparentObject);
+		ImGui::CheckboxFlags("ChildObject", &m_tag, TAG_ChildObject);
 
 		ImGui::TreePop();
 	}
@@ -561,6 +562,12 @@ bool GameObject::CheckGround(RayResult& finalRayResult,Vector3 pos,float& rDstDi
 		float force= (1.0f - finalRayResult.m_roughness) + m_elastic;
 		if (force >= 1.0f) { force = 1.0f; }
 		m_force *= force;
+
+		//自分が子供オブジェクトで破壊オブジェクトと接触したときに消滅
+		if ((m_tag&TAG_ChildObject) && (hitObj->GetTag() & TAG_DestroyerObject))
+		{
+			Destroy();
+		}
 	}
 
 	//着地したかどうかを返す

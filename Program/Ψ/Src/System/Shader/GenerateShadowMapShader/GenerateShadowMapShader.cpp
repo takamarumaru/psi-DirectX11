@@ -2,6 +2,8 @@
 
 #include "GenerateShadowMapShader.h"
 
+#include "Application/Component/CameraComponent.h"
+
 void GenerateShadowMapShader::Begin()
 {
 	// 現在のRTとZとViewportを記憶
@@ -23,12 +25,24 @@ void GenerateShadowMapShader::Begin()
 	D3D.GetDevContext()->ClearRenderTargetView(m_dirLightShadowMap->GetRTView(), Math::Color(1, 1, 1, 1));
 	D3D.GetDevContext()->ClearDepthStencilView(m_dirLightZBuffer->GetDSView(), D3D11_CLEAR_DEPTH, 1, 0);
 
+	std::shared_ptr<CameraComponent> spTarget = m_shadowMapTarget.lock();
+
+	Matrix mCamera;
+
+	if (spTarget)
+	{
+		const Matrix& mCam = spTarget->GetCameraMatrix();
+
+		mCamera.CreateTranslation(mCam.GetTranslation().x, 0.0f, mCam.GetTranslation().z);
+	}
+
 	// ライトのビュー行列を適当に作成
 	Matrix mV;
 	mV.LookTo(m_lightDir, {0,1,0});
 	Matrix mTrans;
-	mTrans.CreateTranslation(0, 0, -30);
+	mTrans.CreateTranslation(0, 0, -35);
 	mV = mTrans * mV;
+	mV *= mCamera;
 	mV.Inverse();
 
 	// ライトの射影行列を適当に作成　50mx50mの正射影行列

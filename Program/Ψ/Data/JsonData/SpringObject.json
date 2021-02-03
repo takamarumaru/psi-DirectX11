@@ -10,6 +10,7 @@
   "PushPower": 10,
   "PushTime":5,
   "Tag": 1,
+  "State":0,
   "SoundList":
   [
     ["Data/Sound/Spring.wav",5]

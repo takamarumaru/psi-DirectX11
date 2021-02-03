@@ -20,6 +20,8 @@ enum OBJECT_TAG
 	TAG_CanControlObject	= 0x00000008,	//操作できるオブジェクト
 	TAG_ProcessObject		= 0x00000010,	//プロセスオブジェクト
 	TAG_TransparentObject	= 0x00000020,	//透過オブジェクト
+	TAG_ChildObject			= 0x00000040,	//子供オブジェクト
+	TAG_DestroyerObject		= 0x00000080,	//破壊オブジェクト
 };
 
 class GameObject :public std::enable_shared_from_this<GameObject>
@@ -75,7 +77,7 @@ public:
 	inline void OnFall() { m_isFall = true; }
 	inline void OffFall() { m_isFall = false; }
 	//タグ
-	inline UINT SetTag(UINT tag) { m_tag = tag; }
+	inline void SetTag(UINT tag) { m_tag = tag; }
 	inline UINT GetTag()const { return m_tag; }
 	//名前
 	inline const char* GetName() const { return m_name.c_str(); }

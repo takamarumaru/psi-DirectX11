@@ -2,6 +2,12 @@
 
 #include "../GameObject.h"
 
+struct RailInfo
+{
+	Point3 pos;
+	Point3 offset;
+};
+
 class InputObject :public GameObject
 {
 public:
@@ -10,7 +16,7 @@ public:
 	virtual void DrawEffect()override;
 	virtual void ImGuiUpdate()override;//ImGui更新
 
-	inline bool GetIsPush() { return m_isPush; }
+	virtual bool GetIsPush() { return m_isPush; }
 
 protected:
 
@@ -20,6 +26,6 @@ protected:
 	//出力オブジェクトまでのレール
 	TrailPolygon	m_rail;
 
-	//各ポイントの補正値
-	std::vector<Vector3> m_offsetList;
+	//各ポイントの情報
+	std::vector<RailInfo> m_RailInfoList;
 };

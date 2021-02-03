@@ -160,6 +160,25 @@ void Scene::Draw()
 			//ライトの情報をセット
 			SHADER.m_cb8_Light.Write();
 
+			//不透明物描画
+			{
+				// シャドウマップをセット
+				D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
+
+				SHADER.m_modelShader.SetToDevice();
+
+				//オブジェクト描画
+				for (auto pObject : m_spObjects)
+				{
+					pObject->Draw();
+				}
+
+				// シャドウマップを解除
+				ID3D11ShaderResourceView* nullSRV = nullptr;
+				D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
+
+			}
+
 			//============================
 			// シャドウマップ生成描画
 			//============================
@@ -172,26 +191,6 @@ void Scene::Draw()
 			}
 
 			SHADER.m_genShadowMapShader.End();
-
-			//不透明物描画
-			{
-				// シャドウマップをセット
-				D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
-
-				SHADER.m_modelShader.SetToDevice();
-
-				//オブジェクト描画
-				for (auto pObject : m_spObjects)
-				{
-					if(!(pObject->GetTag()&TAG_TransparentObject))
-					pObject->Draw();
-				}
-
-				// シャドウマップを解除
-				ID3D11ShaderResourceView* nullSRV = nullptr;
-				D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
-
-			}
 
 			//半透明物描画
 			{
@@ -211,26 +210,6 @@ void Scene::Draw()
 				//もとに戻す
 				D3D.GetDevContext()->OMSetDepthStencilState(SHADER.m_ds_ZEnable_ZWriteEnable, 0);
 				D3D.GetDevContext()->RSSetState(SHADER.m_rs_CullBack);
-			}
-
-			//半透明オブジェクト描画
-			{
-				// シャドウマップをセット
-				D3D.GetDevContext()->PSSetShaderResources(102, 1, SHADER.m_genShadowMapShader.GetDirShadowMap()->GetSRViewAddress());
-
-				SHADER.m_modelShader.SetToDevice();
-
-				//オブジェクト描画
-				for (auto pObject : m_spObjects)
-				{
-					if (pObject->GetTag() & TAG_TransparentObject)
-						pObject->Draw();
-				}
-
-				// シャドウマップを解除
-				ID3D11ShaderResourceView* nullSRV = nullptr;
-				D3D.GetDevContext()->PSSetShaderResources(102, 1, &nullSRV);
-
 			}
 
 			//Effekseer描画
@@ -442,6 +421,9 @@ void Scene::SaveScene(const std::string& sceneFilename)
 	//オブジェクト分のデータを取得
 	for (auto&& rObj : m_spObjects)
 	{
+		//子供オブジェクトは保存しない
+		if (rObj->GetTag()&TAG_ChildObject)continue;
+		
 		jsonObject.push_back(rObj->Serialize());
 	}
 

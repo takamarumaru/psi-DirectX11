@@ -14,6 +14,18 @@ void Target::Deserialize(const json11::Json& jsonObj)
 	{
 		m_returnTime = jsonObj["ReturnTime"].number_value();
 	}
+
+	//ステートを決定
+	if (jsonObj["State"].is_null() == false)
+	{
+		m_stateTag = (int)jsonObj["State"].number_value();
+	}
+
+	switch (m_stateTag)
+	{
+	case TARGET_STATE::TS_BASIC:LightOff(); break;
+	case TARGET_STATE::REVERSE:LightOn(); break;
+	}
 }
 
 json11::Json::object Target::Serialize()
@@ -21,6 +33,7 @@ json11::Json::object Target::Serialize()
 	json11::Json::object objectData = InputObject::Serialize();
 
 	objectData["ReturnTime"] = m_returnTime;
+	objectData["State"] = (int)m_stateTag;
 
 	return objectData;
 }
@@ -49,10 +62,12 @@ void Target::Update()
 			m_isPush = false;
 			//Offアニメーション開始
 			SetAnimation("Off", false);
-			//ライトを消す
-			m_spModelComponent->SetEmissive(false);
-			//レールをOffに
-			m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
+			//
+			switch (m_stateTag)
+			{
+			case TARGET_STATE::TS_BASIC:LightOff(); break;
+			case TARGET_STATE::REVERSE:LightOn(); break;
+			}
 		}
 	}
 
@@ -91,6 +106,17 @@ void Target::ImGuiUpdate()
 	}
 }
 
+bool Target::GetIsPush()
+{
+	switch (m_stateTag)
+	{
+	case TARGET_STATE::TS_BASIC:return m_isPush;
+	case TARGET_STATE::REVERSE:return !m_isPush;
+	default:m_isPush;
+	}
+	return m_isPush;
+}
+
 void Target::UpdateCollision()
 {
 	//全てのオブジェクトと四角判定
@@ -117,10 +143,12 @@ void Target::UpdateCollision()
 					m_isPush = true;
 					//Onアニメーション開始
 					SetAnimation("On", false);
-					//ライトをつける
-					m_spModelComponent->SetEmissive(true);
-					//レールをOnに
-					m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOn.png"));
+					//
+					switch (m_stateTag)
+					{
+					case TARGET_STATE::TS_BASIC:LightOn(); break;
+					case TARGET_STATE::REVERSE:LightOff(); break;
+					}
 					//復帰までの時間計測開始
 					m_startTime = std::chrono::system_clock::now();
 				}
@@ -128,4 +156,21 @@ void Target::UpdateCollision()
 			return;
 		}
 	}
+}
+
+void Target::LightOn()
+{
+	//ライトをつける
+	m_spModelComponent->SetEmissive(true);
+	//レールをOnに
+	m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOn.png"));
+}
+
+
+void Target::LightOff()
+{
+	//ライトを消す
+	m_spModelComponent->SetEmissive(false);
+	//レールをOffに
+	m_rail.SetTexture(ResFac.GetTexture("Data/Texture/railOff.png"));
 }

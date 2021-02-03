@@ -8,5 +8,6 @@
   "CenterOffset": [0,2.7,0],
   "Radius":1.6,
   "ReturnTime" :3.0,
-  "Tag": 1
+  "Tag": 1,
+  "State":0
 }

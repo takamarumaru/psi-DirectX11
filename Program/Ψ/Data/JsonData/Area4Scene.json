@@ -97,11 +97,12 @@
       "OwnerName": "Button2",
       "Pos": [8,5,-4],
       "Prefab": "Data/JsonData/SpringObject.json",
-      "PushPower": 40
+      "PushPower": 40,
+      "State": 0
     },
     {
       "Name": "Door2",
-      "Pos": [-14,12,-4],
+      "Pos": [-14,12,-1],
       "Prefab": "Data/JsonData/AutomaticDoorObject.json"
     },
     {
@@ -124,13 +125,6 @@
       "Prefab": "Data/JsonData/GlassObject.json",
       "Rot": [90,0,0],
       "Scale": [6,6,1]
-    },
-    {
-      "Name": "Player",
-      "Pos": [14,3,-3],
-      "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,10,0],
-      "TutorialTexList": []
     },
     {
       "Name": "Glass1",
@@ -160,9 +154,25 @@
         ["Data/Texture/arrow.png",50,30,-115,-3,-90]
       ],
       "Name": "Display2",
-      "Pos": [-16,15,1],
+      "Pos": [-16,15,2],
       "Prefab": "Data/JsonData/DisplayObject.json",
-      "Scale": [1,0.3,0.6]
+      "Scale": [1,0.30000001192092896,0.60000002384185791]
+    },
+    {
+      "Name": "Player",
+      "Pos": [14,3,-2],
+      "Prefab": "Data/JsonData/PlayerObject.json",
+      "TutorialTexList": []
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area04.png",400,50,165,-9,0]
+      ],
+      "Name": "Display3",
+      "Pos": [6,8,10],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,90,0],
+      "Scale": [1,0.30000001192092896,0.5]
     }
   ],
   "SceneNo": 4

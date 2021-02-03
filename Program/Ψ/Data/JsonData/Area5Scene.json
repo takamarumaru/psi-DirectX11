@@ -67,7 +67,8 @@
         [-1,0,-1,0,1,0]
       ],
       "ReturnTime": 3,
-      "Rot": [0,90,0]
+      "Rot": [180,89,180],
+      "State": 0
     },
     {
       "Name": "Door1",
@@ -94,7 +95,8 @@
       "OwnerName": "Button1",
       "Pos": [8,1,-8],
       "Prefab": "Data/JsonData/SpringObject.json",
-      "PushPower": 36
+      "PushPower": 36,
+      "State": 0
     },
     {
       "Name": "Button1",
@@ -126,7 +128,8 @@
         [5,8,3,0,1,0]
       ],
       "ReturnTime": 3,
-      "Rot": [0,-90,0]
+      "Rot": [180,-89,180],
+      "State": 0
     },
     {
       "Name": "Target3",
@@ -145,7 +148,8 @@
         [-2,8,7,0,1,0]
       ],
       "ReturnTime": 3,
-      "Rot": [0,180,0]
+      "Rot": [180,0,180],
+      "State": 0
     },
     {
       "Name": "Fence1",
@@ -176,10 +180,10 @@
       "Prefab": "Data/JsonData/FenceObject.json"
     },
     {
-      "Name": "Ball1",
-      "Pos": [1,8,-1],
+      "Name": "Ball2",
+      "Pos": [1,9,-1],
       "Prefab": "Data/JsonData/BallObject.json",
-      "Rot": [0,0,-6]
+      "Rot": [0,0,-5]
     },
     {
       "Name": "Door2",
@@ -193,7 +197,8 @@
       "OwnerName": "Target3",
       "Pos": [-2,9,7],
       "Prefab": "Data/JsonData/SpringObject.json",
-      "PushPower": 35
+      "PushPower": 35,
+      "State": 0
     },
     {
       "Name": "Door2",
@@ -203,17 +208,15 @@
     },
     {
       "Name": "Door3",
-      "Pos": [-16,14,-4],
+      "Pos": [-16,14,-1],
       "Prefab": "Data/JsonData/AutomaticDoorObject.json"
     },
     {
       "Name": "Player",
       "Pos": [-14,0,-12],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-0,0],
-      "TutorialTexList":
-      [
-        ["Data/Texture/Tutorial4.png",0,20]
+      "TutorialTexList": [
+        ["Data/Texture/Tutorial4.png",0,19]
       ]
     },
     {
@@ -222,10 +225,19 @@
         ["Data/Texture/arrow.png",50,30,-115,-3,-90]
       ],
       "Name": "Display1",
-      "Pos": [-18,17,1],
+      "Pos": [-18,17,2],
       "Prefab": "Data/JsonData/DisplayObject.json",
-      "Rot": [0,0,0],
-      "Scale": [1,0.3,0.6]
+      "Scale": [1,0.30000001192092896,0.60000002384185791]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area05.png",400,50,174,-9,0]
+      ],
+      "Name": "Display2",
+      "Pos": [-7,4,10],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,90,0],
+      "Scale": [1,0.30000001192092896,0.5]
     }
   ],
   "SceneNo": 5

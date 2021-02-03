@@ -21,6 +21,8 @@ void Player::Deserialize(const json11::Json& jsonObj)
 	m_spCameraComponent->OffsetMatrix().RotateX(m_rot.x);
 	//カメラにセット
 	SCENE.SetTargetCamera(m_spCameraComponent);
+	//シャドウマップシェーダにセット
+	SHADER.m_genShadowMapShader.registerShadowTarget(m_spCameraComponent);
 
 	//待機状態からスタート
 	m_spActionState = std::make_shared<WaitAction>();

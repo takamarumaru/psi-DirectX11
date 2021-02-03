@@ -83,11 +83,12 @@
       "OwnerName": "Button1",
       "Pos": [4,1,-8],
       "Prefab": "Data/JsonData/SpringObject.json",
-      "PushPower": 40
+      "PushPower": 40,
+      "State": 0
     },
     {
       "Name": "Box2",
-      "Pos": [-3,0,3],
+      "Pos": [-3,0,2],
       "Prefab": "Data/JsonData/BoxObject.json"
     },
     {
@@ -110,12 +111,12 @@
     },
     {
       "Name": "Goal",
-      "Pos": [-21,21,8],
+      "Pos": [-24,21,8],
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
       "Name": "Glass1",
-      "Pos": [-1,0,4.5],
+      "Pos": [-1,0,4],
       "Prefab": "Data/JsonData/GlassObject.json",
       "Scale": [5,2,0.5]
     },
@@ -123,7 +124,8 @@
       "Name": "Player",
       "Pos": [17,0,-6],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,-90,0]
+      "Rot": [0,-90,0],
+      "TutorialTexList": []
     },
     {
       "DisplayTexList": [
@@ -134,7 +136,16 @@
       "Pos": [-16,22,10],
       "Prefab": "Data/JsonData/DisplayObject.json",
       "Rot": [0,90,0],
-      "Scale": [1,0.3,0.6]
+      "Scale": [1,0.30000001192092896,0.60000002384185791]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area03.png",400,50,172,-9,0]
+      ],
+      "Name": "Display2",
+      "Pos": [6,4,-4],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Scale": [1,0.30000001192092896,0.5]
     }
   ],
   "SceneNo": 3

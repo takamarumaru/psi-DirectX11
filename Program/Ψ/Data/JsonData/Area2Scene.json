@@ -45,7 +45,8 @@
       "OwnerName": "Button1",
       "Pos": [8,5,0],
       "Prefab": "Data/JsonData/SpringObject.json",
-      "PushPower": 40
+      "PushPower": 40,
+      "State": 0
     },
     {
       "Name": "Spring2",
@@ -53,7 +54,8 @@
       "Pos": [-8,13,6],
       "Prefab": "Data/JsonData/SpringObject.json",
       "PushPower": 35,
-      "Rot": [-45,0,0]
+      "Rot": [-45,0,0],
+      "State": 0
     },
     {
       "Name": "Door2",
@@ -69,7 +71,7 @@
     },
     {
       "Name": "Goal1",
-      "Pos": [-21,7,8],
+      "Pos": [-24,7,8],
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
@@ -125,7 +127,8 @@
       "OwnerName": "Button2",
       "Pos": [-4,-6,16],
       "Prefab": "Data/JsonData/SpringObject.json",
-      "PushPower": 36
+      "PushPower": 36,
+      "State": 0
     },
     {
       "Name": "Button2",
@@ -159,7 +162,16 @@
       "Pos": [-16,8,10],
       "Prefab": "Data/JsonData/DisplayObject.json",
       "Rot": [0,90,0],
-      "Scale": [1,0.3,0.6]
+      "Scale": [1,0.30000001192092896,0.60000002384185791]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area02.png",400,50,176,-9,0]
+      ],
+      "Name": "Display2",
+      "Pos": [-10,3,7],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Scale": [1,0.30000001192092896,0.5]
     }
   ],
   "SceneNo": 2

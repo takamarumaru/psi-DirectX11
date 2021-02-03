@@ -55,7 +55,7 @@ public:
 	//width　…　ポリゴンの幅
 	void Draw(float width);
 
-	void DrawDetached(float width);
+	void DrawDetached(float width, Vector3 startDir = {0,1,0});
 
 	//ビルボード描画
 	void DrawBillboard(float width);

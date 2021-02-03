@@ -1,5 +1,21 @@
 ﻿#pragma once
 
+//3Dベクトル(整数)
+class Point3
+{
+public:
+	//座標指定付きコンストラクタ
+	Point3(int _x, int _y, int _z)
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+	}
+	int x;
+	int y;
+	int z;
+};
+
 //3Dベクトル
 class Vector3 :public DirectX::XMFLOAT3
 {

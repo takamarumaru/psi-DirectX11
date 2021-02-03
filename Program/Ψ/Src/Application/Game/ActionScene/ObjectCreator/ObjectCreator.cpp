@@ -41,6 +41,9 @@ void ObjectCreator::ChildCreate()
 
 	json11::Json json = ResFac.GetJSON(m_childPrefab);
 	newGameObj->Deserialize(json);
+	
+	//子供オブジェクトタグをつける
+	newGameObj->SetTag(newGameObj->GetTag() | TAG_ChildObject);
 
 	//オブジェクトの位置を設定
 	newGameObj->SetPos(m_pos);

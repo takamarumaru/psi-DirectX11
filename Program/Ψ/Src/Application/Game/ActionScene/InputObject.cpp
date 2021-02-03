@@ -9,6 +9,8 @@ void InputObject::Deserialize(const json11::Json& jsonObj)
 {
 	GameObject::Deserialize(jsonObj);
 
+	m_rot = m_mWorld.GetAngles();
+
 	//自己発光をオフに
 	m_spModelComponent->SetEmissive(false);
 
@@ -18,22 +20,31 @@ void InputObject::Deserialize(const json11::Json& jsonObj)
 	auto& rRailsPos = jsonObj["RailsPoint"].array_items();
 	for (auto&& point : rRailsPos)
 	{
-		//補正値を保存
-		Vector3 offset =
+		//座標を保存
+		Point3 pos =
 		{
-			point[3].int_value() * 0.01f,
-			point[4].int_value() * 0.01f,
-			point[5].int_value() * 0.01f
+			point[0].int_value(),
+			point[1].int_value(),
+			point[2].int_value()
 		};
-		m_offsetList.push_back(offset);
+		//補正値を保存
+		Point3 offset =
+		{
+			point[3].int_value(),
+			point[4].int_value(),
+			point[5].int_value()
+		};
+
+		RailInfo info = { pos,offset };
+		m_RailInfoList.push_back(info);
 
 		//座標を保存
 		Matrix mPoint;
 		mPoint.CreateTranslation
 		(
-			(float)point[0].int_value() + offset.x,
-			(float)point[1].int_value() + offset.y,
-			(float)point[2].int_value() + offset.z
+			(float)(point[0].int_value() + offset.x * 0.01f),
+			(float)(point[1].int_value() + offset.y * 0.01f),
+			(float)(point[2].int_value() + offset.z * 0.01f)
 		);
 		m_rail.AddPointBack(mPoint);
 	}
@@ -49,12 +60,12 @@ json11::Json::object InputObject::Serialize()
 	for (UINT i = 0; i < m_rail.getNumPoints(); i++)
 	{
 		json11::Json::array point(6);
-		point[0] = (int)m_rail.GetPoints()[i].Translation().x;
-		point[1] = (int)m_rail.GetPoints()[i].Translation().y;
-		point[2] = (int)m_rail.GetPoints()[i].Translation().z;
-		point[3] = (int)(m_offsetList[i].x * 100);
-		point[4] = (int)(m_offsetList[i].y * 100);
-		point[5] = (int)(m_offsetList[i].z * 100);
+		point[0] = m_RailInfoList[i].pos.x;
+		point[1] = m_RailInfoList[i].pos.y;
+		point[2] = m_RailInfoList[i].pos.z;
+		point[3] = m_RailInfoList[i].offset.x;
+		point[4] = m_RailInfoList[i].offset.y;
+		point[5] = m_RailInfoList[i].offset.z;
 
 		points[i] = point;
 	}
@@ -69,7 +80,7 @@ void InputObject::DrawEffect()
 	//レールの描画
 	SHADER.m_effectShader.SetWorldMatrix(Matrix());
 	SHADER.m_effectShader.WriteToCB();
-	m_rail.DrawDetached(0.5f);
+	m_rail.DrawDetached(0.5f,m_mWorld.GetAxisY());
 }
 
 void InputObject::ImGuiUpdate()
@@ -77,21 +88,15 @@ void InputObject::ImGuiUpdate()
 	GameObject::ImGuiUpdate();
 
 	//PointListを表示
-	if (ImGui::TreeNodeEx("RailPointList", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("PointList", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		for (UINT i = 0; i < m_rail.GetPoints().size(); i++)
 		{
 			std::string pointNum = "point" + std::to_string(i);
 			if (ImGui::TreeNodeEx(pointNum.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::LabelText
-				(
-					"",
-					"x:%d y:%d z:%d",
-					(int)m_rail.GetPoints()[i].Translation().x,
-					(int)m_rail.GetPoints()[i].Translation().y,
-					(int)m_rail.GetPoints()[i].Translation().z
-				);
+				ImGui::LabelText("Pos","x:%d y:%d z:%d",m_RailInfoList[i].pos.x,m_RailInfoList[i].pos.y,m_RailInfoList[i].pos.z);
+				ImGui::LabelText("Offset","x:%d y:%d z:%d",m_RailInfoList[i].offset.x,m_RailInfoList[i].offset.y,m_RailInfoList[i].offset.z);
 				ImGui::TreePop();
 			}
 		}
@@ -102,6 +107,7 @@ void InputObject::ImGuiUpdate()
 			if (m_rail.GetPoints().size() > 0)
 			{
 				m_rail.DelPoint_Back();
+				m_RailInfoList.pop_back();
 			}
 		}
 
@@ -118,6 +124,24 @@ void InputObject::ImGuiUpdate()
 
 			if (ImGui::Button("PointCreate"))
 			{
+				//座標を保存
+				Point3 pos =
+				{
+					(int)newPointPos.x,
+					(int)newPointPos.y,
+					(int)newPointPos.z
+				};
+				//補正値を保存
+				Point3 offset =
+				{
+					(int)newPointOffset.x,
+					(int)newPointOffset.y,
+					(int)newPointOffset.z
+				};
+
+				RailInfo info = { pos,offset };
+				m_RailInfoList.push_back(info);
+
 				Matrix mPoint;
 				mPoint.CreateTranslation
 				(
@@ -126,21 +150,9 @@ void InputObject::ImGuiUpdate()
 					(float)newPointPos.z + (newPointOffset.z * 0.01f)
 				);
 				m_rail.AddPointBack(mPoint);
-
-				//補正値を保存
-				m_offsetList.push_back
-				(
-					Vector3(
-						newPointOffset.x * 0.01f,
-						newPointOffset.y * 0.01f,
-						newPointOffset.z * 0.01f
-					)
-				);
 			}
 
 			ImGui::TreePop();
 		}
-
-		ImGui::TreePop();
 	}
 }

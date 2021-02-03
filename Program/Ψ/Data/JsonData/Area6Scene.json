@@ -1,5 +1,4 @@
 {
-  "SceneNo":6,
   "GameObjects": [
     {
       "ClassName": "ActionProcess",
@@ -18,52 +17,289 @@
     },
     {
       "Name": "Goal1",
-      "Pos": [0,20,0],
+      "Pos": [21,24,-6],
       "Prefab": "Data/JsonData/GoalObject.json"
-    },
-    {
-      "Name": "BallCreator1",
-      "Pos": [0,20,0],
-      "Prefab": "Data/JsonData/ObjectCreatorObject.json"
     },
     {
       "Color": [1,1,1],
       "Name": "Light1",
-      "Pos": [5,20,5],
-      "Power": 30,
-      "Prefab": "Data/JsonData/LightObject.json"
+      "Pos": [-9,12,1],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
     },
     {
       "Color": [1,1,1],
       "Name": "Light2",
-      "Pos": [-5,20,5],
-      "Power": 30,
-      "Prefab": "Data/JsonData/LightObject.json"
+      "Pos": [3,12,1],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
     },
     {
       "Color": [1,1,1],
       "Name": "Light3",
-      "Pos": [5,20,-5],
-      "Power": 30,
-      "Prefab": "Data/JsonData/LightObject.json"
+      "Pos": [3,12,-10],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
     },
     {
       "Color": [1,1,1],
       "Name": "Light4",
-      "Pos": [-5,20,-5],
+      "Pos": [-6,30,-8],
       "Power": 30,
-      "Prefab": "Data/JsonData/LightObject.json"
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light5",
+      "Pos": [-6,30,8],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light6",
+      "Pos": [8,30,-8],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light7",
+      "Pos": [8,30,8],
+      "Power": 40,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
     },
     {
       "Name": "Box1",
-      "Pos": [5,0,8],
+      "Pos": [11,0,7],
       "Prefab": "Data/JsonData/BoxObject.json"
     },
     {
+      "Name": "Box2",
+      "Pos": [-9,0,1],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Box3",
+      "Pos": [-4,14,0],
+      "Prefab": "Data/JsonData/BoxObject.json"
+    },
+    {
+      "Name": "Fence1",
+      "Pos": [11,5,1],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [90,0,0],
+      "Scale": [1,3,1]
+    },
+    {
+      "Name": "Fence2",
+      "Pos": [11,13,1],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [90,0,0],
+      "Scale": [1,3,1]
+    },
+    {
+      "Name": "Fence3",
+      "Pos": [-2,16,-13],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [90,0,90],
+      "Scale": [1,1.5,1]
+    },
+    {
+      "Name": "Fence4",
+      "Pos": [-7,13,13],
+      "Prefab": "Data/JsonData/FenceObject.json",
+      "Rot": [90,90,0]
+    },
+    {
+      "Name": "Button1",
+      "Pos": [11,0,-4],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [11,0,-4,0,1,0],
+        [11,0,-11,0,1,1],
+        [11,2,-11,0,1,0],
+        [11,2,-14,0,1,0]
+      ]
+    },
+    {
+      "Name": "Button2",
+      "Pos": [-3,0,-10],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [-3,0,-10,0,1,0],
+        [-7,0,-10,1,1,0],
+        [-7,2,-10,0,1,0],
+        [-10,2,-10,0,1,0]
+      ]
+    },
+    {
+      "Name": "Button3",
+      "Pos": [11,0,3],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [11,0,3,0,1,0],
+        [3,0,3,0,1,0],
+        [2,0,2,0,1,0],
+        [2,0,-7,0,1,0],
+        [1,0,-8,0,1,0],
+        [-7,0,-8,0,1,0],
+        [-7,2,-8,1,1,0],
+        [-11,2,-8,0,1,0],
+        [-11,14,-8,1,1,0]
+      ]
+    },
+    {
+      "Name": "Button4",
+      "Pos": [11,0,11],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [11,0,11,0,1,0],
+        [-4,0,11,0,1,0],
+        [-5,0,12,0,1,0],
+        [-5,0,15,0,1,-1],
+        [-5,14,15,0,0,0],
+        [-6,15,15,0,1,-1],
+        [-11,15,15,0,0,0]
+      ]
+    },
+    {
+      "Name": "Button5",
+      "Pos": [-13,24,3],
+      "Prefab": "Data/JsonData/ButtonObject.json",
+      "RailsPoint": [
+        [-13,24,3,1,0,0],
+        [-13,24,13,1,0,0]
+      ],
+      "Rot": [0,0,-90]
+    },
+    {
+      "Name": "Spring1",
+      "OwnerName": "Button1",
+      "Pos": [11,3,-14],
+      "Prefab": "Data/JsonData/SpringObject.json",
+      "PushPower": 50,
+      "Rot": [48,0,0],
+      "State": 0
+    },
+    {
+      "Name": "Spring2",
+      "OwnerName": "Button2",
+      "Pos": [-10,3,-10],
+      "Prefab": "Data/JsonData/SpringObject.json",
+      "PushPower": 50,
+      "State": 0
+    },
+    {
+      "Name": "Spring3",
+      "OwnerName": "Button3",
+      "Pos": [-12,15,-10],
+      "Prefab": "Data/JsonData/SpringObject.json",
+      "PushPower": 50,
+      "Rot": [0,0,-45],
+      "State": 0
+    },
+    {
+      "Name": "Spring4",
+      "OwnerName": "Button4",
+      "Pos": [-10,15,13],
+      "Prefab": "Data/JsonData/SpringObject.json",
+      "PushPower": 40,
+      "State": 0
+    },
+    {
+      "Name": "Spring5",
+      "OwnerName": "Button5",
+      "Pos": [-12,24,13],
+      "Prefab": "Data/JsonData/SpringObject.json",
+      "PushPower": 60,
+      "Rot": [0,0,-66],
+      "State": 0
+    },
+    {
+      "Name": "Glass4",
+      "Pos": [11,22,1],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Rot": [90,0,0],
+      "Scale": [2,6,1]
+    },
+    {
+      "Name": "Door1",
+      "Pos": [-11,2,16],
+      "Prefab": "Data/JsonData/AutomaticDoorObject.json"
+    },
+    {
+      "Name": "Door2",
+      "Pos": [16,22,3],
+      "Prefab": "Data/JsonData/AutomaticDoorObject.json",
+      "Rot": [0,90,0]
+    },
+    {
+      "Name": "Door3",
+      "Pos": [21,22,-3],
+      "Prefab": "Data/JsonData/AutomaticDoorObject.json"
+    },
+    {
+      "Name": "Glass1",
+      "Pos": [8,0,7],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Rot": [0,90,0],
+      "Scale": [6,2,1]
+    },
+    {
+      "Name": "Glass2",
+      "Pos": [11,0,0],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Scale": [2,2,1]
+    },
+    {
+      "Name": "Glass3",
+      "Pos": [-7,2,-6],
+      "Prefab": "Data/JsonData/GlassObject.json",
+      "Scale": [4,5,1]
+    },
+    {
       "Name": "Player",
-      "Pos": [-9,0,7],
+      "Pos": [-5,2,21],
       "Prefab": "Data/JsonData/PlayerObject.json",
-      "Rot": [0,0,0]
+      "Rot": [0,-90,0],
+      "TutorialTexList": []
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area07.png",400,50,104,-9,0],
+        ["Data/Texture/arrow.png",50,30,114,-3,90]
+      ],
+      "Name": "Display1",
+      "Pos": [23,25,1],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,180,0],
+      "Scale": [1,0.30000001192092896,0.60000002384185791]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area06.png",400,50,168,-9,0]
+      ],
+      "Name": "Display2",
+      "Pos": [-15,6,11],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Scale": [1,0.30000001192092896,0.5]
+    },
+    {
+      "Color": [1,1,1],
+      "Name": "Light8",
+      "Pos": [-11,12,11],
+      "Power": 30,
+      "Prefab": "Data/JsonData/LightObject.json",
+      "State": 1
     }
-  ]
+  ],
+  "SceneNo": 6
 }

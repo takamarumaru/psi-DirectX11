@@ -43,8 +43,7 @@ void CameraComponent::SetToShader()
 	SHADER.m_cb7_Camera.Work().CamPos = m_mCam.GetTranslation();
 
 	//追従カメラのビュー行列をシェーダーにセット
-	m_mCam.Inverse();
-	SHADER.m_cb7_Camera.Work().mV = m_mCam;
+	SHADER.m_cb7_Camera.Work().mV = m_mView;
 
 	//追従カメラの射影行列をシェーダーにセット
 	SHADER.m_cb7_Camera.Work().mP = m_mProj;

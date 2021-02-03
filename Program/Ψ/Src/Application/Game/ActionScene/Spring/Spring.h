@@ -2,6 +2,12 @@
 
 #include "../OutputObject.h"
 
+enum SPRING_STATE
+{
+	BASIC,
+	FOREVER
+};
+
 class Spring :public OutputObject
 {
 public:
@@ -23,5 +29,8 @@ private:
 
 	//押しだす力
 	double m_pushPower = 0.0f;
+
+	//
+	UINT m_stateTag = SPRING_STATE::BASIC;
 
 };

@@ -7,6 +7,8 @@ class Glass :public GameObject
 public:
 	virtual void Deserialize(const json11::Json& jsonObj)override;
 	virtual void Update()override;
+	virtual void DrawEffect()override;
+	virtual void Draw()override {};
 
 private:
 

@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+class CameraComponent;
 //============================================================
 //
 // シャドウマップ(深度マップ)生成描画シェーダー
@@ -53,6 +54,12 @@ public:
 		Release();
 	}
 
+
+	void registerShadowTarget(std::shared_ptr<CameraComponent>& spCamera)
+	{
+		m_shadowMapTarget = spCamera;
+	}
+
 private:
 
 	// シェーダー
@@ -83,4 +90,5 @@ private:
 	//光の方向
 	Vector3 m_lightDir = Vector3(0.0f,-1.0f, 0.0f);
 
+	std::weak_ptr<CameraComponent> m_shadowMapTarget;
 };

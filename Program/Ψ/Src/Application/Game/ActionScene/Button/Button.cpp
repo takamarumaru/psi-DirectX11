@@ -16,8 +16,10 @@ void Button::Update()
 	//当たり判定
 	UpdateCollision();
 
+	//回転
+	m_mWorld.CreateRotation(m_rot);
 	//座標
-	m_mWorld.CreateTranslation(m_pos.x, m_pos.y, m_pos.z);
+	m_mWorld.Move(m_pos);
 
 	if (m_spCameraComponent)
 	{

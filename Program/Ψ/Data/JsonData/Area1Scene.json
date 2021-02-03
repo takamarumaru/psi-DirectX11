@@ -108,12 +108,12 @@
     },
     {
       "Name": "Door3",
-      "Pos": [-14,12,6],
+      "Pos": [-14,12,-1],
       "Prefab": "Data/JsonData/AutomaticDoorObject.json"
     },
     {
       "Name": "Goal",
-      "Pos": [-14,14,5],
+      "Pos": [-14,14,1],
       "Prefab": "Data/JsonData/GoalObject.json"
     },
     {
@@ -133,9 +133,19 @@
         ["Data/Texture/arrow.png",50,30,115,-3,90]
       ],
       "Name": "Display1",
-      "Pos": [-16,15,0],
+      "Pos": [-16,15,-4],
       "Prefab": "Data/JsonData/DisplayObject.json",
       "Scale": [1,0.30000001192092896,0.60000002384185791]
+    },
+    {
+      "DisplayTexList": [
+        ["Data/Texture/Area01.png",400,50,175,-9,0]
+      ],
+      "Name": "Display2",
+      "Pos": [2,15,-4],
+      "Prefab": "Data/JsonData/DisplayObject.json",
+      "Rot": [0,180,0],
+      "Scale": [1,0.30000001192092896,0.5]
     }
   ],
   "SceneNo": 1

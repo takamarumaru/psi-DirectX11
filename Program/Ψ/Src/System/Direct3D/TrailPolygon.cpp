@@ -59,14 +59,14 @@ void TrailPolygon::Draw(float width)
 	D3D.DrawVertices(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, vertex.size(), &vertex[0], sizeof(Vertex));
 }
 
-void TrailPolygon::DrawDetached(float width)
+void TrailPolygon::DrawDetached(float width, Vector3 startDir)
 {
 	//ポイントが２追加の場合は描画不可
 	if (m_pointList.size() < 2) { return; }
 
 	//軌跡画像の分割数
 	float sliceCount = (float)(m_pointList.size() - 1);
-	Vector3 prevUp = {0,1,0};
+	Vector3 prevUp = startDir;
 
 	//===============================
 	//頂点データ作成
@@ -88,12 +88,18 @@ void TrailPolygon::DrawDetached(float width)
 		Math::Vector3 vDir;
 		vDir = mat.Translation() - prevMat.Translation();
 		SCENE.AddDebugLine(prevMat.Translation(), mat.Translation(), {1,0,0,1});
+		SCENE.AddDebugLine(prevMat.Translation(), prevMat.Translation() + Vector3::VectorNomalize(prevUp), { 1,1,0,1 });
 
-		Math::Vector3 axisX = DirectX::XMVector3Cross(vDir, prevUp);
+		Math::Vector3 axisX = DirectX::XMVector3Cross(Vector3::VectorNomalize(vDir), prevUp);
 		axisX.Normalize();
+		axisX.x = round(axisX.x * 10.0f) * 0.1f;
+		axisX.y = round(axisX.y * 10.0f) * 0.1f;
+		axisX.z = round(axisX.z * 10.0f) * 0.1f;
 
 		//次に使う上側座標を求めておく
 		prevUp = DirectX::XMVector3Cross(vDir, axisX);
+		prevUp.Normalize();
+
 
 		//座標
 		vertex[0].Pos = mat.Translation() + axisX * width * 0.5f;

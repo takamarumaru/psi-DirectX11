@@ -24,6 +24,13 @@ void Spring::Deserialize(const json11::Json& jsonObj)
 		m_pushPower = jsonObj["PushPower"].number_value() / 100.0f;
 	}
 
+
+	//ステートを決定
+	if (jsonObj["State"].is_null() == false)
+	{
+		m_stateTag = (int)jsonObj["State"].number_value();
+	}
+
 }
 
 json11::Json::object Spring::Serialize()
@@ -32,6 +39,7 @@ json11::Json::object Spring::Serialize()
 
 	//押し出す力
 	objectData["PushPower"] = (int)(m_pushPower * 100.0f);
+	objectData["State"] = (int)m_stateTag;
 
 	return objectData;
 }
@@ -59,23 +67,33 @@ void Spring::Update()
 	//オーナーからの信号がONなら動く
 	if (m_animator.IsAnimationEnd())
 	{
-		if (SCENE.FindObjectWithName(m_ownerName))
+		if (m_stateTag == SPRING_STATE::BASIC)
 		{
-			m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
-		
-			std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
-			if (button->GetIsPush())
+			if (SCENE.FindObjectWithName(m_ownerName))
 			{
-				SetAnimation("Piston", false);
-				//自己発光をオンに
-				m_spModelComponent->SetEmissive(true);
-				m_spSoundComponent->SoundPlay("Data/Sound/Spring.wav");
+				m_wpOwner = SCENE.FindObjectWithName(m_ownerName);
+
+				std::shared_ptr<InputObject> button = std::dynamic_pointer_cast<InputObject>(m_wpOwner.lock());
+				if (button->GetIsPush())
+				{
+					SetAnimation("Piston", false);
+					//自己発光をオンに
+					m_spModelComponent->SetEmissive(true);
+					m_spSoundComponent->SoundPlay("Data/Sound/Spring.wav");
+				}
+				else
+				{
+					//自己発光をオフに
+					m_spModelComponent->SetEmissive(false);
+				}
 			}
-			else
-			{
-				//自己発光をオフに
-				m_spModelComponent->SetEmissive(false);
-			}
+		}
+		else if (m_stateTag == SPRING_STATE::FOREVER)
+		{
+			SetAnimation("Piston", false);
+			//自己発光をオンに
+			m_spModelComponent->SetEmissive(true);
+			m_spSoundComponent->SoundPlay("Data/Sound/Spring.wav");
 		}
 	}
 
